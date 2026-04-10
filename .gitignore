@@ -17,7 +17,6 @@ composer-setup.php
 /vendor
 /public/storage
 /storage/*.key
-/public/build
 /public/hot
 /.phpunit.cache
 /.vscode
