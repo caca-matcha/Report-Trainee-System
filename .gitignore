@@ -4,7 +4,6 @@
 *.csv
 datakaryawan.json
 response.json
-logerror.txt
 temp_log_output.txt
 
 # Setup
