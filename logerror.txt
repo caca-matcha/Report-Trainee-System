@@ -1,3 +1,0 @@
-https://msa-be.dharmagroup.co.id/api/v1/hr/employees 
-x-api-key: eyJjb21wYW55IjoiQUJDIiwidGltZSI6MT
-download data dari api ini dan cocokkan ke field database, jika tidak ada fieldnya buat langsung
