@@ -67,7 +67,6 @@
                         <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50 dark:border-gray-700/30">User Profile</th>
                         <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50 dark:border-gray-700/30">NPK / Identification</th>
                         <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50 dark:border-gray-700/30">Account Role</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50 dark:border-gray-700/30">TTD</th>
                         <th class="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50 dark:border-gray-700/30 text-right">Actions</th>
                     </tr>
                 </thead>
@@ -104,18 +103,6 @@
                                 <span class="inline-flex items-center px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] {{ $roleStyles[$user->role] ?? 'bg-gray-100 text-gray-500 dark:bg-gray-700/50 dark:text-gray-400' }}">
                                     {{ $user->role }}
                                 </span>
-                            </td>
-                            <td class="px-8 py-5">
-                                @if($user->signature)
-                                    <div class="w-16 h-10 bg-white dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600 flex items-center justify-center p-1 overflow-hidden shadow-sm">
-                                        <img src="{{ asset('storage/' . $user->signature) }}" 
-                                             class="max-w-full max-h-full object-contain" 
-                                             style="mix-blend-mode: multiply;"
-                                             alt="Signature">
-                                    </div>
-                                @else
-                                    <span class="text-[9px] font-black text-gray-300 uppercase italic tracking-tighter">No Signature</span>
-                                @endif
                             </td>
                             <td class="px-8 py-5 text-right">
                                 <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300">

@@ -11,24 +11,6 @@
             </div>
             
             <div class="flex items-center gap-4 w-auto">
-                {{-- Utility Actions Group --}}
-                <div class="flex items-center gap-2 p-1 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700/50 shadow-sm shrink-0">
-                    <form action="{{ route('admin.master-trainings.import') }}" method="POST" enctype="multipart/form-data" class="flex">
-                        @csrf
-                        <label for="csv_file"
-                            class="cursor-pointer inline-flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 transition-all shadow-sm border border-transparent hover:border-indigo-100 dark:hover:border-indigo-800">
-                            <i data-lucide="upload-cloud" class="w-4 h-4 mr-2"></i>
-                            Import CSV
-                        </label>
-                        <input type="file" id="csv_file" name="file" class="hidden" onchange="this.form.submit()">
-                    </form>
-
-                    <a href="{{ route('admin.master-trainings.export') }}"
-                        class="inline-flex items-center px-4 py-2.5 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400 transition-all shadow-sm border border-transparent hover:border-indigo-100 dark:hover:border-indigo-800">
-                        <i data-lucide="download-cloud" class="w-4 h-4 mr-2"></i>
-                        Export CSV
-                    </a>
-                </div>
 
                 {{-- Primary Action --}}
                 <a href="{{ route('admin.master-trainings.create') }}"

@@ -92,11 +92,15 @@
                                         @endif
                                     </div>
                                     <div class="border-y-2 border-black bg-white flex justify-center w-full">
+                                        @php
+                                            $preparedName = $summary->prepared_by ?? '';
+                                            $preparedShort = !empty($preparedName) ? collect(explode(' ', $preparedName))->take(2)->implode(' ') : '';
+                                        @endphp
                                         <input type="text"
                                             class="signature-input w-full bg-transparent border-none text-center p-0 py-0.5 text-[9px] focus:ring-0 z-10 signer-trigger font-bold px-1"
                                             style="text-decoration: underline;"
                                             data-field="prepared_by" list="users-datalist"
-                                            value="{{ $summary->prepared_by ?? '' }}" placeholder=""
+                                            value="{{ $preparedShort }}" placeholder=""
                                             {{ $training->status == 'approved' ? 'disabled' : '' }}>
                                     </div>
                                     <div class="bg-white px-1 text-center font-bold text-[8.5px] leading-tight flex items-center justify-center h-8 break-words pt-[1px] pb-[4px]">Staff Learning & Dev.</div>
@@ -121,11 +125,15 @@
                                         @endif
                                     </div>
                                     <div class="border-y-2 border-black bg-white flex justify-center w-full">
+                                        @php
+                                            $checkedName = $summary->checked_by ?? '';
+                                            $checkedShort = !empty($checkedName) ? collect(explode(' ', $checkedName))->take(2)->implode(' ') : '';
+                                        @endphp
                                         <input type="text"
                                             class="signature-input w-full bg-transparent border-none text-center p-0 py-0.5 text-[9px] focus:ring-0 z-10 signer-trigger font-bold px-1"
                                             style="text-decoration: underline;"
                                             data-field="checked_by" list="users-datalist"
-                                            value="{{ $summary->checked_by ?? '' }}" placeholder=""
+                                            value="{{ $checkedShort }}" placeholder=""
                                             {{ $training->status == 'approved' ? 'disabled' : '' }}>
                                     </div>
                                     <div class="bg-white px-1 text-center font-bold text-[8.5px] leading-tight flex items-center justify-center h-8 break-words pt-[1px] pb-[4px]">Dept. Head Learning & Dev</div>
@@ -150,11 +158,15 @@
                                         @endif
                                     </div>
                                     <div class="border-y-2 border-black bg-white flex justify-center w-full">
+                                        @php
+                                            $confirmedName = $summary->confirmed_by ?? '';
+                                            $confirmedShort = !empty($confirmedName) ? collect(explode(' ', $confirmedName))->take(2)->implode(' ') : '';
+                                        @endphp
                                         <input type="text"
                                             class="signature-input w-full bg-transparent border-none text-center p-0 py-0.5 text-[9px] focus:ring-0 z-10 signer-trigger font-bold px-1"
                                             style="text-decoration: underline;"
                                             data-field="confirmed_by" list="users-datalist"
-                                            value="{{ $summary->confirmed_by ?? '' }}" placeholder=""
+                                            value="{{ $confirmedShort }}" placeholder=""
                                             {{ $training->status == 'approved' ? 'disabled' : '' }}>
                                     </div>
                                     <div class="bg-white px-1 text-center font-bold text-[8.5px] leading-tight flex items-center justify-center h-8 break-words pt-[1px] pb-[4px]">Deputy Div. Head HRGA</div>

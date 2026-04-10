@@ -24,12 +24,19 @@ class Training extends Model
         'pics',
     ];
 
+    protected $appends = ['is_approved'];
+
     protected $casts = [
         'trainers' => 'array',
         'pics' => 'array',
         'start_date' => 'date',
         'end_date' => 'date',
     ];
+
+    public function getIsApprovedAttribute()
+    {
+        return $this->status === 'approved';
+    }
 
     public function user()
     {

@@ -45,6 +45,17 @@
                             Tandai Selesai
                         </button>
                     </form>
+                @else
+                    <a href="{{ route('summaries.show', $training) }}"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded text-sm transition">
+                        Summary Report
+                    </a>
+                    <button disabled class="bg-gray-400 text-white font-bold py-2 px-4 rounded text-sm cursor-not-allowed flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        Approved
+                    </button>
                 @endif
                 <a href="{{ route('trainings.index') }}"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded text-sm transition">
