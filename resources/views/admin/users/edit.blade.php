@@ -14,11 +14,11 @@
     <div class="max-w-2xl">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <form action="{{ route('admin.users.update', $user) }}" method="POST"
-                class="space-y-5">
+                enctype="multipart/form-data" class="space-y-5">
                 @csrf
                 @method('PUT')
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 text-left">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama
                             Lengkap</label>
@@ -87,8 +87,28 @@
                             placeholder="Opsional">
                     </div>
 
-
-                </div>
+                    @if(str_contains(strtoupper($user->department), 'LEARNING & DEVELOPMENT'))
+                    <div class="sm:col-span-2 space-y-3 pt-2">
+                        <label class="block text-sm font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest text-xs">Digital Signature</label>
+                        <div class="flex flex-col md:flex-row gap-6 p-5 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-800/30 transition-all">
+                            <div class="flex-1 space-y-3">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed font-medium">Upload foto tanda tangan Anda (bisa foto langsung dari kertas putih). Sistem akan otomatis menyesuaikan agar terlihat rapi dan transparan pada laporan.</p>
+                                <input type="file" name="signature" 
+                                    class="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 transition-all cursor-pointer">
+                                @error('signature') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
+                            </div>
+                            
+                            @if($user->signature)
+                            <div class="shrink-0 flex flex-col items-center gap-2">
+                                <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest leading-none">Signature Preview</span>
+                                <div class="w-32 h-20 bg-white dark:bg-gray-800 rounded-xl border border-indigo-100 dark:border-indigo-800/50 flex items-center justify-center p-2 shadow-sm overflow-hidden">
+                                    <img src="{{ asset('storage/' . $user->signature) }}" class="max-w-full max-h-full object-contain" style="mix-blend-mode: multiply;" alt="Current Signature">
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
 
                 <div class="flex items-center gap-3 pt-2">
                     <button type="submit"

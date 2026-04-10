@@ -37,16 +37,41 @@ class TrainingSummaryController extends Controller
         $attendanceRatio = $totalInvitation > 0 ? round(($totalAttend / $totalInvitation) * 100) : 0;
 
         $summary = $training->summary ?? new TrainingSummary();
-        // Pull only "Trainee" (Employee) data for signatures as requested
-        $users = User::where('role', 'trainee')
+
+        // Auto-fill prepared_by if empty from PICs
+        if (empty($summary->prepared_by) && !empty($training->pics)) {
+            foreach ($training->pics as $pic) {
+                if (isset($pic['department']) && str_contains(strtoupper($pic['department']), 'LEARNING & DEVELOPMENT')) {
+                    $summary->prepared_by = $pic['name'];
+                    break;
+                }
+            }
+        }
+
+        // Pull Trainees + PICs/Admins from L&D for signatures
+        $users = User::where(function($q) {
+            $q->where('role', 'trainee')
+              ->orWhere(function($sq) {
+                  $sq->whereIn('role', ['admin', 'pic'])
+                     ->where('department', 'LIKE', '%Learning & Development%');
+              });
+        })
             ->orderBy('name')
             ->get(['id', 'name', 'npk', 'role'])
             ->unique('name');
 
-        // Look up signatures based on names
-        $preparedSignature = User::where('name', $summary->prepared_by)->first()?->signature;
-        $checkedSignature = User::where('name', $summary->checked_by)->first()?->signature;
-        $confirmedSignature = User::where('name', $summary->confirmed_by)->first()?->signature;
+        // Look up signatures based on names - prioritize users who actually have a signature
+        $preparedSignature = User::where('name', $summary->prepared_by)
+            ->orderByRaw('signature IS NULL, signature = ""')
+            ->first()?->signature;
+            
+        $checkedSignature = User::where('name', $summary->checked_by)
+            ->orderByRaw('signature IS NULL, signature = ""')
+            ->first()?->signature;
+            
+        $confirmedSignature = User::where('name', $summary->confirmed_by)
+            ->orderByRaw('signature IS NULL, signature = ""')
+            ->first()?->signature;
 
         return view('summaries.show', compact(
             'training',

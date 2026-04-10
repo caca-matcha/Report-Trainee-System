@@ -88,7 +88,7 @@
                                     <div class="border-b-2 border-black bg-white flex items-center justify-center pt-[2px] pb-[4px] leading-tight">Prepared By,</div>
                                     <div class="flex-1 flex items-center justify-center relative min-h-[70px] bg-white">
                                         @if($preparedSignature)
-                                            <img src="{{ asset('storage/' . $preparedSignature) }}" class="max-h-14 z-0" alt="Signature">
+                                            <img src="{{ asset('storage/' . $preparedSignature) }}" class="max-h-14 z-0" style="mix-blend-mode: multiply;" alt="Signature">
                                         @endif
                                     </div>
                                     <div class="border-y-2 border-black bg-white flex justify-center w-full">
@@ -107,7 +107,7 @@
                                     <div class="border-b-2 border-black bg-white flex items-center justify-center pt-[2px] pb-[4px] leading-tight flex-col">Checked By,</div>
                                     <div class="flex-1 flex items-center justify-center relative min-h-[70px] bg-white">
                                         @if($checkedSignature)
-                                            <img src="{{ asset('storage/' . $checkedSignature) }}" class="max-h-14 z-0" alt="Signature">
+                                            <img src="{{ asset('storage/' . $checkedSignature) }}" class="max-h-14 z-0" style="mix-blend-mode: multiply;" alt="Signature">
                                         @endif
                                         @if($training->is_approved)
                                             <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
@@ -136,7 +136,7 @@
                                     <div class="border-b-2 border-black bg-white flex items-center justify-center pt-[2px] pb-[4px] leading-tight flex-col">Confirm,</div>
                                     <div class="flex-1 flex items-center justify-center relative min-h-[70px] bg-white">
                                         @if($confirmedSignature)
-                                            <img src="{{ asset('storage/' . $confirmedSignature) }}" class="max-h-14 z-0" alt="Signature">
+                                            <img src="{{ asset('storage/' . $confirmedSignature) }}" class="max-h-14 z-0" style="mix-blend-mode: multiply;" alt="Signature">
                                         @endif
                                         @if($training->is_approved)
                                             <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-20">

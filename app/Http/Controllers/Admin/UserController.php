@@ -74,7 +74,17 @@ class UserController extends Controller
             'department' => 'nullable|string|max:255',
             'subco' => 'nullable|string|max:255',
             'password' => 'nullable|string|min:8|confirmed',
+            'signature' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        if ($request->hasFile('signature')) {
+            // Delete old signature if exists
+            if ($user->signature && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->signature)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->signature);
+            }
+            $path = $request->file('signature')->store('signatures', 'public');
+            $validated['signature'] = $path;
+        }
 
         if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
