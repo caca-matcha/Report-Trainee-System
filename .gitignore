@@ -1,0 +1,26 @@
+# Data & Logs
+*.xlsx
+*.xls
+*.csv
+datakaryawan.json
+response.json
+logerror.txt
+temp_log_output.txt
+
+# Setup
+composer.phar
+composer-setup.php
+
+# Laravel
+.env
+/node_modules
+/vendor
+/public/storage
+/storage/*.key
+/public/build
+/public/hot
+/.phpunit.cache
+/.vscode
+/.idea
+*.log
+.DS_Store
