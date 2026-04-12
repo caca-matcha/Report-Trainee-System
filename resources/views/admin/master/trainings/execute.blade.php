@@ -161,7 +161,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {{-- Trainers Card --}}
                         <div
-                            class="bg-white dark:bg-gray-800 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700/50 flex flex-col h-full overflow-hidden">
+                            class="bg-white dark:bg-gray-800 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700/50 flex flex-col h-full">
                             <div class="p-8 border-b border-gray-50 dark:border-gray-700/50">
                                 <div class="flex items-center justify-between flex-wrap gap-4">
                                     <div class="flex items-center gap-4">
@@ -183,7 +183,7 @@
                                     <i data-lucide="search"
                                         class="absolute left-4.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-500 transition-colors"></i>
                                     <div id="quick-search-trainer-suggestions"
-                                        class="absolute z-50 w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl mt-4 hidden max-h-72 overflow-y-auto">
+                                        class="absolute z-50 w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl mt-4 hidden max-h-72 overflow-y-auto overflow-x-hidden">
                                     </div>
                                 </div>
                             </div>
@@ -236,7 +236,7 @@
 
                         {{-- PIC Section --}}
                         <div
-                            class="bg-white dark:bg-gray-800 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700/50 flex flex-col h-full overflow-hidden">
+                            class="bg-white dark:bg-gray-800 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700/50 flex flex-col h-full">
                             <div class="p-8 border-b border-gray-50 dark:border-gray-700/50">
                                 <div class="flex items-center justify-between flex-wrap gap-4">
                                     <div class="flex items-center gap-4">
@@ -258,7 +258,7 @@
                                     <i data-lucide="search"
                                         class="absolute left-4.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
                                     <div id="quick-search-pic-suggestions"
-                                        class="absolute z-50 w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl mt-4 hidden max-h-72 overflow-y-auto">
+                                        class="absolute z-50 w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl mt-4 hidden max-h-72 overflow-y-auto overflow-x-hidden">
                                     </div>
                                 </div>
                             </div>
@@ -424,21 +424,21 @@
                                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-2">Hasil Pencarian (${data.length})</p>
                                     </div>
                                     ${data.map(user => `
-                                        <div class="suggestion-item px-5 py-4 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer border-b border-gray-50 dark:border-gray-700/50 last:border-0 flex items-center gap-5 group transition-all" 
+                                        <div class="suggestion-item px-5 py-4 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer border-b border-gray-50 dark:border-gray-700/50 last:border-0 flex items-center gap-3 md:gap-4 group transition-all w-full overflow-hidden" 
                                              data-user='${JSON.stringify(user).replace(/'/g, "&apos;")}'>
-                                            <div class="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 font-black shrink-0 shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
+                                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 font-black shrink-0 shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
                                                 ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0)}
                                             </div>
                                             <div class="flex-1 min-w-0">
-                                                <div class="flex items-center gap-2 mb-0.5">
-                                                    <p class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">${highlightText(user.npk || '-', query)}</p>
-                                                    <span class="text-gray-300 dark:text-gray-700">•</span>
-                                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight truncate">${user.department || 'GENERAL'}</p>
+                                                <div class="flex items-center gap-2 mb-0.5 overflow-hidden">
+                                                    <p class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest truncate shrink-0">${highlightText(user.npk || '-', query)}</p>
+                                                    <span class="text-gray-300 dark:text-gray-700 shrink-0">•</span>
+                                                    <p class="text-[9px] text-gray-400 font-bold uppercase tracking-tight truncate">${user.department || 'GENERAL'}</p>
                                                 </div>
-                                                <p class="text-sm font-black text-gray-800 dark:text-white truncate">${highlightText(user.name, query)}</p>
+                                                <p class="text-xs md:text-sm font-black text-gray-800 dark:text-white truncate">${highlightText(user.name, query)}</p>
                                             </div>
-                                            <div class="opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                                                <span class="text-[10px] font-black bg-indigo-600 text-white px-3 py-1.5 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none">PILIH</span>
+                                            <div class="opacity-0 group-hover:opacity-100 transition-all translate-x-1 group-hover:translate-x-0 shrink-0">
+                                                <span class="text-[9px] font-black bg-indigo-600 text-white px-2.5 py-1 rounded-lg">PILIH</span>
                                             </div>
                                         </div>
                                     `).join('')}
