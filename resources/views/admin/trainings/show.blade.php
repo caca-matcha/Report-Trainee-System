@@ -297,6 +297,15 @@
                         </svg>
                         Import Peserta CSV
                     </a>
+                    {{-- Tombol Simpan Data --}}
+                    <button type="button" onclick="saveAllScores()" id="btn-save-all"
+                        class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black rounded-lg uppercase transition-colors flex items-center gap-1 shadow-sm">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                        Simpan Data
+                    </button>
                     <form action="{{ route('admin.trainings.bulk_attendance', $training) }}" method="POST" onsubmit="confirmAction(event, 'Hadirkan seluruh peserta sekaligus?', 'question')">
                         @csrf
                         <button type="submit"
@@ -1850,6 +1859,56 @@
             .catch(error => {
                 console.error('Error updating score:', error);
             });
+        }
+
+        function saveAllScores() {
+            const btn = document.getElementById('btn-save-all');
+            const inputs = document.querySelectorAll('input[data-table-input]');
+
+            // Disable button while saving
+            btn.disabled = true;
+            btn.innerHTML = `
+                <svg class="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Menyimpan...`;
+
+            // Trigger blur on all inputs to fire existing updateScore() calls
+            inputs.forEach(input => {
+                input.blur();
+            });
+
+            // After a short delay, restore button and show success toast
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = `
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                    </svg>
+                    Simpan Data`;
+
+                // Show toast notification
+                const toast = document.createElement('div');
+                toast.className = 'fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-green-600 text-white px-5 py-3 rounded-2xl shadow-2xl text-sm font-bold transition-all duration-500 opacity-0 translate-y-4';
+                toast.innerHTML = `
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Data berhasil disimpan!`;
+                document.body.appendChild(toast);
+
+                // Animate in
+                requestAnimationFrame(() => {
+                    toast.classList.remove('opacity-0', 'translate-y-4');
+                });
+
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'translate-y-4');
+                    setTimeout(() => toast.remove(), 500);
+                }, 3000);
+            }, 800);
         }
 
         function handleTableKey(e) {
