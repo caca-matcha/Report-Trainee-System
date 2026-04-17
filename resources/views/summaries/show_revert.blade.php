@@ -82,68 +82,83 @@
                             </div>
 
                             {{-- Col 3: Signatures --}}
-                            <div class="w-[350px] shrink-0 border-2 border-black bg-white">
-                                <table class="w-full text-center border-collapse text-[10px]" style="table-layout: fixed;">
-                                    <tr class="border-b-2 border-black font-semibold h-[24px]">
-                                        <td class="border-r-2 border-black w-1/3 align-middle pt-[2px] pb-[4px]">Prepared By,</td>
-                                        <td class="border-r-2 border-black w-1/3 align-middle pt-[2px] pb-[4px]">Checked By,</td>
-                                        <td class="w-1/3 align-middle pt-[2px] pb-[4px]">Confirm,</td>
-                                    </tr>
-                                    <tr class="h-[73px] border-b-2 border-black">
-                                        <td class="border-r-2 border-black relative group/pre align-middle text-center overflow-hidden">
-                                            @if($summary->prepared_barcode_path) <img src="{{ asset('storage/' . $summary->prepared_barcode_path) }}" class="inline-block max-h-[60px]">
-                                            @elseif($preparedSignature) <img src="{{ asset('storage/' . $preparedSignature) }}" class="inline-block max-h-[60px] z-0" style="mix-blend-mode: multiply;"> @endif
-                                            @if($training->status != 'approved')
-                                                <button onclick="triggerUpload('prepared_barcode_path')" class="absolute inset-0 bg-black/0 group-hover/pre:bg-black/5 flex items-center justify-center opacity-0 group-hover/pre:opacity-100 text-[9px] font-black uppercase text-gray-500 cursor-pointer print:hidden">Update</button>
-                                            @endif
-                                        </td>
-                                        <td class="border-r-2 border-black relative group/chk align-middle text-center overflow-hidden">
-                                            @if($summary->checked_barcode_path) <img src="{{ asset('storage/' . $summary->checked_barcode_path) }}" class="inline-block max-h-[60px]">
-                                            @elseif($checkedSignature) <img src="{{ asset('storage/' . $checkedSignature) }}" class="inline-block max-h-[60px] z-0" style="mix-blend-mode: multiply;"> @endif
-                                            
-                                            @if($training->status != 'approved')
-                                                <button onclick="triggerUpload('checked_barcode_path')" class="absolute inset-0 bg-black/0 group-hover/chk:bg-black/5 flex items-center justify-center opacity-0 group-hover/chk:opacity-100 text-[9px] font-black uppercase text-gray-500 cursor-pointer print:hidden">Update</button>
-                                            @endif
-                                        </td>
-                                        <td class="relative group/con align-middle text-center overflow-hidden">
-                                            @if($summary->barcode_path) <img src="{{ asset('storage/' . $summary->barcode_path) }}" class="inline-block max-h-[60px]">
-                                            @elseif($confirmedSignature) <img src="{{ asset('storage/' . $confirmedSignature) }}" class="inline-block max-h-[60px] z-0" style="mix-blend-mode: multiply;"> @endif
-                                            @if($training->is_approved)
-                                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                                                    <div class="border-4 border-emerald-500 text-emerald-500 font-black text-[12px] px-2 py-0.5 rounded-lg uppercase tracking-[0.1em] transform -rotate-12 opacity-80 flex flex-col items-center leading-none bg-white/50 backdrop-blur-[1px]">
-                                                        <span>APPROVED</span>
-                                                        @if($training->approved_at) <span class="text-[7px] mt-0.5 tracking-normal font-bold">{{ $training->approved_at->format('d/m/Y') }}</span> @endif
-                                                    </div>
+                            <div class="w-[330px] shrink-0 flex text-center text-[10px] font-semibold divide-x-2 divide-black border-2 border-black">
+                                {{-- Prepared By --}}
+                                <div class="flex-1 flex flex-col">
+                                    <div class="border-b-2 border-black bg-white flex items-center justify-center pt-[2px] pb-[4px] leading-tight">Prepared By,</div>
+                                    <div class="flex-1 flex items-center justify-center relative min-h-[70px] bg-white">
+                                        @if($preparedSignature)
+                                            <img src="{{ asset('storage/' . $preparedSignature) }}" class="max-h-14 z-0" alt="Signature">
+                                        @endif
+                                    </div>
+                                    <div class="border-y-2 border-black bg-white flex justify-center w-full">
+                                        <input type="text"
+                                            class="signature-input w-full bg-transparent border-none text-center p-0 py-0.5 text-[9px] focus:ring-0 z-10 signer-trigger font-bold px-1"
+                                            style="text-decoration: underline;"
+                                            data-field="prepared_by" list="users-datalist"
+                                            value="{{ $summary->prepared_by ?? '' }}" placeholder=""
+                                            {{ $training->status == 'approved' ? 'disabled' : '' }}>
+                                    </div>
+                                    <div class="bg-white px-1 text-center font-bold text-[8.5px] leading-tight flex items-center justify-center h-8 break-words pt-[1px] pb-[4px]">Staff Learning & Dev.</div>
+                                </div>
+                                
+                                {{-- Checked By --}}
+                                <div class="flex-1 flex flex-col">
+                                    <div class="border-b-2 border-black bg-white flex items-center justify-center pt-[2px] pb-[4px] leading-tight flex-col">Checked By,</div>
+                                    <div class="flex-1 flex items-center justify-center relative min-h-[70px] bg-white">
+                                        @if($checkedSignature)
+                                            <img src="{{ asset('storage/' . $checkedSignature) }}" class="max-h-14 z-0" alt="Signature">
+                                        @endif
+                                        @if($training->is_approved)
+                                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                                                <div class="border-4 border-emerald-500 text-emerald-500 font-black text-[14px] px-3 py-1 rounded-lg uppercase tracking-[0.2em] transform -rotate-12 opacity-80 flex flex-col items-center leading-none bg-white/50 backdrop-blur-[1px]">
+                                                    <span>APPROVED</span>
+                                                    @if($training->approved_at)
+                                                        <span class="text-[8px] mt-1 tracking-normal font-bold">{{ $training->approved_at->format('d/m/Y') }}</span>
+                                                    @endif
                                                 </div>
-                                            @endif
-                                            @if($training->status != 'approved')
-                                                <button onclick="triggerUpload('barcode_path')" class="absolute inset-0 bg-black/0 group-hover/con:bg-black/5 flex items-center justify-center opacity-0 group-hover/con:opacity-100 text-[9px] font-black uppercase text-gray-500 cursor-pointer print:hidden">Update</button>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    <tr class="h-[22px] border-b-2 border-black bg-white">
-                                        <td class="border-r-2 border-black px-1 py-0.5 align-middle">
-                                            <input type="text" class="signature-input w-full text-center border-none p-0 text-[10px] font-semibold focus:ring-0 signer-trigger bg-transparent hover:bg-gray-50 underline decoration-black/50" data-field="prepared_by" list="users-datalist" value="{{ $summary->prepared_by ?? '' }}" {{ $training->status == 'approved' ? 'disabled' : '' }}>
-                                        </td>
-                                        <td class="border-r-2 border-black px-1 py-0.5 align-middle">
-                                            <input type="text" class="signature-input w-full text-center border-none p-0 text-[10px] font-semibold focus:ring-0 signer-trigger bg-transparent hover:bg-gray-50 underline decoration-black/50" data-field="checked_by" list="users-datalist" value="{{ $summary->checked_by ?? '' }}" {{ $training->status == 'approved' ? 'disabled' : '' }}>
-                                        </td>
-                                        <td class="px-1 py-0.5 align-middle">
-                                            <input type="text" class="signature-input w-full text-center border-none p-0 text-[10px] font-semibold focus:ring-0 signer-trigger bg-transparent hover:bg-gray-50 underline decoration-black/50" data-field="confirmed_by" list="users-datalist" value="{{ $summary->confirmed_by ?? '' }}" {{ $training->status == 'approved' ? 'disabled' : '' }}>
-                                        </td>
-                                    </tr>
-                                    <tr class="h-[32px] bg-white">
-                                        <td class="border-r-2 border-black px-1 align-middle break-words">
-                                            <input type="text" class="signature-input w-full text-center border-none p-0 text-[8.5px] font-bold text-black focus:ring-0 signer-trigger bg-transparent hover:bg-gray-50" data-field="prepared_title" value="{{ $summary->prepared_title ?? 'Staff Learning & Dev.' }}" {{ $training->status == 'approved' ? 'disabled' : '' }}>
-                                        </td>
-                                        <td class="border-r-2 border-black px-1 align-middle break-words">
-                                            <input type="text" class="signature-input w-full text-center border-none p-0 text-[8.5px] font-bold text-black focus:ring-0 signer-trigger bg-transparent hover:bg-gray-50" data-field="checked_title" value="{{ $summary->checked_title ?? 'Dept. Head Learning & Dev' }}" {{ $training->status == 'approved' ? 'disabled' : '' }}>
-                                        </td>
-                                        <td class="px-1 align-middle break-words">
-                                            <input type="text" class="signature-input w-full text-center border-none p-0 text-[8.5px] font-bold text-black focus:ring-0 signer-trigger bg-transparent hover:bg-gray-50" data-field="confirmed_title" value="{{ $summary->confirmed_title ?? 'Deputy Div. Head HRGA' }}" {{ $training->status == 'approved' ? 'disabled' : '' }}>
-                                        </td>
-                                    </tr>
-                                </table>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="border-y-2 border-black bg-white flex justify-center w-full">
+                                        <input type="text"
+                                            class="signature-input w-full bg-transparent border-none text-center p-0 py-0.5 text-[9px] focus:ring-0 z-10 signer-trigger font-bold px-1"
+                                            style="text-decoration: underline;"
+                                            data-field="checked_by" list="users-datalist"
+                                            value="{{ $summary->checked_by ?? '' }}" placeholder=""
+                                            {{ $training->status == 'approved' ? 'disabled' : '' }}>
+                                    </div>
+                                    <div class="bg-white px-1 text-center font-bold text-[8.5px] leading-tight flex items-center justify-center h-8 break-words pt-[1px] pb-[4px]">Dept. Head Learning & Dev</div>
+                                </div>
+
+                                {{-- Confirmed By --}}
+                                <div class="flex-1 flex flex-col">
+                                    <div class="border-b-2 border-black bg-white flex items-center justify-center pt-[2px] pb-[4px] leading-tight flex-col">Confirm,</div>
+                                    <div class="flex-1 flex items-center justify-center relative min-h-[70px] bg-white">
+                                        @if($confirmedSignature)
+                                            <img src="{{ asset('storage/' . $confirmedSignature) }}" class="max-h-14 z-0" alt="Signature">
+                                        @endif
+                                        @if($training->is_approved)
+                                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+                                                <div class="border-4 border-emerald-500 text-emerald-500 font-black text-[14px] px-3 py-1 rounded-lg uppercase tracking-[0.2em] transform -rotate-12 opacity-80 flex flex-col items-center leading-none bg-white/50 backdrop-blur-[1px]">
+                                                    <span>APPROVED</span>
+                                                    @if($training->approved_at)
+                                                        <span class="text-[8px] mt-1 tracking-normal font-bold">{{ $training->approved_at->format('d/m/Y') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="border-y-2 border-black bg-white flex justify-center w-full">
+                                        <input type="text"
+                                            class="signature-input w-full bg-transparent border-none text-center p-0 py-0.5 text-[9px] focus:ring-0 z-10 signer-trigger font-bold px-1"
+                                            style="text-decoration: underline;"
+                                            data-field="confirmed_by" list="users-datalist"
+                                            value="{{ $summary->confirmed_by ?? '' }}" placeholder=""
+                                            {{ $training->status == 'approved' ? 'disabled' : '' }}>
+                                    </div>
+                                    <div class="bg-white px-1 text-center font-bold text-[8.5px] leading-tight flex items-center justify-center h-8 break-words pt-[1px] pb-[4px]">Deputy Div. Head HRGA</div>
+                                </div>
                             </div>
                         </div>
 
@@ -1195,8 +1210,7 @@
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json'
+                            'X-Requested-With': 'XMLHttpRequest'
                         },
                         body: JSON.stringify({
                             [field]: value
@@ -1329,27 +1343,7 @@
                 btnText.textContent = 'Download PDF';
             }
         }
-
-        // Image/Barcode Upload Handlers
-        let curField = '';
-        function triggerUpload(f) { curField = f; document.getElementById('barcode-upload').click(); }
-        function uploadBarcode(i) {
-            if(!i.files[0]) return;
-            const fd = new FormData(); 
-            fd.append('image_file', i.files[0]); 
-            fd.append('target_field', curField);
-            fetch(`/trainings/{{ $training->id }}/summary`, { 
-                method:'POST', 
-                headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}', 'Accept': 'application/json'}, 
-                body:fd
-            })
-            .then(r=>r.json())
-            .then(d=>{ if(d.success) location.reload(); else alert(d.message || 'Error uploading image'); })
-            .catch(e => { console.error(e); alert('Upload failed'); });
-        }
     </script>
-
-    <form class="hidden"><input type="file" id="barcode-upload" accept="image/*" onchange="uploadBarcode(this)"></form>
 
     <style>
         @media print {

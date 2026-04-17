@@ -22,15 +22,17 @@ class Training extends Model
         'status',
         'trainers',
         'pics',
+        'approved_at',
     ];
 
     protected $appends = ['is_approved'];
 
     protected $casts = [
-        'trainers' => 'array',
-        'pics' => 'array',
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'trainers'    => 'array',
+        'pics'        => 'array',
+        'start_date'  => 'date',
+        'end_date'    => 'date',
+        'approved_at' => 'datetime',
     ];
 
     public function getIsApprovedAttribute()

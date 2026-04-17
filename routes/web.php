@@ -41,6 +41,7 @@ Route::middleware(['auth', 'verified', 'npk_restrict'])->group(function () {
     Route::get('trainings/{training}/participant-template', [TrainingController::class, 'exportParticipantTemplate'])->name('trainings.participant_template');
     Route::post('trainings/{training}/import-observation', [TrainingController::class, 'importObservation'])->name('trainings.import_observation');
     Route::post('trainings/{training}/sync-observation', [TrainingController::class, 'syncObservationFromGoogleSheets'])->name('trainings.sync_observation');
+    Route::get('trainings/search-users', [TrainingController::class, 'searchUsers'])->name('trainings.search_users');
     Route::resource('trainings', TrainingController::class);
 
     // Participant Routes
@@ -64,6 +65,7 @@ Route::middleware(['auth', 'verified', 'npk_restrict'])->group(function () {
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::resource('users', UserController::class);
+        Route::post('users/quick-add', [UserController::class, 'quickAddAdmin'])->name('users.quick-add');
         Route::post('employees/bulk-photo', [\App\Http\Controllers\Admin\EmployeeController::class, 'bulkPhotoStore'])->name('employees.bulk-photo');
         Route::get('employees/sync', [\App\Http\Controllers\UserImportController::class, 'index'])->name('import-users.index');
         Route::post('employees/sync', [\App\Http\Controllers\UserImportController::class, 'import'])->name('import-users.run');

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latar Belakang - Sistem Training Dharma Learning Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #2d6a2d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 10% 50%, rgba(255,255,255,0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 50%, rgba(0,0,0,0.1) 0%, transparent 50%);
+        }
+
+        /* Slide container mimics a 16:9 presentation slide */
+        .slide-wrapper {
+            width: 100%;
+            max-width: 960px;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            background: #f0f0f0;
+            border-radius: 16px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 40px 1fr 40px;
+            grid-template-rows: 1fr;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        /* Left green stripe */
+        .side-strip-left {
+            background: linear-gradient(180deg, #3a8a3a 0%, #2d6a2d 100%);
+        }
+
+        /* Right green stripe */
+        .side-strip-right {
+            background: linear-gradient(180deg, #3a8a3a 0%, #2d6a2d 100%);
+        }
+
+        /* Main white card */
+        .card {
+            background: white;
+            padding: 32px 40px 28px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+        }
+
+        /* ─── Header Row ─── */
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .title-block {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .title {
+            font-size: clamp(20px, 3.2vw, 36px);
+            font-weight: 800;
+            color: #1a1a1a;
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+        }
+
+        .title-dots {
+            display: flex;
+            gap: 7px;
+            margin-top: 2px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #5a9e2f;
+        }
+
+        /* ─── Top-right: logo + button ─── */
+        .header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 6px 12px 6px 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #2d6a2d, #5a9e2f);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .logo-name {
+            font-size: 11px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: 0.3px;
+        }
+
+        .logo-tagline {
+            font-size: 9px;
+            font-weight: 400;
+            color: #666;
+            font-style: italic;
+        }
+
+        .next-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid #2d6a2d;
+            border-radius: 30px;
+            padding: 6px 10px 6px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #2d6a2d;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            background: white;
+        }
+
+        .next-btn:hover {
+            background: #2d6a2d;
+            color: white;
+        }
+
+        .next-btn:hover .btn-arrow-circle {
+            background: white;
+        }
+
+        .next-btn:hover .btn-arrow-circle svg {
+            stroke: #2d6a2d;
+        }
+
+        .btn-arrow-circle {
+            width: 28px;
+            height: 28px;
+            background: #5a9e2f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .btn-arrow-circle svg {
+            width: 14px;
+            height: 14px;
+            stroke: white;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke 0.2s;
+        }
+
+        /* ─── Sub-title question ─── */
+        .question-text {
+            font-size: clamp(10px, 1.4vw, 14px);
+            color: #444;
+            font-weight: 400;
+            margin: 10px 0 12px 0;
+            padding-left: 8px;
+        }
+
+        .question-text strong {
+            font-weight: 700;
+            color: #1a1a1a;
+            font-style: normal;
+        }
+
+        /* ─── Problem Table ─── */
+        .problems-table {
+            width: 100%;
+            border-collapse: collapse;
+            flex: 1;
+        }
+
+        .problems-table tr {
+            border-top: 1.5px solid #e8e8e8;
+        }
+
+        .problems-table tr:last-child {
+            border-bottom: 1.5px solid #e8e8e8;
+        }
+
+        .problems-table td {
+            padding: 9px 10px;
+            vertical-align: top;
+            font-size: clamp(9px, 1.2vw, 12px);
+            line-height: 1.5;
+        }
+
+        .problem-label {
+            width: 28%;
+            font-weight: 700;
+            color: #8b1a1a;
+            min-width: 110px;
+        }
+
+        .problem-desc {
+            color: #333;
+            font-weight: 400;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="slide-wrapper">
+    <div class="slide">
+
+        <!-- Left strip -->
+        <div class="side-strip-left"></div>
+
+        <!-- Main card -->
+        <div class="card">
+
+            <!-- Header -->
+            <div class="card-header">
+                <div class="title-block">
+                    <h1 class="title">Latar Belakang Masalah</h1>
+                    <div class="title-dots">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <!-- Logo -->
+                    <div class="logo-box">
+                        <div class="logo-icon">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                        </div>
+                        <div class="logo-text">
+                            <span class="logo-name">DHARMA GROUP</span>
+                            <span class="logo-tagline">Exist To Contribute</span>
+                        </div>
+                    </div>
+
+                    <!-- Next button -->
+                    <a href="#" class="next-btn">
+                        Rencana Perbaikan
+                        <span class="btn-arrow-circle">
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Question -->
+            <p class="question-text">Mengapa dibuat <strong>"Sistem Training DLC"</strong>?</p>
+
+            <!-- Problems table -->
+            <table class="problems-table">
+                <tbody>
+                    <tr>
+                        <td class="problem-label">Pelatihan Masih Manual</td>
+                        <td class="problem-desc">
+                            Pengelolaan data pelatihan masih dilakukan secara manual menggunakan Excel dan dokumen kertas, sehingga rentan terhadap kesalahan dan kehilangan data.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="problem-label">Rekap Kehadiran Tidak Efisien</td>
+                        <td class="problem-desc">
+                            Proses absensi peserta pelatihan menggunakan form kertas yang memerlukan waktu lama untuk direkapitulasi dan diverifikasi oleh tim HRD.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="problem-label">Evaluasi Tersebar</td>
+                        <td class="problem-desc">
+                            Data hasil evaluasi dan nilai peserta tersebar di berbagai media sehingga menyulitkan analisis performa dan tindak lanjut pengembangan kompetensi.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="problem-label">Laporan Tidak Terpusat</td>
+                        <td class="problem-desc">
+                            Laporan pelatihan berbentuk file Excel yang tersebar di berbagai folder sehingga menyulitkan monitoring dan pengambilan keputusan oleh manajemen.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="problem-label">Monitoring Tidak Real-Time</td>
+                        <td class="problem-desc">
+                            Tim HRD belum memiliki dashboard terintegrasi untuk memantau perkembangan pelatihan, kehadiran, dan capaian peserta secara real-time.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- Right strip -->
+        <div class="side-strip-right"></div>
+
+    </div>
+</div>
+
+</body>
+</html>

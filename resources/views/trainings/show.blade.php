@@ -148,13 +148,16 @@
                                 @csrf
                                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-2 font-medium">Recommendation for next Participant</p>
                                 <textarea name="recommendation" rows="3"
-                                    class="w-full rounded-xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-indigo-500 text-sm"
-                                    placeholder="Masukkan rekomendasi untuk peserta/pelatihan selanjutnya...">{{ old('recommendation', $training->summary->recommendation ?? '') }}</textarea>
+                                    class="w-full rounded-xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-indigo-500 text-sm disabled:opacity-50 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:cursor-not-allowed"
+                                    placeholder="Masukkan rekomendasi untuk peserta/pelatihan selanjutnya..."
+                                    {{ $training->status == 'approved' ? 'disabled' : '' }}>{{ old('recommendation', $training->summary->recommendation ?? '') }}</textarea>
                                 <div class="mt-2 flex justify-end">
-                                    <button type="submit"
-                                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-4 rounded text-xs transition shadow-sm">
-                                        Save Recommendation
-                                    </button>
+                                    @if($training->status != 'approved')
+                                        <button type="submit"
+                                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-4 rounded text-xs transition shadow-sm">
+                                            Save Recommendation
+                                        </button>
+                                    @endif
                                 </div>
                             </form>
                         </div>
@@ -183,9 +186,18 @@
                                     </svg>
                                     Import Observasi
                                 </button>
+                                <div class="relative group mr-2">
+                                    <input type="text" id="quick-search-participant" placeholder="Cari & Tambah Peserta..." 
+                                        class="w-64 pl-10 pr-4 py-1.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 transition-all dark:text-gray-200">
+                                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                    <div id="quick-search-suggestions" class="absolute z-50 w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl mt-2 hidden max-h-64 overflow-y-auto"></div>
+                                </div>
                                 <a href="{{ route('trainings.participants.create', $training) }}"
-                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-sm">
-                                    + Add Participant
+                                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-4 rounded-xl text-xs flex items-center gap-1 transition-all shadow-sm">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    Manual
                                 </a>
                             @endif
                         </div>
@@ -258,13 +270,15 @@
                                             <input type="number" 
                                                 value="{{ $participant->pre_test_score !== null ? round($participant->pre_test_score) : '' }}"
                                                 onblur="updateScore({{ $participant->id }}, 'pre_test', this.value)"
-                                                class="w-16 h-8 text-center text-sm border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0">
+                                                class="w-16 h-8 text-center text-sm border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0"
+                                                {{ $training->status == 'approved' ? 'disabled' : '' }}>
                                         </td>
                                         <td class="py-2 px-4 text-center">
                                             <input type="number" 
                                                 value="{{ $participant->post_test_score !== null ? round($participant->post_test_score) : '' }}"
                                                 onblur="updateScore({{ $participant->id }}, 'post_test', this.value)"
-                                                class="w-16 h-8 text-center text-sm border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0 font-semibold {{ $participant->post_test_score !== null && $participant->post_test_score >= $training->passing_grade ? 'text-green-600' : ($participant->post_test_score !== null ? 'text-red-500' : 'text-gray-400') }}">
+                                                class="w-16 h-8 text-center text-sm border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0 font-semibold {{ $participant->post_test_score !== null && $participant->post_test_score >= $training->passing_grade ? 'text-green-600' : ($participant->post_test_score !== null ? 'text-red-500' : 'text-gray-400') }}"
+                                                {{ $training->status == 'approved' ? 'disabled' : '' }}>
                                         </td>
                                         <td class="py-2 px-4 text-center">{{ $participant->punctuality_score ?? '-' }}</td>
                                         <td class="py-2 px-4 text-center">{{ $participant->activeness_score ?? '-' }}</td>
@@ -272,7 +286,8 @@
                                         <td class="py-2 px-4 text-center">{{ $participant->attitude_score ?? '-' }}</td>
                                         <td class="py-2 px-4 text-center">
                                             <button type="button" id="attendance-btn-{{ $participant->id }}" onclick="toggleAttendance({{ $participant->id }}, this)"
-                                                class="focus:outline-none transition-transform hover:scale-105 active:scale-95 cursor-pointer">
+                                                class="focus:outline-none transition-transform hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                                {{ $training->status == 'approved' ? 'disabled' : '' }}>
                                                 @if($participant->is_present)
                                                     <span class="text-green-500 font-bold">✔ Hadir</span>
                                                 @else
@@ -285,7 +300,7 @@
                                                 @if($participant->post_test_score >= $training->passing_grade)
                                                     <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase">Pass</span>
                                                 @else
-                                                    <span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase">Fail</span>
+                                                    <span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase">Not Pass</span>
                                                 @endif
                                             @else
                                                 <span class="text-gray-400 text-xs">-</span>
@@ -293,12 +308,29 @@
                                         </td>
                                         @if($training->status == 'draft')
                                             <td class="py-2 px-4 text-center">
-                                                <form action="{{ route('participants.destroy', $participant) }}" method="POST"
-                                                    class="inline" onsubmit="return confirm('Remove this participant?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-500 hover:text-red-700">x</button>
-                                                </form>
+                                                <div class="flex items-center justify-center gap-2">
+                                                    {{-- Edit Button --}}
+                                                    <button type="button" 
+                                                        onclick="openEditModal({{ json_encode($participant) }})"
+                                                        class="p-1.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 transition-colors">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                        </svg>
+                                                    </button>
+
+                                                    {{-- Delete Button --}}
+                                                    <form action="{{ route('participants.destroy', $participant) }}" method="POST"
+                                                        class="inline" onsubmit="return confirm('Hapus peserta dari training ini?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" 
+                                                            class="p-1.5 bg-red-50 dark:bg-red-500/10 text-red-500 dark:text-red-400 rounded-lg hover:bg-red-100 transition-colors">
+                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         @endif
                                     </tr>
@@ -382,7 +414,7 @@
                                 @else
                                     <div class="flex items-center gap-1 px-2.5 py-0.5 bg-rose-50 dark:bg-rose-500/10 rounded-full border border-rose-100 dark:border-rose-500/20 shadow-[0_0_15px_rgba(244,63,94,0.1)]">
                                         <div class="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></div>
-                                        <span class="text-[9px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest">Failed</span>
+                                        <span class="text-[9px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-widest">Not Pass</span>
                                     </div>
                                 @endif
                             </div>
@@ -457,6 +489,53 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Edit Participant Modal -->
+            <div id="editParticipantModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 transition-opacity">
+                <div class="relative top-20 mx-auto p-8 border w-[420px] shadow-2xl rounded-[2.5rem] bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 animate-fade-in">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                            </div>
+                            <h3 class="text-base font-black text-gray-900 dark:text-white uppercase tracking-wider">Edit Data Peserta</h3>
+                        </div>
+                        <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+                    
+                    <form id="editParticipantForm" onsubmit="submitEditForm(event)" class="space-y-4">
+                        <input type="hidden" id="edit_participant_id">
+                        
+                        <div>
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Nama Lengkap</label>
+                            <input type="text" id="edit_name" required class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl text-sm font-bold dark:text-white focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">NPK</label>
+                            <div class="px-4 py-3 bg-gray-100 dark:bg-gray-900/50 border-none rounded-2xl text-sm font-mono text-gray-500 dark:text-gray-400" id="edit_npk_display"></div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Departemen</label>
+                                <input type="text" id="edit_department" required class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl text-xs font-bold dark:text-white focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Sub Co</label>
+                                <input type="text" id="edit_subco" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl text-xs font-bold dark:text-white focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 flex gap-3">
+                            <button type="submit" class="flex-1 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-500/30 transition-all active:scale-95">Simpan Perubahan</button>
+                            <button type="button" onclick="closeEditModal()" class="px-6 py-3.5 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-gray-200 transition-all">Batal</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
 
 
@@ -521,15 +600,17 @@
                     if (type === 'post_test') {
                         const statusCell = document.getElementById(`pass-fail-status-${participantId}`);
                         const passingGrade = {{ (float) $training->passing_grade }};
-                        if (value !== '' && value !== null) {
-                            const score = parseFloat(value);
-                            if (score >= passingGrade) {
-                                statusCell.innerHTML = '<span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase">Pass</span>';
+                        if (statusCell) {
+                            if (value !== '' && value !== null) {
+                                const score = parseFloat(value);
+                                if (score >= passingGrade) {
+                                    statusCell.innerHTML = '<span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase">Pass</span>';
+                                } else {
+                                    statusCell.innerHTML = '<span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase">Not Pass</span>';
+                                }
                             } else {
-                                statusCell.innerHTML = '<span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase">Fail</span>';
+                                statusCell.innerHTML = '<span class="text-gray-400 text-xs">-</span>';
                             }
-                        } else {
-                            statusCell.innerHTML = '<span class="text-gray-400 text-xs">-</span>';
                         }
                     }
                 }
@@ -537,6 +618,126 @@
             .catch(error => {
                 console.error('Error updating score:', error);
             });
+        }
+
+        // --- QUICK SEARCH TO ADD PARTICIPANT ---
+        const quickSearchInput = document.getElementById('quick-search-participant');
+        const searchSuggestions = document.getElementById('quick-search-suggestions');
+
+        if (quickSearchInput) {
+            quickSearchInput.addEventListener('input', function() {
+                const query = this.value;
+                if (query.length < 3) {
+                    searchSuggestions.classList.add('hidden');
+                    return;
+                }
+
+                fetch(`/trainings/search-users?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            searchSuggestions.innerHTML = data.map(user => `
+                                <div class="px-4 py-3 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer border-b border-gray-50 dark:border-gray-700/50 last:border-0 flex items-center gap-3 group" 
+                                    onclick="addSelectedParticipant('${user.name}', '${user.npk}', '${user.department}', '${user.subco}')">
+                                    <div class="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-gray-100">
+                                        ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : `<div class="w-full h-full flex items-center justify-center text-[10px] text-gray-400 font-bold">${user.name.charAt(0)}</div>`}
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-black text-gray-800 dark:text-white truncate">${user.name}</p>
+                                        <p class="text-[9px] text-indigo-500 font-bold uppercase tracking-widest">${user.npk}</p>
+                                    </div>
+                                    <div class="opacity-0 group-hover:opacity-100">
+                                        <span class="text-[9px] font-black bg-indigo-600 text-white px-2 py-1 rounded">ADD</span>
+                                    </div>
+                                </div>
+                            `).join('');
+                            searchSuggestions.classList.remove('hidden');
+                        } else {
+                            searchSuggestions.innerHTML = '<div class="px-4 py-3 text-xs text-gray-400 italic">Tidak ditemukan...</div>';
+                            searchSuggestions.classList.remove('hidden');
+                        }
+                    });
+            });
+
+            // Close suggestions on outside click
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#quick-search-participant') && !e.target.closest('#quick-search-suggestions')) {
+                    searchSuggestions.classList.add('hidden');
+                }
+            });
+        }
+
+        function addSelectedParticipant(name, npk, department, subco) {
+            fetch(`{{ route('trainings.participants.store', $training) }}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ name, npk, department, subco })
+            })
+            .then(res => res.json())
+            .then(data => {
+                window.location.reload();
+            })
+            .catch(() => window.location.reload());
+        }
+
+        // --- EDIT MODAL LOGIC ---
+        function openEditModal(participant) {
+            document.getElementById('edit_participant_id').value = participant.id;
+            document.getElementById('edit_name').value = participant.name;
+            document.getElementById('edit_npk_display').innerText = participant.npk;
+            document.getElementById('edit_department').value = participant.department;
+            document.getElementById('edit_subco').value = participant.subco || '-';
+            
+            document.getElementById('editParticipantModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('editParticipantModal').classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeEditModal() {
+            document.getElementById('editParticipantModal').classList.add('hidden');
+        }
+
+        function submitEditForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit_participant_id').value;
+            const name = document.getElementById('edit_name').value;
+            const department = document.getElementById('edit_department').value;
+            const subco = document.getElementById('edit_subco').value;
+            
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerText = 'Menyimpan...';
+            btn.disabled = true;
+
+            // Simple sequentially update fields since we have the toggle-like API
+            // Or better, update via combined updateField (I'll add this to the controller)
+            
+            const fields = [
+                { field: 'name', value: name },
+                { field: 'department', value: department },
+                { field: 'subco', value: subco }
+            ];
+
+            // Run updates sequentially
+            const updatePromises = fields.map(f => {
+                return fetch(`/participants/${id}/update-field`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ field: f.field, value: f.value })
+                });
+            });
+
+            Promise.all(updatePromises)
+                .then(() => window.location.reload())
+                .catch(() => window.location.reload());
         }
 
         document.addEventListener('DOMContentLoaded', function () {

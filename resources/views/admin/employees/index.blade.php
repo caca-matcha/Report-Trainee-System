@@ -15,8 +15,7 @@
                 confirmButtonText: 'Ya, Sinkronkan!',
                 cancelButtonText: 'Batal',
                 background: '#1e293b',
-                color: '#f8fafc',
-                borderRadius: '20px'
+                color: '#f8fafc'
             }).then((result) => {
                 if (result.isConfirmed) {
                     this.isSyncing = true;

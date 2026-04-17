@@ -93,6 +93,25 @@ class MasterTrainingController extends Controller
 
     public function execute(MasterTraining $masterTraining)
     {
+        // Enrich participants with photos from users table if available
+        $masterTraining->participants = collect($masterTraining->participants ?? [])->map(function($p) {
+            $user = \App\Models\User::where('npk', $p['npk'] ?? '')->orWhere('email', $p['npk'] ?? '')->first();
+            $p['photo'] = $user && $user->photo ? asset('storage/' . $user->photo) : null;
+            return $p;
+        })->toArray();
+
+        $masterTraining->trainers = collect($masterTraining->trainers ?? [])->map(function($t) {
+            $user = \App\Models\User::where('npk', $t['npk'] ?? '')->orWhere('email', $t['npk'] ?? '')->first();
+            $t['photo'] = $user && $user->photo ? asset('storage/' . $user->photo) : null;
+            return $t;
+        })->toArray();
+
+        $masterTraining->pics = collect($masterTraining->pics ?? [])->map(function($pic) {
+            $user = \App\Models\User::where('npk', $pic['npk'] ?? '')->orWhere('email', $pic['npk'] ?? '')->first();
+            $pic['photo'] = $user && $user->photo ? asset('storage/' . $user->photo) : null;
+            return $pic;
+        })->toArray();
+
         return view('admin.master.trainings.execute', compact('masterTraining'));
     }
 

@@ -20,20 +20,17 @@ class ImageHelper
         $extension = strtolower($file->getClientOriginalExtension());
         $image = null;
 
-        // Create image from file
-        if ($extension === 'jpg' || $extension === 'jpeg') {
-            $image = imagecreatefromjpeg($file->getRealPath());
-        } elseif ($extension === 'png') {
-            $image = imagecreatefrompng($file->getRealPath());
-            // Preserve transparency for PNG if needed, but for reports we usually prefer JPG to save space
-            imagepalettetotruecolor($image);
-            imagealphablending($image, true);
-            imagesavealpha($image, true);
-        } elseif ($extension === 'gif') {
-            $image = imagecreatefromgif($file->getRealPath());
+        try {
+            $fileContent = file_get_contents($file->getRealPath());
+            $image = imagecreatefromstring($fileContent);
+        } catch (\Exception $e) {
+            return false;
         }
 
         if (!$image) return false;
+
+        // Ensure we handle transparency and colors properly for resizing
+        imagepalettetotruecolor($image);
 
         // Get original dimensions
         $width = imagesx($image);

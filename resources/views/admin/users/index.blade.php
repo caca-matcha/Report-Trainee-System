@@ -15,13 +15,115 @@
         </div>
     </x-slot>
 
-    <!-- Lucide Icons -->
     @push('scripts')
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('quick-add-search');
+            const suggestions = document.getElementById('quick-add-suggestions');
+            const quickAddForm = document.getElementById('form-quick-add');
+            const quickAddNpk = document.getElementById('input-quick-add-npk');
+
+            const performSearch = (query) => {
+                if (query.length < 3) {
+                    suggestions.classList.add('hidden');
+                    return;
+                }
+
+                fetch(`{{ route('admin.search-users') }}?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            suggestions.innerHTML = data.map(user => `
+                                <div class="quick-add-item px-5 py-4 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer border-b border-gray-50 dark:border-gray-700/50 last:border-0 flex items-center gap-4 group/item transition-colors" 
+                                     data-npk="${user.npk}">
+                                    <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 font-black border border-indigo-200 dark:border-indigo-800 text-xs shrink-0 overflow-hidden">
+                                        ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : (user.name ? user.name.charAt(0) : '?')}
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2 mb-0.5">
+                                            <p class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-tighter">${user.npk}</p>
+                                            <span class="text-gray-300">•</span>
+                                            <p class="text-[9px] text-gray-400 font-bold truncate uppercase">${user.department}</p>
+                                        </div>
+                                        <p class="text-sm font-bold text-gray-800 dark:text-white truncate">${user.name}</p>
+                                    </div>
+                                    <div class="opacity-0 group-hover/item:opacity-100 transition-all flex items-center">
+                                        <span class="text-[9px] font-black bg-indigo-600 text-white px-3 py-1.5 rounded-lg shadow-lg shadow-indigo-500/20">TAMBAH ADMIN</span>
+                                    </div>
+                                </div>
+                            `).join('');
+                            suggestions.classList.remove('hidden');
+                        } else {
+                            suggestions.innerHTML = '<div class="px-5 py-4 text-xs text-gray-500 italic text-center">Data karyawan tidak ditemukan.</div>';
+                            suggestions.classList.remove('hidden');
+                        }
+                    });
+            };
+
+            let timeout = null;
+            searchInput.addEventListener('input', function() {
+                const query = this.value;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => performSearch(query), 300);
+            });
+
+            suggestions.addEventListener('click', function(e) {
+                const item = e.target.closest('.quick-add-item');
+                if (item) {
+                    const npk = item.dataset.npk;
+                    quickAddNpk.value = npk;
+                    suggestions.classList.add('hidden');
+                    searchInput.value = 'Sedang menambahkan...';
+                    quickAddForm.submit();
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#quick-add-search') && !e.target.closest('#quick-add-suggestions')) {
+                    suggestions.classList.add('hidden');
+                }
+            });
+        });
     </script>
     @endpush
+
+    {{-- Quick Add Banner --}}
+    <div class="mb-10 bg-indigo-600 rounded-3xl md:rounded-[2.5rem] p-6 md:p-10 shadow-2xl shadow-indigo-500/20 relative group">
+        {{-- Decorative Background (Clipped) --}}
+        <div class="absolute inset-0 rounded-3xl md:rounded-[2.5rem] overflow-hidden pointer-events-none">
+            <div class="absolute top-0 right-0 -tranyate-y-1/2 translate-x-1/2 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
+        </div>
+        
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-8">
+            <div>
+                <h2 class="text-white text-lg md:text-xl font-black uppercase tracking-widest mb-2 flex items-center gap-3">
+                    <i data-lucide="zap" class="w-6 h-6 fill-yellow-400 text-yellow-400"></i>
+                    Quick Add Admin
+                </h2>
+                <p class="text-indigo-100 text-xs md:text-sm font-medium leading-relaxed max-w-md">Cari NPK atau Nama karyawan untuk langsung memberikan hak akses Admin tanpa input manual secara cepat dan instan.</p>
+            </div>
+            
+            <div class="relative">
+                <div class="relative z-20">
+                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                        <i data-lucide="user-plus" class="w-6 h-6 text-indigo-300"></i>
+                    </div>
+                    <input type="text" id="quick-add-search" placeholder="Ketik NPK atau Nama Admin..." 
+                           class="block w-full pl-14 pr-6 py-4.5 bg-white/10 border-2 border-white/20 hover:border-white/40 focus:border-white rounded-2xl text-white placeholder:text-indigo-200 focus:ring-0 transition-all text-sm font-bold backdrop-blur-sm">
+                </div>
+                {{-- Suggestions Dropdown - Increased Z-Index and handled clipping --}}
+                <div id="quick-add-suggestions" class="absolute z-[100] w-full bg-white dark:bg-gray-800 border-2 border-indigo-50 dark:border-gray-700 rounded-2xl shadow-2xl mt-4 hidden max-h-80 overflow-y-auto divide-y divide-gray-50 dark:divide-gray-700/50 overflow-x-hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <form id="form-quick-add" action="{{ route('admin.users.quick-add') }}" method="POST" class="hidden">
+        @csrf
+        <input type="hidden" name="npk" id="input-quick-add-npk">
+    </form>
 
     {{-- Filter Bar --}}
     <div class="mb-6">

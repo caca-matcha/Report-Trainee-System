@@ -263,7 +263,7 @@
             @endif
 
             // Global Confirmation Interceptor
-            window.confirmAction = function(event, message, type = 'warning') {
+            window.confirmAction = function(event, message, type = 'warning', confirmButtonText = 'Ya, Lanjutkan!', onConfirm = null) {
                 event.preventDefault();
                 const form = event.target.closest('form');
                 
@@ -274,14 +274,19 @@
                     showCancelButton: true,
                     confirmButtonColor: '#4f46e5',
                     cancelButtonColor: '#ef4444',
-                    confirmButtonText: 'Ya, Lanjutkan!',
+                    confirmButtonText: confirmButtonText,
                     cancelButtonText: 'Batal',
                     background: '#1e293b',
-                    color: '#f8fafc',
-                    borderRadius: '20px'
+                    color: '#f8fafc'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        form.submit();
+                        if (typeof onConfirm === 'function') {
+                            onConfirm();
+                        } else if (form) {
+                            form.submit();
+                        } else {
+                            console.warn('ConfirmAction: No callback provided and no form found.');
+                        }
                     }
                 });
             };

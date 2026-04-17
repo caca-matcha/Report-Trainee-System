@@ -12,10 +12,9 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $allowedNpks = ['11220079', '11220807', '11230682', '11250360', 'ADMIN001'];
-        
-        $query = User::query()->where('role', '!=', 'trainee')
-            ->whereIn('npk', $allowedNpks);
+        $query = User::query()
+            ->where('role', 'admin')
+            ->where('department', 'Learning & Development');
 
         if ($request->filled('q')) {
             $search = $request->get('q');
@@ -74,7 +73,7 @@ class UserController extends Controller
             'department' => 'nullable|string|max:255',
             'subco' => 'nullable|string|max:255',
             'password' => 'nullable|string|min:8|confirmed',
-            'signature' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'signature' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:6144',
         ]);
 
         if ($request->hasFile('signature')) {
@@ -104,5 +103,28 @@ class UserController extends Controller
         }
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus.');
+    }
+
+    public function quickAddAdmin(Request $request)
+    {
+        $request->validate(['npk' => 'required|string']);
+        
+        $user = User::where('npk', $request->npk)->first();
+        
+        if (!$user) {
+            return back()->with('error', 'User dengan NPK tersebut tidak ditemukan di database.');
+        }
+
+        if ($user->role !== 'trainee' && $user->role !== null) {
+            return back()->with('info', 'User tersebut sudah memiliki hak akses ' . $user->role . '.');
+        }
+
+        // Promote to admin
+        $user->update([
+            'role' => 'admin',
+            'password' => $user->password ?: Hash::make('password123') // Ensure password exists
+        ]);
+
+        return redirect()->route('admin.users.index')->with('success', "{$user->name} berhasil ditambahkan sebagai Admin.");
     }
 }

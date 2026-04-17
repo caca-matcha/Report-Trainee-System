@@ -1,0 +1,40 @@
+================================================================
+           LATAR BELAKANG MASALAH
+           Sistem Pelaporan & Manajemen Training
+           Dharma Learning Center (DLC)
+================================================================
+
+Mengapa dibuat "Sistem Training DLC"?
+
+----------------------------------------------------------------
+1. PELATIHAN MASIH MANUAL
+   Pengelolaan data pelatihan masih dilakukan secara manual
+   menggunakan Excel dan dokumen kertas, sehingga rentan
+   terhadap kesalahan data dan sulit dikontrol.
+
+----------------------------------------------------------------
+2. REKAP KEHADIRAN TIDAK EFISIEN
+   Proses absensi peserta pelatihan menggunakan form kertas
+   yang memerlukan waktu lama untuk direkapitulasi dan
+   diverifikasi oleh tim HRD.
+
+----------------------------------------------------------------
+3. DOKUMENTASI TIDAK TERKELOLA
+   Dokumen pendukung pelatihan seperti materi, foto, dan
+   absensi tersebar tanpa sistem pengarsipan yang rapi,
+   sehingga sulit ditemukan kembali saat dibutuhkan untuk
+   pelaporan maupun audit internal.
+
+----------------------------------------------------------------
+4. LAPORAN TIDAK TERPUSAT
+   Laporan pelatihan berbentuk file Excel yang tersebar di
+   berbagai folder sehingga menyulitkan monitoring dan
+   pengambilan keputusan oleh manajemen.
+
+----------------------------------------------------------------
+5. MONITORING TIDAK REAL-TIME
+   Tim HRD belum memiliki dashboard terintegrasi untuk
+   memantau perkembangan pelatihan, kehadiran, dan capaian
+   peserta secara real-time.
+
+================================================================

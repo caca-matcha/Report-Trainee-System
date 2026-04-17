@@ -60,18 +60,24 @@ class TrainingSummaryController extends Controller
             ->get(['id', 'name', 'npk', 'role'])
             ->unique('name');
 
-        // Look up signatures based on names - prioritize users who actually have a signature
-        $preparedSignature = User::where('name', $summary->prepared_by)
-            ->orderByRaw('signature IS NULL, signature = ""')
-            ->first()?->signature;
+        // Look up signatures based on names with partial matches for flexibility
+        $preparedSignature = !empty($summary->prepared_by) 
+            ? User::where('name', 'like', '%' . trim($summary->prepared_by) . '%')
+                  ->whereNotNull('signature')->where('signature', '!=', '')
+                  ->first()?->signature 
+            : null;
             
-        $checkedSignature = User::where('name', $summary->checked_by)
-            ->orderByRaw('signature IS NULL, signature = ""')
-            ->first()?->signature;
+        $checkedSignature = !empty($summary->checked_by)
+            ? User::where('name', 'like', '%' . trim($summary->checked_by) . '%')
+                  ->whereNotNull('signature')->where('signature', '!=', '')
+                  ->first()?->signature 
+            : null;
             
-        $confirmedSignature = User::where('name', $summary->confirmed_by)
-            ->orderByRaw('signature IS NULL, signature = ""')
-            ->first()?->signature;
+        $confirmedSignature = !empty($summary->confirmed_by)
+            ? User::where('name', 'like', '%' . trim($summary->confirmed_by) . '%')
+                  ->whereNotNull('signature')->where('signature', '!=', '')
+                  ->first()?->signature 
+            : null;
 
         return view('summaries.show', compact(
             'training',
@@ -100,8 +106,14 @@ class TrainingSummaryController extends Controller
         $validated = $request->validate([
             'recommendation' => 'nullable|string',
             'prepared_by' => 'nullable|string|max:255',
+            'prepared_title' => 'nullable|string|max:255',
             'checked_by' => 'nullable|string|max:255',
+            'checked_title' => 'nullable|string|max:255',
             'confirmed_by' => 'nullable|string|max:255',
+            'confirmed_title' => 'nullable|string|max:255',
+            'barcode_image' => 'nullable|image|max:2048', // for legacy or single field
+            'image_file' => 'nullable|image|max:2048', // new generic field
+            'target_field' => 'nullable|string|in:barcode_path,prepared_barcode_path,checked_barcode_path',
             'feedback_summary' => 'nullable|string',
             'trainer_feedbacks_key' => 'nullable|integer',
             'trainer_feedbacks_value' => 'nullable|string',
@@ -119,10 +131,45 @@ class TrainingSummaryController extends Controller
         $summary = $training->summary ?? new TrainingSummary(['training_id' => $training->id]);
         
         if ($request->has('recommendation')) $summary->recommendation = $request->recommendation;
-        if ($request->has('prepared_by')) $summary->prepared_by = $request->prepared_by;
-        if ($request->has('checked_by')) $summary->checked_by = $request->checked_by;
-        if ($request->has('confirmed_by')) $summary->confirmed_by = $request->confirmed_by;
+        
+        if ($request->has('prepared_by')) {
+            if ($summary->prepared_by !== $request->prepared_by) {
+                $summary->prepared_barcode_path = null;
+            }
+            $summary->prepared_by = $request->prepared_by;
+        }
+        if ($request->has('prepared_title')) $summary->prepared_title = $request->prepared_title;
+        
+        if ($request->has('checked_by')) {
+            if ($summary->checked_by !== $request->checked_by) {
+                $summary->checked_barcode_path = null;
+            }
+            $summary->checked_by = $request->checked_by;
+        }
+        if ($request->has('checked_title')) $summary->checked_title = $request->checked_title;
+        
+        if ($request->has('confirmed_by')) {
+            if ($summary->confirmed_by !== $request->confirmed_by) {
+                $summary->barcode_path = null;
+            }
+            $summary->confirmed_by = $request->confirmed_by;
+        }
+        if ($request->has('confirmed_title')) $summary->confirmed_title = $request->confirmed_title;
+        
         if ($request->has('feedback_summary')) $summary->feedback_summary = $request->feedback_summary;
+
+        // Handle Image Upload (Generic)
+        if ($request->hasFile('image_file') && $request->target_field) {
+            $path = $request->file('image_file')->store('barcodes', 'public');
+            $field = $request->target_field;
+            $summary->$field = $path;
+        }
+
+        // Handle Barcode Image Upload (Legacy/Compatibility)
+        if ($request->hasFile('barcode_image')) {
+            $path = $request->file('barcode_image')->store('barcodes', 'public');
+            $summary->barcode_path = $path;
+        }
 
         if ($request->has('trainer_feedbacks_key')) {
             $feedbacks = $summary->trainer_feedbacks ?? [];

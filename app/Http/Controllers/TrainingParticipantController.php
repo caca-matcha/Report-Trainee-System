@@ -15,6 +15,9 @@ class TrainingParticipantController extends Controller
 
     public function store(Request $request, Training $training)
     {
+        if ($training->status === 'approved') {
+            return back()->with('error', 'Training sudah disetujui, data tidak dapat diubah.');
+        }
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'npk' => 'required|string|max:20',
@@ -30,12 +33,19 @@ class TrainingParticipantController extends Controller
     public function destroy(TrainingParticipant $participant)
     {
         $training = $participant->training;
+        if ($training->status === 'approved') {
+            return back()->with('error', 'Training sudah disetujui, data tidak dapat diubah.');
+        }
         $participant->delete();
         return redirect()->route('trainings.show', $training)->with('success', 'Participant removed.');
     }
 
     public function toggleAttendance(TrainingParticipant $participant)
     {
+        if ($participant->training->status === 'approved') {
+            return response()->json(['success' => false, 'message' => 'Training sudah disetujui, data tidak dapat diubah.'], 403);
+        }
+
         $participant->update([
             'is_present' => !$participant->is_present
         ]);
@@ -49,6 +59,10 @@ class TrainingParticipantController extends Controller
 
     public function updateScore(Request $request, TrainingParticipant $participant)
     {
+        if ($participant->training->status === 'approved') {
+            return response()->json(['success' => false, 'message' => 'Training sudah disetujui, data tidak dapat diubah.'], 403);
+        }
+
         $type = $request->input('type');
         $isSoftSkill = in_array($type, ['punctuality', 'activeness', 'cooperation', 'attitude']);
         
@@ -77,6 +91,10 @@ class TrainingParticipantController extends Controller
 
     public function updateField(Request $request, TrainingParticipant $participant)
     {
+        if ($participant->training->status === 'approved') {
+            return response()->json(['success' => false, 'message' => 'Training sudah disetujui, data tidak dapat diubah.'], 403);
+        }
+
         $validated = $request->validate([
             'field' => 'required|in:subco,department,name',
             'value' => 'nullable|string|max:255'

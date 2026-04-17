@@ -28,12 +28,12 @@
                         @csrf
                     </form>
                     <button type="button" 
-                        onclick="confirmAction(event, 'Apakah Anda yakin ingin menyetujui laporan ini? Data akan terkunci dan stempel APPROVED akan muncul di laporan.', 'warning', 'Approve Sekarang', () => document.getElementById('approve-form-{{ $training->id }}').submit())"
+                        onclick="confirmAction(event, 'Apakah Anda yakin ingin mengunci laporan ini? Data akan terkunci dan stempel APPROVED akan muncul di laporan.', 'warning', 'Lock Sekarang', () => document.getElementById('approve-form-{{ $training->id }}').submit())"
                         class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all duration-200 shadow-lg shadow-emerald-100 dark:shadow-none hover:scale-[1.02] active:scale-[0.98]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
-                        <span>Approve Report</span>
+                        <span>Lock Report</span>
                     </button>
                 @else
                     <div class="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-xl text-xs font-black uppercase tracking-widest border border-gray-200 dark:border-gray-600">
@@ -270,100 +270,83 @@
             </div>
         @endif
 
-        {{-- Peserta --}}
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-base font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    Daftar Peserta ({{ $training->participants->count() }})
-                </h2>
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('trainings.participant_template', $training) }}"
-                        class="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-black rounded-lg uppercase hover:bg-emerald-100 transition-colors flex items-center gap-1">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Template Peserta
-                    </a>
-                    <a href="{{ route('trainings.importForm', $training) }}"
-                        class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-lg uppercase hover:bg-indigo-100 transition-colors flex items-center gap-1">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                        </svg>
-                        Import Peserta CSV
-                    </a>
-                    {{-- Tombol Simpan Data --}}
-                    <button type="button" onclick="saveAllScores()" id="btn-save-all"
-                        class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black rounded-lg uppercase transition-colors flex items-center gap-1 shadow-sm">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                        </svg>
-                        Simpan Data
-                    </button>
-                    <form action="{{ route('admin.trainings.bulk_attendance', $training) }}" method="POST" onsubmit="confirmAction(event, 'Hadirkan seluruh peserta sekaligus?', 'question')">
-                        @csrf
-                        <button type="submit"
-                            class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black rounded-lg uppercase hover:bg-emerald-700 transition-colors flex items-center gap-1 shadow-sm">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                            </svg>
-                            Hadirkan Semua
-                        </button>
-                    </form>
+        {{-- Peserta / Management Section --}}
+        <div class="bg-white dark:bg-[#111827] rounded-[2rem] shadow-xl border border-gray-100 dark:border-gray-800 p-8">
+            <div class="space-y-6 mb-10">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <h3 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em]">Daftar Peserta Trainee</h3>
+                        <span class="bg-indigo-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg shadow-indigo-500/20">{{ $training->participants->count() }}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        @if(!$training->is_approved)
+                            <button type="button" onclick="toggleManualAddRow()"
+                                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black rounded-xl uppercase transition-all shadow-xl shadow-indigo-500/20 flex items-center gap-2 group active:scale-95">
+                                <svg class="w-3.5 h-3.5 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
+                                + Tambah Manual
+                            </button>
+                            <button type="button" onclick="saveAllScores()" 
+                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black rounded-xl uppercase transition-all shadow-xl shadow-blue-500/20 flex items-center gap-2 active:scale-95">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                                Simpan Data
+                            </button>
+                        @endif
+                    </div>
                 </div>
+                
+                <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium italic">Cari nama/NPK di kotak bawah untuk menambah peserta otomatis, atau klik Tambah Manual untuk data baru.</p>
+                
+                <div class="relative group max-w-3xl">
+                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="quick-search-participant" placeholder="Ketik nama atau NPK peserta..." autocomplete="off"
+                        class="block w-full pl-14 pr-6 py-4.5 bg-gray-50 dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-800 rounded-2xl text-sm focus:ring-0 focus:border-indigo-500 text-gray-900 dark:text-gray-100 shadow-sm transition-all focus:shadow-2xl focus:shadow-indigo-500/10 placeholder:text-gray-400">
+                    <div id="quick-search-suggestions" class="absolute z-50 w-full bg-white dark:bg-gray-800 border-2 border-gray-50 dark:border-gray-700 rounded-2xl shadow-2xl mt-3 hidden max-h-80 overflow-y-auto divide-y divide-gray-50 dark:divide-gray-700/50"></div>
+                </div>
+
+                @if(!$training->is_approved)
+                    <div class="flex flex-wrap gap-2 pt-2">
+                        <a href="{{ route('trainings.participant_template', $training) }}"
+                            class="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-black rounded-lg uppercase hover:bg-emerald-100 transition-all flex items-center gap-1.5 border border-emerald-100 dark:border-emerald-800">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            Template Excel
+                        </a>
+                        <a href="{{ route('trainings.importForm', $training) }}"
+                            class="px-3 py-1.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-[9px] font-black rounded-lg uppercase hover:bg-amber-100 transition-all flex items-center gap-1.5 border border-amber-100 dark:border-amber-800">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                            Import CSV/Excel
+                        </a>
+                        <form action="{{ route('admin.trainings.bulk_attendance', $training) }}" method="POST" onsubmit="confirmAction(event, 'Hadirkan seluruh peserta sekaligus?', 'question')">
+                            @csrf
+                            <button type="submit" class="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[9px] font-black rounded-lg uppercase hover:bg-slate-100 transition-all flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                Hadirkan Semua
+                            </button>
+                        </form>
+                    </div>
+                @endif
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
-                    <thead>
-                        <tr class="bg-gray-50 dark:bg-gray-700/50 text-left">
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center w-12">
-                                No</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">
-                                Foto</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                NPK</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                Nama</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                Dept</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">
-                                Pre Test</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">
-                                Post Test</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">
-                                Punctuality</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">
-                                Activeness</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">
-                                Cooperation</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">
-                                Attitude</th>
-                             <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">
-                                Hadir</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">
-                                Subco</th>
-                            <th
-                                class="px-4 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">
-                                Aksi</th>
+                    <thead class="bg-gray-50/50 dark:bg-gray-900/50 text-[10px] uppercase font-black text-gray-400 border-b border-gray-100 dark:border-gray-800">
+                        <tr>
+                            <th class="px-4 py-4 w-12 text-center">No</th>
+                            <th class="px-4 py-4 w-16 text-center">Foto</th>
+                            <th class="px-4 py-4">NPK</th>
+                            <th class="px-4 py-4">Nama Lengkap</th>
+                            <th class="px-4 py-4">Departemen</th>
+                            <th class="px-4 py-4 text-center">Pre</th>
+                            <th class="px-4 py-4 text-center">Post</th>
+                            <th class="px-4 py-4 text-center">Punc</th>
+                            <th class="px-4 py-4 text-center">Actv</th>
+                            <th class="px-4 py-4 text-center">Coop</th>
+                            <th class="px-4 py-4 text-center">Attd</th>
+                            <th class="px-4 py-4 text-center">Hadir</th>
+                            <th class="px-4 py-4 text-center">Subco</th>
+                            <th class="px-4 py-4 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -415,7 +398,8 @@
                                         onblur="updateScore({{ $p->id }}, 'pre_test', this.value)"
                                         onkeydown="handleTableKey(event)"
                                         data-table-input
-                                        class="w-16 h-8 text-center text-sm border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0">
+                                        {{ $training->is_approved ? 'disabled' : '' }}
+                                        class="w-16 h-8 text-center text-sm border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0 disabled:bg-gray-100 dark:disabled:bg-gray-900 disabled:cursor-not-allowed">
                                 </td>
                                 <td class="px-2 py-3 text-center">
                                     <input type="number" 
@@ -423,7 +407,8 @@
                                         onblur="updateScore({{ $p->id }}, 'post_test', this.value)"
                                         onkeydown="handleTableKey(event)"
                                         data-table-input
-                                        class="w-16 h-8 text-center text-sm border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0 font-semibold {{ $p->post_test_score !== null && $p->post_test_score >= $training->passing_grade ? 'text-green-600' : ($p->post_test_score !== null ? 'text-red-500' : 'text-gray-400') }}">
+                                        {{ $training->is_approved ? 'disabled' : '' }}
+                                        class="w-16 h-8 text-center text-sm border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0 font-semibold disabled:bg-gray-100 dark:disabled:bg-gray-900 disabled:cursor-not-allowed {{ $p->post_test_score !== null && $p->post_test_score >= $training->passing_grade ? 'text-green-600' : ($p->post_test_score !== null ? 'text-red-500' : 'text-gray-400') }}">
                                 </td>
                                 <td class="px-2 py-3 text-center">
                                     <input type="number" step="0.1" min="0" max="5" 
@@ -431,7 +416,8 @@
                                         onblur="updateScore({{ $p->id }}, 'punctuality', this.value)"
                                         onkeydown="handleTableKey(event)"
                                         data-table-input
-                                        class="w-12 h-8 text-center text-xs border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0">
+                                        {{ $training->is_approved ? 'disabled' : '' }}
+                                        class="w-12 h-8 text-center text-xs border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0 disabled:bg-gray-100 dark:disabled:bg-gray-900 disabled:cursor-not-allowed">
                                 </td>
                                 <td class="px-2 py-3 text-center">
                                     <input type="number" step="0.1" min="0" max="5" 
@@ -439,7 +425,8 @@
                                         onblur="updateScore({{ $p->id }}, 'activeness', this.value)"
                                         onkeydown="handleTableKey(event)"
                                         data-table-input
-                                        class="w-12 h-8 text-center text-xs border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0">
+                                        {{ $training->is_approved ? 'disabled' : '' }}
+                                        class="w-12 h-8 text-center text-xs border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0 disabled:bg-gray-100 dark:disabled:bg-gray-900 disabled:cursor-not-allowed">
                                 </td>
                                 <td class="px-2 py-3 text-center">
                                     <input type="number" step="0.1" min="0" max="5" 
@@ -447,7 +434,8 @@
                                         onblur="updateScore({{ $p->id }}, 'cooperation', this.value)"
                                         onkeydown="handleTableKey(event)"
                                         data-table-input
-                                        class="w-12 h-8 text-center text-xs border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0">
+                                        {{ $training->is_approved ? 'disabled' : '' }}
+                                        class="w-12 h-8 text-center text-xs border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0 disabled:bg-gray-100 dark:disabled:bg-gray-900 disabled:cursor-not-allowed">
                                 </td>
                                 <td class="px-2 py-3 text-center">
                                     <input type="number" step="0.1" min="0" max="5" 
@@ -455,11 +443,12 @@
                                         onblur="updateScore({{ $p->id }}, 'attitude', this.value)"
                                         onkeydown="handleTableKey(event)"
                                         data-table-input
-                                        class="w-12 h-8 text-center text-xs border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0">
+                                        {{ $training->is_approved ? 'disabled' : '' }}
+                                        class="w-12 h-8 text-center text-xs border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-0 disabled:bg-gray-100 dark:disabled:bg-gray-900 disabled:cursor-not-allowed">
                                 </td>
                                 <td class="px-4 py-3 text-center">
-                                    <button type="button" id="attendance-btn-{{ $p->id }}" onclick="toggleAttendance({{ $p->id }}, this)"
-                                        class="focus:outline-none transition-transform hover:scale-105 active:scale-95 cursor-pointer">
+                                    <button type="button" id="attendance-btn-{{ $p->id }}" onclick="{{ $training->is_approved ? 'return false;' : 'toggleAttendance(' . $p->id . ', this)' }}"
+                                        class="focus:outline-none transition-transform {{ $training->is_approved ? 'opacity-75 cursor-not-allowed' : 'hover:scale-105 active:scale-95 cursor-pointer' }}">
                                         @if($p->is_present)
                                             <span
                                                 class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800">✓
@@ -476,25 +465,73 @@
                                         onchange="updateField({{ $p->id }}, 'subco', this.value)"
                                         onkeydown="handleTableKey(event)"
                                         data-table-input
-                                        class="w-full bg-transparent border-none focus:ring-0 text-center text-gray-600 dark:text-gray-400 text-xs font-medium uppercase tracking-wider p-0 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800/50 rounded transition-colors"
+                                        {{ $training->is_approved ? 'disabled' : '' }}
+                                        class="w-full bg-transparent border-none focus:ring-0 text-center text-gray-600 dark:text-gray-400 text-xs font-medium uppercase tracking-wider p-0 cursor-pointer disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-800/50 rounded transition-colors"
                                         placeholder="...">
                                 </td>
                                 <td class="px-4 py-3 text-center">
-                                    <form action="{{ route('trainings.remove_participant', [$training, $p]) }}" method="POST" 
-                                          onsubmit="confirmAction(event, 'Keluarkan peserta ini dari training?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-gray-400 hover:text-red-500 transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                                        </button>
-                                    </form>
+                                    <div class="flex items-center justify-center gap-2">
+                                        @if(!$training->is_approved)
+                                            <button type="button" 
+                                                onclick="openEditParticipantModal({{ json_encode($p) }})"
+                                                class="p-1.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 transition-colors">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                </svg>
+                                            </button>
+                                            <form action="{{ route('trainings.remove_participant', [$training, $p]) }}" method="POST" 
+                                                onsubmit="confirmAction(event, 'Keluarkan peserta ini dari training?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="p-1.5 bg-red-50 dark:bg-red-500/10 text-red-500 dark:text-red-400 rounded-lg hover:bg-red-100 transition-colors">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <span class="text-[10px] text-gray-400 italic">Locked</span>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="12" class="px-6 py-6 text-center text-gray-400">Belum ada peserta.</td>
+                                <td colspan="14" class="px-6 py-6 text-center text-gray-400 italic">Belum ada peserta terdaftar.</td>
                             </tr>
                         @endforelse
+
+                        {{-- INLINE MANUAL ADD ROW (MASTER STYLE) --}}
+                        <tr id="manual-add-row" class="hidden bg-indigo-50/30 dark:bg-indigo-900/10 border-t border-indigo-100 dark:border-indigo-900/50 animate-fade-in">
+                            <td class="px-4 py-5 text-center text-indigo-600 dark:text-indigo-400 font-black text-xs">+</td>
+                            <td class="px-4 py-5 flex justify-center">
+                                <div class="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 font-black border border-indigo-200 dark:border-indigo-800 text-[10px]">M</div>
+                            </td>
+                            <td class="px-4 py-5">
+                                <input type="text" id="manual_npk_input" placeholder="NPK" class="w-full text-[10px] font-mono px-3 py-2 rounded-xl bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-500 text-indigo-600 dark:text-indigo-400 font-black tracking-tighter shadow-sm transition-all focus:shadow-indigo-500/20">
+                            </td>
+                            <td class="px-4 py-5">
+                                <input type="text" id="manual_name_input" placeholder="NAMA LENGKAP" class="w-full text-[11px] font-bold px-3 py-2 rounded-xl bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white uppercase placeholder:normal-case shadow-sm transition-all focus:shadow-indigo-500/20">
+                            </td>
+                            <td class="px-4 py-5 font-bold uppercase tracking-widest text-[9px] text-gray-400">
+                                <input type="text" id="manual_dept_input" placeholder="DEPARTEMEN" class="w-full text-xs px-3 py-2 bg-transparent border-none rounded-lg focus:ring-1 focus:ring-indigo-500/30 text-gray-500 dark:text-gray-400 uppercase placeholder:normal-case font-medium">
+                            </td>
+                            <td colspan="6" class="px-4 py-5 text-center italic text-gray-400 dark:text-gray-600 text-[10px] tracking-tight">
+                                (Entry manual &mdash; score diisi setelah peserta ditambahkan)
+                            </td>
+                            <td class="px-4 py-5 text-center text-gray-200">&bull;</td>
+                            <td class="px-4 py-5">
+                                <input type="text" id="manual_subco_input" placeholder="SUBCO" class="w-full text-[9px] text-center px-1 py-2 bg-transparent border-dashed border-gray-300 dark:border-gray-700 rounded-lg focus:ring-1 focus:ring-indigo-500/30 font-black tracking-[0.2em] text-gray-400 uppercase">
+                            </td>
+                            <td class="px-4 py-5 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <button onclick="submitInlineManualAdd()" class="p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 hover:scale-110 active:scale-95 transition-all shadow-lg shadow-indigo-500/20" title="Simpan">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                    </button>
+                                    <button onclick="toggleManualAddRow()" class="p-2.5 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all active:scale-95" title="Batal">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -630,31 +667,31 @@
                     CSI Evaluation (Trainer & Class)
                 </h2>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('admin.trainings.csi_template', $training) }}"
-                        class="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-black rounded-lg uppercase hover:bg-emerald-100 transition-colors flex items-center gap-1">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Template CSI
-                    </a>
-                    <button onclick="document.getElementById('importCsiModal').classList.remove('hidden')"
-                        class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-lg uppercase hover:bg-indigo-100 transition-colors flex items-center gap-1">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                        </svg>
-                        Import CSI CSV
-                    </button>
-                    <button onclick="document.getElementById('manualCsiModal').classList.remove('hidden')"
-                        class="px-3 py-1 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[10px] font-black rounded-lg uppercase hover:bg-amber-100 transition-colors flex items-center gap-1">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                        Manual Input CSI
-                    </button>
-
-
+                    @if(!$training->is_approved)
+                        <a href="{{ route('admin.trainings.csi_template', $training) }}"
+                            class="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-black rounded-lg uppercase hover:bg-emerald-100 transition-colors flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Template CSI
+                        </a>
+                        <button onclick="document.getElementById('importCsiModal').classList.remove('hidden')"
+                            class="px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-black rounded-lg uppercase hover:bg-indigo-100 transition-colors flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            Import CSI CSV
+                        </button>
+                        <button onclick="document.getElementById('manualCsiModal').classList.remove('hidden')"
+                            class="px-3 py-1 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 text-[10px] font-black rounded-lg uppercase hover:bg-amber-100 transition-colors flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Manual Input CSI
+                        </button>
+                    @endif
                 </div>
             </div>
 
@@ -1843,15 +1880,17 @@
                     if (type === 'post_test') {
                         const statusCell = document.getElementById(`pass-fail-status-${participantId}`);
                         const passingGrade = {{ (float) $training->passing_grade }};
-                        if (value !== '' && value !== null) {
-                            const score = parseFloat(value);
-                            if (score >= passingGrade) {
-                                statusCell.innerHTML = '<span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase">Pass</span>';
+                        if (statusCell) {
+                            if (value !== '' && value !== null) {
+                                const score = parseFloat(value);
+                                if (score >= passingGrade) {
+                                    statusCell.innerHTML = '<span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase">Pass</span>';
+                                } else {
+                                    statusCell.innerHTML = '<span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase">Fail</span>';
+                                }
                             } else {
-                                statusCell.innerHTML = '<span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase">Fail</span>';
+                                statusCell.innerHTML = '<span class="text-gray-400 text-xs">-</span>';
                             }
-                        } else {
-                            statusCell.innerHTML = '<span class="text-gray-400 text-xs">-</span>';
                         }
                     }
                 }
@@ -2366,8 +2405,209 @@
             </div>
         </div>
     </div>
+
+    <!-- Edit Participant Modal -->
+    <div id="editParticipantModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm overflow-y-auto h-full w-full hidden z-[100] transition-all duration-300">
+        <div class="relative top-20 mx-auto p-0 border-none w-[440px] shadow-2xl rounded-[2.5rem] bg-white dark:bg-[#1a1f2e] overflow-hidden animate-fade-in-up">
+            <div class="px-8 pt-8 pb-6 bg-gradient-to-br from-indigo-50/50 to-transparent dark:from-indigo-500/5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-600 shadow-lg shadow-indigo-100 dark:shadow-none flex items-center justify-center text-white">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-black text-gray-900 dark:text-white uppercase tracking-wider">Edit Data Peserta</h3>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Form Perubahan Informasi</p>
+                        </div>
+                    </div>
+                    <button onclick="closeEditParticipantModal()" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <form id="editParticipantForm" onsubmit="submitEditParticipantForm(event)" class="px-8 pb-8 space-y-5">
+                <input type="hidden" id="edit_participant_id">
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Nama Lengkap</label>
+                    <input type="text" id="edit_p_name" required 
+                        class="w-full px-5 py-4 bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Identitas NPK</label>
+                    <div class="px-5 py-4 bg-gray-100 dark:bg-gray-900/30 border border-gray-200 dark:border-gray-800 rounded-2xl text-sm font-mono font-bold text-gray-500 dark:text-gray-400 flex items-center justify-between">
+                        <span id="edit_p_npk_display"></span>
+                        <svg class="w-4 h-4 opacity-30" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Departemen</label>
+                        <input type="text" id="edit_p_department" required 
+                            class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 rounded-2xl text-[11px] font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Sub Co</label>
+                        <input type="text" id="edit_p_subco" 
+                            class="w-full px-5 py-3.5 bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 rounded-2xl text-[11px] font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                            placeholder="...">
+                    </div>
+                </div>
+                <div class="pt-6 flex gap-3">
+                    <button type="submit" 
+                        class="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl shadow-indigo-500/30 transition-all active:scale-[0.97] flex items-center justify-center gap-2 group">
+                        <span>Simpan Perubahan</span>
+                    </button>
+                    <button type="button" onclick="closeEditParticipantModal()" 
+                        class="px-8 py-4 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-[0.97]">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const trainersDataJs = {!! json_encode($trainersForJs) !!};
+
+        // --- QUICK SEARCH TO ADD PARTICIPANT ---
+        const quickSearchInput = document.getElementById('quick-search-participant');
+        const searchSuggestions = document.getElementById('quick-search-suggestions');
+
+        if (quickSearchInput) {
+            quickSearchInput.addEventListener('input', function() {
+                const query = this.value;
+                if (query.length < 3) {
+                    searchSuggestions.classList.add('hidden');
+                    return;
+                }
+
+                fetch(`/trainings/search-users?q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            searchSuggestions.innerHTML = data.map(user => `
+                                <div class="px-4 py-3 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer border-b border-gray-50 dark:border-gray-700/50 last:border-0 flex items-center gap-3 group text-left" 
+                                    onclick="addSelectedParticipant('${user.name}', '${user.npk}', '${user.department}', '${user.subco}')">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-black text-gray-800 dark:text-white truncate uppercase">${user.name}</p>
+                                        <p class="text-[9px] text-indigo-500 font-bold uppercase tracking-widest">${user.npk} • ${user.department}</p>
+                                    </div>
+                                    <div class="opacity-0 group-hover:opacity-100">
+                                        <span class="text-[9px] font-black bg-indigo-600 text-white px-2 py-1 rounded">ADD</span>
+                                    </div>
+                                </div>
+                            `).join('');
+                            searchSuggestions.classList.remove('hidden');
+                        } else {
+                            searchSuggestions.innerHTML = '<div class="px-4 py-3 text-xs text-gray-400 italic">Tidak ditemukan...</div>';
+                            searchSuggestions.classList.remove('hidden');
+                        }
+                    });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#quick-search-participant') && !e.target.closest('#quick-search-suggestions')) {
+                    searchSuggestions.classList.add('hidden');
+                }
+            });
+        }
+
+        function addSelectedParticipant(name, npk, department, subco) {
+            fetch(`{{ route('trainings.participants.store', $training) }}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ name, npk, department, subco })
+            })
+            .then(res => res.json())
+            .then(() => window.location.reload())
+            .catch(() => window.location.reload());
+        }
+
+        function toggleManualAddRow() {
+            const row = document.getElementById('manual-add-row');
+            row.classList.toggle('hidden');
+            if (!row.classList.contains('hidden')) {
+                document.getElementById('manual_npk_input').focus();
+            }
+        }
+
+        function submitInlineManualAdd() {
+            const name = document.getElementById('manual_name_input').value;
+            const npk = document.getElementById('manual_npk_input').value;
+            const department = document.getElementById('manual_dept_input').value;
+            const subco = document.getElementById('manual_subco_input').value;
+
+            if (!name) {
+                alert('Nama harus diisi.');
+                return;
+            }
+
+            const btn = document.querySelector('#manual-add-row button');
+            btn.innerText = 'WAIT...';
+            btn.disabled = true;
+
+            fetch(`{{ route('trainings.participants.store', $training) }}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ name, npk, department, subco })
+            })
+            .then(res => res.json())
+            .then(() => window.location.reload())
+            .catch(() => window.location.reload());
+        }
+
+        function openEditParticipantModal(participant) {
+            document.getElementById('edit_participant_id').value = participant.id;
+            document.getElementById('edit_p_name').value = participant.name;
+            document.getElementById('edit_p_npk_display').innerText = participant.npk || '-';
+            document.getElementById('edit_p_department').value = participant.department || '';
+            document.getElementById('edit_p_subco').value = participant.subco || '';
+            document.getElementById('editParticipantModal').classList.remove('hidden');
+        }
+
+        function closeEditParticipantModal() {
+            document.getElementById('editParticipantModal').classList.add('hidden');
+        }
+
+        function submitEditParticipantForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit_participant_id').value;
+            const name = document.getElementById('edit_p_name').value;
+            const department = document.getElementById('edit_p_department').value;
+            const subco = document.getElementById('edit_p_subco').value;
+            
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerText = 'Menyimpan...';
+            btn.disabled = true;
+
+            const updateField = (field, value) => {
+                return fetch(`/participants/${id}/update-field`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ field, value })
+                });
+            };
+
+            Promise.all([
+                updateField('name', name),
+                updateField('department', department),
+                updateField('subco', subco)
+            ]).then(() => window.location.reload())
+              .catch(() => window.location.reload());
+        }
 
         document.addEventListener('alpine:init', () => {
             if (typeof Alpine !== 'undefined') {

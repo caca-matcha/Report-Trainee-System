@@ -112,11 +112,27 @@
                                 <tbody>
                                     @php $trainers = $training->trainers ?? [['name' => '', 'npk' => '', 'department' => '', 'subco' => '']]; @endphp
                                     @foreach($trainers as $t)
+                                    @php
+                                        $trainerSignature = null;
+                                        if (!empty($t['name'])) {
+                                            $user = \App\Models\User::where('name', $t['name'])
+                                                ->orderByRaw('signature IS NULL, signature = ""')
+                                                ->first();
+                                            if ($user && $user->signature) {
+                                                $trainerSignature = $user->signature;
+                                            }
+                                        }
+                                    @endphp
                                     <tr class="h-10 border border-black">
                                         <td class="border border-black p-1 w-[10%] text-center font-bold text-[10px]">{{ $loop->iteration }}</td>
                                         <td class="border border-black p-1 w-[60%] font-bold uppercase text-[10px] pl-2 truncate">{{ $t['name'] ?? '' }}</td>
                                         <td class="border border-black p-0 relative w-[30%]">
-                                            <span class="absolute top-0.5 left-1 text-[8px] font-black text-gray-400">{{ $loop->iteration }}</span>
+                                            <div class="absolute inset-0 flex items-center justify-center p-0.5">
+                                                <span class="absolute top-0.5 left-1 text-[8px] font-black text-gray-400">{{ $loop->iteration }}</span>
+                                                @if($trainerSignature && Storage::disk('public')->exists($trainerSignature))
+                                                    <img src="{{ asset('storage/' . $trainerSignature) }}" class="h-full w-auto max-w-[90%] object-contain" alt="TTD" style="mix-blend-mode: multiply;">
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -136,11 +152,27 @@
                                         if (empty($pics)) $pics = [['name' => $training->user->name ?? '']];
                                     @endphp
                                     @foreach($pics as $p)
+                                    @php
+                                        $picSignature = null;
+                                        if (!empty($p['name'])) {
+                                            $user = \App\Models\User::where('name', $p['name'])
+                                                ->orderByRaw('signature IS NULL, signature = ""')
+                                                ->first();
+                                            if ($user && $user->signature) {
+                                                $picSignature = $user->signature;
+                                            }
+                                        }
+                                    @endphp
                                     <tr class="h-10 border border-black">
                                         <td class="border border-black p-1 w-[10%] text-center font-bold text-[10px]">{{ $loop->iteration }}</td>
                                         <td class="border border-black p-1 w-[60%] font-bold uppercase text-[10px] pl-2 truncate">{{ $p['name'] ?? '' }}</td>
                                         <td class="border border-black p-0 relative w-[30%]">
-                                            <span class="absolute top-0.5 left-1 text-[8px] font-black text-gray-400">{{ $loop->iteration }}</span>
+                                            <div class="absolute inset-0 flex items-center justify-center p-0.5">
+                                                <span class="absolute top-0.5 left-1 text-[8px] font-black text-gray-400">{{ $loop->iteration }}</span>
+                                                @if($picSignature && Storage::disk('public')->exists($picSignature))
+                                                    <img src="{{ asset('storage/' . $picSignature) }}" class="h-full w-auto max-w-[90%] object-contain" alt="TTD" style="mix-blend-mode: multiply;">
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                     @endforeach

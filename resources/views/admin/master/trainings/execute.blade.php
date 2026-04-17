@@ -193,8 +193,12 @@
                                     <div
                                         class="trainer-row flex items-center gap-4 bg-gray-50 dark:bg-gray-900/40 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-emerald-200 dark:hover:border-emerald-500/20 transition-all">
                                         <div
-                                            class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 font-bold shrink-0">
-                                            {{ substr(is_array($trainer) ? ($trainer['name'] ?? '?') : $trainer, 0, 1) }}
+                                            class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 font-bold shrink-0 overflow-hidden">
+                                            @if(!empty($trainer['photo']))
+                                                <img src="{{ $trainer['photo'] }}" class="w-full h-full object-cover">
+                                            @else
+                                                {{ substr(is_array($trainer) ? ($trainer['name'] ?? '?') : $trainer, 0, 1) }}
+                                            @endif
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="flex flex-col">
@@ -268,8 +272,12 @@
                                     <div
                                         class="pic-row flex items-center gap-5 bg-gray-50 dark:bg-gray-900/40 p-4 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-blue-200 dark:hover:border-blue-500/10 transition-all shadow-sm">
                                         <div
-                                            class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 font-bold shrink-0 shadow-sm">
-                                            {{ substr(is_array($pic) ? ($pic['name'] ?? '?') : $pic, 0, 1) }}
+                                            class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 font-bold shrink-0 shadow-sm overflow-hidden">
+                                            @if(!empty($pic['photo']))
+                                                <img src="{{ $pic['photo'] }}" class="w-full h-full object-cover">
+                                            @else
+                                                {{ substr(is_array($pic) ? ($pic['name'] ?? '?') : $pic, 0, 1) }}
+                                            @endif
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="flex flex-col">
@@ -353,8 +361,12 @@
                                 @php $participants = old('participants', $masterTraining->participants ?? []); @endphp
                                 @forelse($participants as $index => $participant)
                                     <div class="participant-card group flex items-center gap-4 bg-gray-50/50 dark:bg-gray-900/40 p-4 rounded-[1.5rem] border border-gray-100 dark:border-gray-700/30 hover:border-indigo-200 dark:hover:border-indigo-500/20 transition-all animate-fade-in relative">
-                                        <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 font-bold shrink-0 shadow-sm">
-                                            {{ substr(is_array($participant) ? ($participant['name'] ?? '?') : $participant->name, 0, 1) }}
+                                        <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 font-bold shrink-0 shadow-sm overflow-hidden">
+                                            @if(!empty($participant['photo']))
+                                                <img src="{{ $participant['photo'] }}" class="w-full h-full object-cover">
+                                            @else
+                                                {{ substr(is_array($participant) ? ($participant['name'] ?? '?') : $participant->name, 0, 1) }}
+                                            @endif
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <div class="flex flex-col">
@@ -471,8 +483,8 @@
 
                     const html = `
                         <div class="trainer-row flex items-center gap-4 bg-gray-50 dark:bg-gray-900/40 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-emerald-200 dark:hover:border-emerald-500/20 transition-all animate-fade-in">
-                            <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 font-bold shrink-0">
-                                ${user.name.charAt(0)}
+                            <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 font-bold shrink-0 overflow-hidden">
+                                ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0)}
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex flex-col">
@@ -506,8 +518,8 @@
 
                     const html = `
                         <div class="pic-row flex items-center gap-4 bg-gray-50 dark:bg-gray-900/40 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-blue-200 dark:hover:border-blue-500/20 transition-all animate-fade-in">
-                            <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 font-bold shrink-0">
-                                ${user.name.charAt(0)}
+                            <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 font-bold shrink-0 overflow-hidden">
+                                ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0)}
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex flex-col">
@@ -541,8 +553,8 @@
 
                     const html = `
                         <div class="participant-card group flex items-center gap-4 bg-gray-50/50 dark:bg-gray-900/40 p-4 rounded-[1.5rem] border border-gray-100 dark:border-gray-700/30 hover:border-indigo-200 dark:hover:border-indigo-500/20 transition-all animate-fade-in relative">
-                            <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 font-bold shrink-0 shadow-sm">
-                                ${user.name.charAt(0)}
+                            <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 font-bold shrink-0 shadow-sm overflow-hidden">
+                                ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0)}
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="flex flex-col">

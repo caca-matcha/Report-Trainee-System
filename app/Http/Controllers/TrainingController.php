@@ -41,7 +41,41 @@ class TrainingController extends Controller
     public function update(Request $request, Training $training)
     {
         if ($request->has('status') && $request->status == 'approved') {
-            $training->update(['status' => 'approved']);
+            // Validate data completeness before approval
+            $incompleteReasons = [];
+            $participants = $training->participants;
+
+            if ($participants->count() == 0) {
+                $incompleteReasons[] = 'Belum ada peserta training.';
+            } else {
+                $missingScores = 0;
+                foreach ($participants as $p) {
+                    if (
+                        $p->pre_test_score === null ||
+                        $p->post_test_score === null ||
+                        $p->punctuality_score === null ||
+                        $p->activeness_score === null ||
+                        $p->cooperation_score === null ||
+                        $p->attitude_score === null
+                    ) {
+                        $missingScores++;
+                    }
+                }
+
+                if ($missingScores > 0) {
+                    $incompleteReasons[] = "Ada {$missingScores} peserta yang nilainya (Pre/Post Test atau Soft Skill) belum lengkap.";
+                }
+            }
+
+            if (!empty($incompleteReasons)) {
+                return back()->with('error', 'Gagal Setujui Laporan: ' . implode(' ', $incompleteReasons));
+            }
+
+            $training->update([
+                'status' => 'approved',
+                'is_approved' => true,
+                'approved_at' => now(),
+            ]);
             return back()->with('success', 'Training marked as complete.');
         }
 
@@ -82,6 +116,10 @@ class TrainingController extends Controller
 
     public function updateScoring(Request $request, Training $training)
     {
+        if ($training->status === 'approved') {
+            return back()->with('error', 'Training sudah disetujui, data tidak dapat diubah.');
+        }
+
         $validated = $request->validate([
             'scores.*.post_test_score' => 'nullable|numeric|min:0|max:100',
             'scores.*.pre_test_score' => 'nullable|numeric|min:0|max:100',
@@ -134,6 +172,10 @@ class TrainingController extends Controller
 
     public function bulkAttendance(Training $training)
     {
+        if ($training->status === 'approved') {
+            return back()->with('error', 'Training sudah disetujui, data tidak dapat diubah.');
+        }
+
         $training->participants()->update([
             'is_present' => true,
             'punctuality_score' => 100
@@ -168,6 +210,10 @@ class TrainingController extends Controller
 
     public function submitPresence(Request $request, Training $training)
     {
+        if ($training->status === 'approved') {
+            return response()->json(['success' => false, 'message' => 'Training sudah disetujui, absensi tidak dapat diubah.'], 403);
+        }
+
         $request->validate([
             'participant_id' => 'required|exists:training_participants,id',
             'signature' => 'required|string',
@@ -202,6 +248,10 @@ class TrainingController extends Controller
 
     public function removeParticipant(Training $training, \App\Models\TrainingParticipant $participant)
     {
+        if ($training->status === 'approved') {
+            return back()->with('error', 'Training sudah disetujui, data tidak dapat diubah.');
+        }
+
         // Pastikan peserta memang milik training ini
         if ($participant->training_id !== $training->id) {
             abort(403);
@@ -214,6 +264,10 @@ class TrainingController extends Controller
 
     public function import(Request $request, Training $training)
     {
+        if ($training->status === 'approved') {
+            return back()->with('error', 'Training sudah disetujui, data tidak dapat diubah.');
+        }
+
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv',
         ]);
@@ -238,6 +292,10 @@ class TrainingController extends Controller
 
     public function importObservation(Request $request, Training $training)
     {
+        if ($training->status === 'approved') {
+            return back()->with('error', 'Training sudah disetujui, data tidak dapat diubah.');
+        }
+
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv',
         ]);
@@ -249,6 +307,10 @@ class TrainingController extends Controller
 
     public function syncObservationFromGoogleSheets(Request $request, Training $training)
     {
+        if ($training->status === 'approved') {
+            return response()->json(['success' => false, 'message' => 'Training sudah disetujui, data tidak dapat diubah.'], 403);
+        }
+
         try {
             $request->validate([
                 'google_sheets_url' => 'required|url',
@@ -291,6 +353,36 @@ class TrainingController extends Controller
 
     public function approve(Training $training)
     {
+        // Validate data completeness before approval
+        $incompleteReasons = [];
+        $participants = $training->participants;
+
+        if ($participants->count() == 0) {
+            $incompleteReasons[] = 'Belum ada peserta training.';
+        } else {
+            $missingScores = 0;
+            foreach ($participants as $p) {
+                if (
+                    $p->pre_test_score === null ||
+                    $p->post_test_score === null ||
+                    $p->punctuality_score === null ||
+                    $p->activeness_score === null ||
+                    $p->cooperation_score === null ||
+                    $p->attitude_score === null
+                ) {
+                    $missingScores++;
+                }
+            }
+
+            if ($missingScores > 0) {
+                $incompleteReasons[] = "Ada {$missingScores} peserta yang nilainya (Pre/Post Test atau Soft Skill) belum lengkap.";
+            }
+        }
+
+        if (!empty($incompleteReasons)) {
+            return back()->with('error', 'Gagal Setujui Laporan: ' . implode(' ', $incompleteReasons));
+        }
+
         $training->update([
             'status' => 'approved',
             'is_approved' => true,
@@ -308,7 +400,30 @@ class TrainingController extends Controller
 
     public function searchUsers(Request $request)
     {
-        // This method is now officially removed as the system uses Import-Only workflow.
-        return response()->json([]);
+        $search = $request->get('q');
+        
+        $users = \App\Models\User::where(function($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+                ->orWhere('npk', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+        })
+            ->select('id', 'name', 'npk', 'email', 'department', 'subco', 'photo')
+            ->orderByRaw('CASE WHEN npk IS NOT NULL THEN 0 ELSE 1 END')
+            ->orderByRaw('CASE WHEN photo IS NOT NULL THEN 0 ELSE 1 END')
+            ->orderByRaw('CASE WHEN department IS NOT NULL AND department != "-" THEN 0 ELSE 1 END')
+            ->limit(10) 
+            ->get()
+            ->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'npk' => $user->npk ?: $user->email,
+                    'department' => $user->department ?: '-',
+                    'subco' => $user->subco ?: '-',
+                    'photo' => $user->photo ? asset('storage/' . $user->photo) : null
+                ];
+            });
+
+        return response()->json($users);
     }
 }
