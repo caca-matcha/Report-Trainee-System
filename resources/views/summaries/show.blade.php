@@ -42,10 +42,45 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-[98%] mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-x-auto shadow-sm sm:rounded-lg">
-                <div class="p-8 text-black min-w-[1400px]">
+    <div class="py-6 min-h-screen">
+        <div class="max-w-[100%] mx-auto px-4">
+            {{-- Floating Premium Zoom Controls --}}
+            <div class="fixed bottom-10 right-10 z-[60] flex flex-col items-center gap-4 print:hidden text-black dark:text-white">
+                {{-- Reset Button --}}
+                <button onclick="resetZoom()" 
+                    class="group w-12 h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-2xl border border-gray-200 dark:border-gray-700 rounded-full flex items-center justify-center text-indigo-600 dark:text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all duration-300 hover:scale-110 active:scale-95 scroll-smooth" 
+                    title="Reset to 100%">
+                    <svg class="w-6 h-6 transform group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                </button>
+                
+                {{-- Zoom Controls Pill --}}
+                <div class="flex items-center p-1.5 bg-gray-900/90 dark:bg-gray-950/95 backdrop-blur-2xl border border-white/20 rounded-full shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] transform-gpu transition-all">
+                    <button onclick="changeZoom(-0.1)" 
+                        class="w-12 h-12 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 rounded-full transition-all duration-200 active:scale-90">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/></svg>
+                    </button>
+                    
+                    <div class="h-8 w-[1px] bg-white/20 mx-2"></div>
+                    
+                    <div class="flex flex-col items-center justify-center min-w-[80px] px-2 select-none">
+                        <span class="text-[9px] font-black text-white/40 uppercase tracking-[0.25em] mb-0.5 leading-none">Zoom</span>
+                        <span class="text-sm font-black text-white tabular-nums tracking-widest leading-none mt-1" id="zoomPercentDisplay">100%</span>
+                    </div>
+                    
+                    <div class="h-8 w-[1px] bg-white/20 mx-2"></div>
+                    
+                    <button onclick="changeZoom(0.1)" 
+                        class="w-12 h-12 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 rounded-full transition-all duration-200 active:scale-95">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-gray-100 dark:bg-gray-950/40 rounded-[2.5rem] border border-gray-200 dark:border-gray-800 shadow-inner overflow-auto relative" style="height: calc(100vh - 160px);">
+                <div id="zoom-container" class="origin-top-left transition-transform duration-200 ease-out p-10 flex justify-center min-w-max">
+                    <div class="bg-white text-black shadow-2xl p-8 min-w-[1400px] rounded-sm transform-gpu transition-all">
                     {{-- HEADER & SECTION A: Excel Layout Mimic --}}
                     <div class="mb-12 text-black">
                         {{-- Row 1: Header Logos, Title, Signatures --}}
@@ -75,9 +110,9 @@
                                 <div class="font-bold text-sm tracking-widest mb-1">TRAINING REPORT</div>
                                 <div class="text-xl font-black uppercase mb-1 leading-tight px-2">{{ $training->title }}</div>
                                 <div class="text-sm font-semibold text-gray-700 uppercase">
-                                    {{ \Carbon\Carbon::parse($training->start_date)->format('F, jS') }}
+                                    {{ \Carbon\Carbon::parse($training->start_date)->translatedFormat('d F') }}
                                     <br>
-                                    {{ \Carbon\Carbon::parse($training->start_date)->format('Y') }}
+                                    {{ \Carbon\Carbon::parse($training->start_date)->translatedFormat('Y') }}
                                 </div>
                             </div>
 
@@ -85,9 +120,15 @@
                             <div class="w-[350px] shrink-0 border-2 border-black bg-white">
                                 <table class="w-full text-center border-collapse text-[10px]" style="table-layout: fixed;">
                                     <tr class="border-b-2 border-black font-semibold h-[24px]">
-                                        <td class="border-r-2 border-black w-1/3 align-middle pt-[2px] pb-[4px]">Prepared By,</td>
-                                        <td class="border-r-2 border-black w-1/3 align-middle pt-[2px] pb-[4px]">Checked By,</td>
-                                        <td class="w-1/3 align-middle pt-[2px] pb-[4px]">Confirm,</td>
+                                        <td class="border-r-2 border-black w-1/3 align-middle pt-[2px] pb-[4px]">
+                                            <input type="text" class="signature-input w-full text-center border-none p-0 text-[10px] font-semibold focus:ring-0 signer-trigger bg-transparent hover:bg-gray-50" data-field="prepared_header" value="{{ $summary->prepared_header ?? 'Prepared By,' }}" {{ $training->status == 'approved' ? 'disabled' : '' }}>
+                                        </td>
+                                        <td class="border-r-2 border-black w-1/3 align-middle pt-[2px] pb-[4px]">
+                                            <input type="text" class="signature-input w-full text-center border-none p-0 text-[10px] font-semibold focus:ring-0 signer-trigger bg-transparent hover:bg-gray-50" data-field="checked_header" value="{{ $summary->checked_header ?? 'Checked By,' }}" {{ $training->status == 'approved' ? 'disabled' : '' }}>
+                                        </td>
+                                        <td class="w-1/3 align-middle pt-[2px] pb-[4px]">
+                                            <input type="text" class="signature-input w-full text-center border-none p-0 text-[10px] font-semibold focus:ring-0 signer-trigger bg-transparent hover:bg-gray-50" data-field="confirmed_header" value="{{ $summary->confirmed_header ?? 'Confirm,' }}" {{ $training->status == 'approved' ? 'disabled' : '' }}>
+                                        </td>
                                     </tr>
                                     <tr class="h-[73px] border-b-2 border-black">
                                         <td class="border-r-2 border-black relative group/pre align-middle text-center overflow-hidden">
@@ -108,14 +149,6 @@
                                         <td class="relative group/con align-middle text-center overflow-hidden">
                                             @if($summary->barcode_path) <img src="{{ asset('storage/' . $summary->barcode_path) }}" class="inline-block max-h-[60px]">
                                             @elseif($confirmedSignature) <img src="{{ asset('storage/' . $confirmedSignature) }}" class="inline-block max-h-[60px] z-0" style="mix-blend-mode: multiply;"> @endif
-                                            @if($training->is_approved)
-                                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-                                                    <div class="border-4 border-emerald-500 text-emerald-500 font-black text-[12px] px-2 py-0.5 rounded-lg uppercase tracking-[0.1em] transform -rotate-12 opacity-80 flex flex-col items-center leading-none bg-white/50 backdrop-blur-[1px]">
-                                                        <span>APPROVED</span>
-                                                        @if($training->approved_at) <span class="text-[7px] mt-0.5 tracking-normal font-bold">{{ $training->approved_at->format('d/m/Y') }}</span> @endif
-                                                    </div>
-                                                </div>
-                                            @endif
                                             @if($training->status != 'approved')
                                                 <button onclick="triggerUpload('barcode_path')" class="absolute inset-0 bg-black/0 group-hover/con:bg-black/5 flex items-center justify-center opacity-0 group-hover/con:opacity-100 text-[9px] font-black uppercase text-gray-500 cursor-pointer print:hidden">Update</button>
                                             @endif
@@ -707,11 +740,11 @@
                         <option value="{{ $user->name }}">{{ $user->npk }}</option>
                     @endforeach
                 </datalist>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-</div>
 
     <style>
         @media print {
@@ -1222,6 +1255,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         async function downloadPdf() {
+            // Save current zoom & reset for export
+            const originalZoom = currentZoom;
+            resetZoom();
+
             const btn = document.getElementById('downloadPdfBtn');
             const icon = document.getElementById('pdfIcon');
             const spinner = document.getElementById('pdfSpinner');
@@ -1327,7 +1364,32 @@
                 icon.classList.remove('hidden');
                 spinner.classList.add('hidden');
                 btnText.textContent = 'Download PDF';
+
+                // Restore zoom
+                currentZoom = originalZoom;
+                applyZoom();
             }
+        }
+
+        // Zoom functionality
+        let currentZoom = 1;
+        const zoomContainer = document.getElementById('zoom-container');
+        const zoomPercentDisplay = document.getElementById('zoomPercentDisplay');
+
+        function changeZoom(delta) {
+            currentZoom = Math.min(Math.max(0.3, currentZoom + delta), 2);
+            applyZoom();
+        }
+
+        function resetZoom() {
+            currentZoom = 1;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            if (!zoomContainer) return;
+            zoomContainer.style.transform = `scale(${currentZoom})`;
+            if (zoomPercentDisplay) zoomPercentDisplay.innerText = `${Math.round(currentZoom * 100)}%`;
         }
 
         // Image/Barcode Upload Handlers

@@ -49,6 +49,7 @@ Route::middleware(['auth', 'verified', 'npk_restrict'])->group(function () {
     Route::get('trainings/{training}/attendance-qr', [TrainingController::class, 'showAttendanceQr'])->name('trainings.attendance_qr');
     Route::get('trainings/{training}/scan', [TrainingController::class, 'scanAttendance'])->name('trainings.scan');
     Route::get('trainings/{training}/attendance-list', [TrainingController::class, 'attendanceList'])->name('trainings.attendance_list');
+    Route::post('trainings/update-person-photo', [TrainingController::class, 'updatePersonPhoto'])->name('trainings.update_person_photo');
 
     Route::post('participants/{participant}/toggle-attendance', [TrainingParticipantController::class, 'toggleAttendance'])->name('participants.toggle_attendance');
     Route::post('participants/{participant}/update-score', [TrainingParticipantController::class, 'updateScore'])->name('participants.update_score');

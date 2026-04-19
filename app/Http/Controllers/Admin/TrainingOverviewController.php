@@ -38,6 +38,14 @@ class TrainingOverviewController extends Controller
                 });
             }
         }
+
+        // Month & Year Filters
+        if ($request->filled('month')) {
+            $query->whereMonth('start_date', $request->month);
+        }
+        if ($request->filled('year')) {
+            $query->whereYear('start_date', $request->year);
+        }
         $trainings = $query->latest()->paginate(10)->withQueryString();
 
         $today = now()->format('Y-m-d');

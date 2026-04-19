@@ -13,7 +13,7 @@
             <div class="flex items-center gap-4 w-auto">
 
                 {{-- Primary Action --}}
-                <a href="{{ route('admin.master-trainings.create') }}"
+                <a href="{{ route('admin.master-trainings.create', ['category' => request('category')]) }}"
                     class="inline-flex items-center gap-3 px-6 py-3.5 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 active:scale-95 transition-all shrink-0">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i>
                     Tambah Training

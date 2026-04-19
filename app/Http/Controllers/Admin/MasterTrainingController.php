@@ -34,9 +34,9 @@ class MasterTrainingController extends Controller
         return view('admin.master.trainings.index', compact('trainings', 'topTrainings'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $category = 'Mandatory';
+        $category = $request->get('category', 'Mandatory');
         $eventNo = MasterTraining::generateNextEventNo($category);
         return view('admin.master.trainings.create', compact('eventNo', 'category'));
     }

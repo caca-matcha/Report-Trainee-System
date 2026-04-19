@@ -11,7 +11,7 @@
                 </a>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h1 class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Detail Training</h1>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-500 dark:from-white dark:to-gray-400 bg-clip-text text-transparent tracking-tight">Detail Training</h1>
                         <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/50 uppercase tracking-wider">
                             ID: {{ $training->masterTraining->event_no ?? '#' . $training->id }}
                         </span>
@@ -28,7 +28,7 @@
                         @csrf
                     </form>
                     <button type="button" 
-                        onclick="confirmAction(event, 'Apakah Anda yakin ingin mengunci laporan ini? Data akan terkunci dan stempel APPROVED akan muncul di laporan.', 'warning', 'Lock Sekarang', () => document.getElementById('approve-form-{{ $training->id }}').submit())"
+                        onclick="confirmAction(event, 'Apakah Anda yakin ingin mengunci laporan ini? Semua data dan kolom tanda tangan akan dinonaktifkan permanen.', 'warning', 'Lock Sekarang', () => document.getElementById('approve-form-{{ $training->id }}').submit())"
                         class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all duration-200 shadow-lg shadow-emerald-100 dark:shadow-none hover:scale-[1.02] active:scale-[0.98]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />

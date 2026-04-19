@@ -43,7 +43,7 @@
             class="bg-white dark:bg-[#0f172a] text-gray-900 dark:text-white flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out relative z-50 border-r border-gray-200 dark:border-gray-800 shadow-xl dark:shadow-2xl dark:shadow-[#00000050]">
             
             {{-- Logo --}}
-            <div class="flex items-center h-16 border-b border-gray-200 dark:border-gray-800 shrink-0 overflow-hidden px-4"
+            <div class="flex items-center h-14 border-b border-gray-200 dark:border-gray-800 shrink-0 overflow-hidden px-4"
                  :class="sidebarMinimized ? 'justify-center' : 'gap-3'">
                 <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20 dark:shadow-indigo-900/40">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,20 +57,39 @@
                 </div>
             </div>
 
-            {{-- Toggle Button — Centered Bar --}}
-            <button @click="toggleSidebar()"
-                class="w-full flex items-center justify-center gap-2 py-3 bg-gray-50 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-indigo-600/30 border-b border-gray-200 dark:border-gray-700 transition-all duration-200 cursor-pointer group shrink-0"
-                :title="sidebarMinimized ? 'Expand Sidebar' : 'Collapse Sidebar'">
-                <svg class="w-5 h-5 text-gray-500 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-all duration-300 shrink-0"
-                     :class="sidebarMinimized ? 'rotate-180' : ''"
-                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 19l-7-7 7-7" />
-                </svg>
-                <span x-show="!sidebarMinimized" x-transition.opacity
-                      class="text-xs font-bold text-gray-500 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 uppercase tracking-widest transition-colors duration-200 whitespace-nowrap">
-                    Minimize
-                </span>
-            </button>
+            {{-- Compact Toggle --}}
+            <div class="px-4 py-4 shrink-0 transition-all duration-300" :class="sidebarMinimized ? 'px-2' : 'px-4'">
+                <button @click="toggleSidebar()"
+                    class="relative group w-full flex items-center gap-4 p-2 rounded-2xl hover:bg-indigo-50 dark:hover:bg-indigo-600/10 transition-all duration-500 border border-transparent hover:border-indigo-100 dark:hover:border-indigo-500/20"
+                    :class="sidebarMinimized ? 'justify-center px-0 h-12' : 'h-14 px-3'">
+                    
+                    {{-- Icon Container --}}
+                    <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 group-hover:bg-white dark:group-hover:bg-indigo-600 text-gray-400 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-white transition-all duration-500 shadow-inner font-black overflow-hidden">
+                        <svg class="w-5 h-5 transition-transform duration-700 ease-out"
+                             :class="sidebarMinimized ? 'rotate-180' : ''"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 5l-7 7 7 7M19 5l-7 7 7 7" />
+                        </svg>
+                    </div>
+
+                    {{-- Text Content --}}
+                    <div x-show="!sidebarMinimized" 
+                         x-transition:enter="transition ease-out duration-300 delay-100"
+                         x-transition:enter-start="opacity-0 -translate-x-2"
+                         x-transition:enter-end="opacity-100 translate-x-0"
+                         class="flex flex-col items-start leading-none gap-1 whitespace-nowrap overflow-hidden">
+                        <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">
+                            View Model
+                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[9px] font-bold text-gray-300 dark:text-gray-700 uppercase tracking-widest leading-none">Compact Mode</span>
+                        </div>
+                    </div>
+
+                    {{-- Hover Bloom Effect --}}
+                    <div class="absolute inset-0 bg-indigo-500/5 dark:bg-indigo-500/10 opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-500 pointer-events-none"></div>
+                </button>
+            </div>
 
             {{-- Navigation --}}
             <nav class="flex-1 py-6 space-y-1 overflow-y-auto scrollbar-hide transition-all duration-300"
@@ -198,8 +217,8 @@
         {{-- Main Content --}}
         <div class="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-950">
             {{-- Top Bar --}}
-            <header class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 h-16 flex-shrink-0 z-40 transition-colors duration-300">
-                <div class="px-6 h-full flex items-center gap-4">
+            <header class="bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 h-28 flex-shrink-0 z-40 transition-colors duration-300">
+                <div class="h-full flex items-center gap-4 pl-8 md:pl-12 lg:pl-16 pr-8 md:pr-10 lg:pr-12">
                     <div class="flex-1 min-w-0">
                         @isset($header)
                             {{ $header }}
@@ -210,7 +229,7 @@
 
             {{-- Main Scroll --}}
             <main class="flex-1 overflow-y-auto scroll-smooth">
-                <div class="py-8 pl-12 md:pl-20 lg:pl-32 pr-12 md:pr-16 lg:pr-24 max-w-[1920px]">
+                <div class="py-8 pl-8 md:pl-12 lg:pl-16 pr-8 md:pr-10 lg:pr-12 max-w-[1920px]">
                     @if (session('success'))
                         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"
                              class="mb-6 flex items-center justify-between px-5 py-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-widest animate-in fade-in slide-in-from-top-4 duration-300">
@@ -240,6 +259,10 @@
         </div>
     </div>
     @stack('scripts')
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 
 </html>

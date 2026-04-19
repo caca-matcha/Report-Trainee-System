@@ -5,19 +5,6 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            {{-- Notifikasi Sukses --}}
-            @if (session('success'))
-                <div class="mb-6 bg-green-100 border border-green-400 text-green-800 px-4 py-3 rounded-xl shadow-sm">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            {{-- Notifikasi Error --}}
-            @if ($errors->any())
-                <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl shadow-sm">
-                    {{ $errors->first() }}
-                </div>
-            @endif
 
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-2xl border border-gray-200 dark:border-gray-700 p-8">
                 <div class="flex items-center gap-4 mb-6">
@@ -47,11 +34,10 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 bg-gray-50 dark:bg-gray-700/30 rounded-2xl border border-gray-100 dark:border-gray-700">
-                    <form method="POST" action="{{ route('admin.import-users.run') }}">
+                    <form method="POST" action="{{ route('admin.import-users.run') }}" onsubmit="confirmAction(event, 'Yakin ingin menjalankan sinkronisasi user dari API? Proses ini mungkin memakan waktu beberapa saat.', 'info', 'Ya, Jalankan!')">
                         @csrf
                         <button type="submit"
-                                class="inline-flex items-center gap-2 px-8 py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 dark:shadow-none"
-                                onclick="return confirm('Yakin ingin menjalankan sinkronisasi user dari API?')">
+                                class="inline-flex items-center gap-2 px-8 py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 dark:shadow-none">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                             </svg>

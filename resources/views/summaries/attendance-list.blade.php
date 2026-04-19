@@ -104,130 +104,114 @@
                     {{-- FOOTER / TRAINERS & PIC --}}
                     <div class="grid grid-cols-2 gap-12 mt-4 page-break-inside-avoid">
                         {{-- Trainers --}}
-                        <div>
+                        <div class="page-break-inside-avoid">
                             <h4 class="text-[11px] font-black uppercase mb-1 flex items-center gap-2">
                                 <span class="w-2 h-2 bg-black block"></span> TRAINER
                             </h4>
-                            <table class="w-full border-collapse border-2 border-black text-xs text-black bg-white table-fixed">
-                                <tbody>
-                                    @php $trainers = $training->trainers ?? [['name' => '', 'npk' => '', 'department' => '', 'subco' => '']]; @endphp
-                                    @foreach($trainers as $t)
-                                    @php
-                                        $trainerSignature = null;
-                                        if (!empty($t['name'])) {
-                                            $user = \App\Models\User::where('name', $t['name'])
-                                                ->orderByRaw('signature IS NULL, signature = ""')
-                                                ->first();
-                                            if ($user && $user->signature) {
-                                                $trainerSignature = $user->signature;
+                            <div class="flex flex-col">
+                                <table class="w-full border-collapse border-2 border-black text-black bg-white table-fixed">
+                                    <tbody>
+                                        @php $trainers = $training->trainers ?? [['name' => '', 'npk' => '', 'department' => '', 'subco' => '']]; @endphp
+                                        @foreach($trainers as $t)
+                                        @php
+                                            $trainerSignature = null;
+                                            $trainerPhoto = null;
+                                            if (!empty($t['name'])) {
+                                                $user = \App\Models\User::where('name', $t['name'])
+                                                    ->orderByRaw('signature IS NULL, signature = ""')
+                                                    ->first();
+                                                if ($user) {
+                                                    if ($user->signature) $trainerSignature = $user->signature;
+                                                    if ($user->photo) $trainerPhoto = $user->photo;
+                                                }
                                             }
-                                        }
-                                    @endphp
-                                    <tr class="h-10 border border-black">
-                                        <td class="border border-black p-1 w-[10%] text-center font-bold text-[10px]">{{ $loop->iteration }}</td>
-                                        <td class="border border-black p-1 w-[60%] font-bold uppercase text-[10px] pl-2 truncate">{{ $t['name'] ?? '' }}</td>
-                                        <td class="border border-black p-0 relative w-[30%]">
-                                            <div class="absolute inset-0 flex items-center justify-center p-0.5">
-                                                <span class="absolute top-0.5 left-1 text-[8px] font-black text-gray-400">{{ $loop->iteration }}</span>
-                                                @if($trainerSignature && Storage::disk('public')->exists($trainerSignature))
-                                                    <img src="{{ asset('storage/' . $trainerSignature) }}" class="h-full w-auto max-w-[90%] object-contain" alt="TTD" style="mix-blend-mode: multiply;">
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                        @endphp
+                                        <tr class="h-10 border border-black group/row">
+                                            <td class="border border-black p-1 w-[8%] text-center font-black text-[10px]">{{ $loop->iteration }}</td>
+                                            <td class="border border-black p-1 w-[62%] font-bold uppercase text-[10px] pl-3 truncate">{{ $t['name'] ?? '' }}</td>
+                                            <td class="border border-black p-0 relative w-[30%] bg-white overflow-hidden group/photo">
+                                                <div class="person-photo-container absolute inset-0 flex items-center justify-center p-0.5" data-name="{{ $t['name'] }}">
+                                                    <span class="absolute top-0.5 left-1 text-[8px] font-black text-gray-400">{{ $loop->iteration }}</span>
+                                                    
+                                                    @if($trainerPhoto && Storage::disk('public')->exists($trainerPhoto))
+                                                        <img src="{{ asset('storage/' . $trainerPhoto) }}" class="h-full w-auto max-w-[95%] object-contain" alt="Foto">
+                                                    @elseif($trainerSignature && Storage::disk('public')->exists($trainerSignature))
+                                                        <img src="{{ asset('storage/' . $trainerSignature) }}" class="h-full w-auto max-w-[90%] object-contain" alt="TTD" style="mix-blend-mode: multiply;">
+                                                    @endif
+
+                                                    @if(auth()->user()->role === 'admin')
+                                                        <div onclick="triggerPhotoUpload(this)" class="absolute inset-0 bg-black/40 text-white opacity-0 group-hover/photo:opacity-100 transition-opacity flex items-center justify-center print:hidden cursor-pointer">
+                                                            <div class="flex items-center gap-1">
+                                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                                                <span class="text-[8px] font-black uppercase tracking-widest">Update</span>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         
                         {{-- PIC --}}
-                        <div>
+                        <div class="page-break-inside-avoid">
                             <h4 class="text-[11px] font-black uppercase mb-1 flex items-center gap-2">
                                 <span class="w-2 h-2 bg-black block"></span> PIC / PENANGGUNG JAWAB
                             </h4>
-                            <table class="w-full border-collapse border-2 border-black text-xs text-black bg-white table-fixed">
-                                <tbody>
-                                    @php 
-                                        $pics = $training->pics ?? [['name' => $training->user->name ?? '']]; 
-                                        if (empty($pics)) $pics = [['name' => $training->user->name ?? '']];
-                                    @endphp
-                                    @foreach($pics as $p)
-                                    @php
-                                        $picSignature = null;
-                                        if (!empty($p['name'])) {
-                                            $user = \App\Models\User::where('name', $p['name'])
-                                                ->orderByRaw('signature IS NULL, signature = ""')
-                                                ->first();
-                                            if ($user && $user->signature) {
-                                                $picSignature = $user->signature;
+                            <div class="flex flex-col">
+                                <table class="w-full border-collapse border-2 border-black text-black bg-white table-fixed">
+                                    <tbody>
+                                        @php 
+                                            $pics = $training->pics ?? [['name' => $training->user->name ?? '']]; 
+                                            if (empty($pics)) $pics = [['name' => $training->user->name ?? '']];
+                                        @endphp
+                                        @foreach($pics as $p)
+                                        @php
+                                            $picSignature = null;
+                                            $picPhoto = null;
+                                            if (!empty($p['name'])) {
+                                                $user = \App\Models\User::where('name', $p['name'])
+                                                    ->orderByRaw('signature IS NULL, signature = ""')
+                                                    ->first();
+                                                if ($user) {
+                                                    if ($user->signature) $picSignature = $user->signature;
+                                                    if ($user->photo) $picPhoto = $user->photo;
+                                                }
                                             }
-                                        }
-                                    @endphp
-                                    <tr class="h-10 border border-black">
-                                        <td class="border border-black p-1 w-[10%] text-center font-bold text-[10px]">{{ $loop->iteration }}</td>
-                                        <td class="border border-black p-1 w-[60%] font-bold uppercase text-[10px] pl-2 truncate">{{ $p['name'] ?? '' }}</td>
-                                        <td class="border border-black p-0 relative w-[30%]">
-                                            <div class="absolute inset-0 flex items-center justify-center p-0.5">
-                                                <span class="absolute top-0.5 left-1 text-[8px] font-black text-gray-400">{{ $loop->iteration }}</span>
-                                                @if($picSignature && Storage::disk('public')->exists($picSignature))
-                                                    <img src="{{ asset('storage/' . $picSignature) }}" class="h-full w-auto max-w-[90%] object-contain" alt="TTD" style="mix-blend-mode: multiply;">
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                        @endphp
+                                        <tr class="h-10 border border-black group/row">
+                                            <td class="border border-black p-1 w-[8%] text-center font-black text-[10px]">{{ $loop->iteration }}</td>
+                                            <td class="border border-black p-1 w-[62%] font-bold uppercase text-[10px] pl-3 truncate">{{ $p['name'] ?? '' }}</td>
+                                            <td class="border border-black p-0 relative w-[30%] bg-white overflow-hidden group/photo">
+                                                <div class="person-photo-container absolute inset-0 flex items-center justify-center p-0.5" data-name="{{ $p['name'] }}">
+                                                    <span class="absolute top-0.5 left-1 text-[8px] font-black text-gray-400">{{ $loop->iteration }}</span>
+                                                    
+                                                    @if($picPhoto && Storage::disk('public')->exists($picPhoto))
+                                                        <img src="{{ asset('storage/' . $picPhoto) }}" class="h-full w-auto max-w-[95%] object-contain" alt="Foto">
+                                                    @elseif($picSignature && Storage::disk('public')->exists($picSignature))
+                                                        <img src="{{ asset('storage/' . $picSignature) }}" class="h-full w-auto max-w-[90%] object-contain" alt="TTD" style="mix-blend-mode: multiply;">
+                                                    @endif
 
-                    {{-- APPROVAL SECTION (BOSSES) --}}
-                    <div class="grid grid-cols-2 gap-12 mt-8 page-break-inside-avoid">
-                        {{-- Checked By --}}
-                        <div>
-                            <h4 class="text-[11px] font-black uppercase mb-1 flex items-center gap-2">
-                                <span class="w-2 h-2 bg-black block"></span> CHECKED BY (DEPT HEAD)
-                            </h4>
-                            <div class="border-2 border-black bg-white min-h-[80px] relative flex flex-col">
-                                <div class="flex-1 flex items-center justify-center p-2">
-                                    @if($training->is_approved)
-                                        <div class="border-4 border-emerald-500 text-emerald-500 font-black text-[12px] px-2 py-0.5 rounded-md uppercase tracking-[0.2em] transform -rotate-12 opacity-80 flex flex-col items-center leading-none bg-white/50">
-                                            <span>APPROVED</span>
-                                            @if($training->approved_at)
-                                                <span class="text-[7px] mt-1 tracking-normal font-bold">{{ $training->approved_at->format('d/m/Y') }}</span>
-                                            @endif
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="border-t border-black p-1 text-center font-bold text-[10px] uppercase truncate">
-                                    {{ $training->summary->checked_by ?? '................................' }}
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Confirmed By --}}
-                        <div>
-                            <h4 class="text-[11px] font-black uppercase mb-1 flex items-center gap-2">
-                                <span class="w-2 h-2 bg-black block"></span> CONFIRMED BY (DIV HEAD)
-                            </h4>
-                            <div class="border-2 border-black bg-white min-h-[80px] relative flex flex-col">
-                                <div class="flex-1 flex items-center justify-center p-2">
-                                    @if($training->is_approved)
-                                        <div class="border-4 border-emerald-500 text-emerald-500 font-black text-[12px] px-2 py-0.5 rounded-md uppercase tracking-[0.2em] transform -rotate-12 opacity-80 flex flex-col items-center leading-none bg-white/50">
-                                            <span>APPROVED</span>
-                                            @if($training->approved_at)
-                                                <span class="text-[7px] mt-1 tracking-normal font-bold">{{ $training->approved_at->format('d/m/Y') }}</span>
-                                            @endif
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="border-t border-black p-1 text-center font-bold text-[10px] uppercase truncate">
-                                    {{ $training->summary->confirmed_by ?? '................................' }}
-                                </div>
+                                                    @if(auth()->user()->role === 'admin')
+                                                        <div onclick="triggerPhotoUpload(this)" class="absolute inset-0 bg-black/40 text-white opacity-0 group-hover/photo:opacity-100 transition-opacity flex items-center justify-center print:hidden cursor-pointer">
+                                                            <div class="flex items-center gap-1">
+                                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                                                <span class="text-[8px] font-black uppercase tracking-widest">Update</span>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
@@ -355,6 +339,58 @@
                 icon.classList.remove('hidden');
                 spinner.classList.add('hidden');
                 btnText.textContent = 'Download PDF';
+            }
+        }
+    </script>
+    
+    <input type="file" id="personPhotoInput" class="hidden" accept="image/*" onchange="uploadPersonPhoto(this)">
+
+    <script>
+        let currentPhotoContainer = null;
+
+        function triggerPhotoUpload(btn) {
+            currentPhotoContainer = btn.closest('.person-photo-container');
+            document.getElementById('personPhotoInput').click();
+        }
+
+        async function uploadPersonPhoto(input) {
+            if (!input.files || !input.files[0] || !currentPhotoContainer) return;
+
+            const name = currentPhotoContainer.dataset.name;
+            const formData = new FormData();
+            formData.append('photo', input.files[0]);
+            formData.append('name', name);
+            formData.append('_token', '{{ csrf_token() }}');
+
+            // Show loading
+            const originalHtml = currentPhotoContainer.innerHTML;
+            currentPhotoContainer.innerHTML = '<div class="w-5 h-5 border-2 border-indigo-500 border-t-transparent animate-spin rounded-full"></div>';
+
+            try {
+                const res = await fetch('{{ route("trainings.update_person_photo") }}', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    currentPhotoContainer.innerHTML = `
+                        <img src="${data.path}" class="w-8 h-8 rounded-full border border-gray-100 object-cover" alt="Foto">
+                        <button onclick="triggerPhotoUpload(this)" class="absolute inset-0 bg-black/40 text-white opacity-0 group-hover/photo:opacity-100 transition-opacity rounded-full flex items-center justify-center print:hidden">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        </button>
+                    `;
+                } else {
+                    alert(data.message || 'Gagal mengunggah foto.');
+                    currentPhotoContainer.innerHTML = originalHtml;
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Terjadi kesalahan server.');
+                currentPhotoContainer.innerHTML = originalHtml;
+            } finally {
+                input.value = ''; // Reset input
             }
         }
     </script>

@@ -1,13 +1,18 @@
 <x-admin-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-3">
             <a href="{{ route('admin.users.index') }}"
-                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                class="group p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-400 hover:text-indigo-600 hover:border-indigo-100 dark:hover:border-indigo-900 transition-all duration-200 shadow-sm">
+                <svg class="w-5 h-5 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
-            <h1 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Tambah User Baru</h1>
+            <div>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-500 dark:from-white dark:to-gray-400 bg-clip-text text-transparent mb-1">
+                    Tambah User Baru
+                </h1>
+                <p class="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-widest">Registrasi akun admin panel baru.</p>
+            </div>
         </div>
     </x-slot>
 

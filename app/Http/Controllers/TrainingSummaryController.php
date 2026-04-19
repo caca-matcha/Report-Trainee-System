@@ -10,6 +10,7 @@ use App\Models\Training;
 use App\Models\TrainingSummary;
 use App\Models\TrainingParticipant;
 
+
 class TrainingSummaryController extends Controller
 {
     public function show(Training $training)
@@ -107,10 +108,13 @@ class TrainingSummaryController extends Controller
             'recommendation' => 'nullable|string',
             'prepared_by' => 'nullable|string|max:255',
             'prepared_title' => 'nullable|string|max:255',
+            'prepared_header' => 'nullable|string|max:255',
             'checked_by' => 'nullable|string|max:255',
             'checked_title' => 'nullable|string|max:255',
+            'checked_header' => 'nullable|string|max:255',
             'confirmed_by' => 'nullable|string|max:255',
             'confirmed_title' => 'nullable|string|max:255',
+            'confirmed_header' => 'nullable|string|max:255',
             'barcode_image' => 'nullable|image|max:2048', // for legacy or single field
             'image_file' => 'nullable|image|max:2048', // new generic field
             'target_field' => 'nullable|string|in:barcode_path,prepared_barcode_path,checked_barcode_path',
@@ -131,6 +135,7 @@ class TrainingSummaryController extends Controller
         $summary = $training->summary ?? new TrainingSummary(['training_id' => $training->id]);
         
         if ($request->has('recommendation')) $summary->recommendation = $request->recommendation;
+
         
         if ($request->has('prepared_by')) {
             if ($summary->prepared_by !== $request->prepared_by) {
@@ -139,6 +144,7 @@ class TrainingSummaryController extends Controller
             $summary->prepared_by = $request->prepared_by;
         }
         if ($request->has('prepared_title')) $summary->prepared_title = $request->prepared_title;
+        if ($request->has('prepared_header')) $summary->prepared_header = $request->prepared_header;
         
         if ($request->has('checked_by')) {
             if ($summary->checked_by !== $request->checked_by) {
@@ -147,6 +153,7 @@ class TrainingSummaryController extends Controller
             $summary->checked_by = $request->checked_by;
         }
         if ($request->has('checked_title')) $summary->checked_title = $request->checked_title;
+        if ($request->has('checked_header')) $summary->checked_header = $request->checked_header;
         
         if ($request->has('confirmed_by')) {
             if ($summary->confirmed_by !== $request->confirmed_by) {
@@ -155,6 +162,7 @@ class TrainingSummaryController extends Controller
             $summary->confirmed_by = $request->confirmed_by;
         }
         if ($request->has('confirmed_title')) $summary->confirmed_title = $request->confirmed_title;
+        if ($request->has('confirmed_header')) $summary->confirmed_header = $request->confirmed_header;
         
         if ($request->has('feedback_summary')) $summary->feedback_summary = $request->feedback_summary;
 

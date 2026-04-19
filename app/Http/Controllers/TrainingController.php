@@ -394,8 +394,32 @@ class TrainingController extends Controller
 
     public function attendanceList(Training $training)
     {
-        $training->load(['participants', 'user']);
-        return view('summaries.attendance-list', compact('training'));
+        $training->load(['participants', 'user', 'summary']);
+        $summary = $training->summary;
+
+        // Signature lookup logic
+        $preparedSignature = null;
+        $checkedSignature = null;
+        $confirmedSignature = null;
+
+        if ($summary) {
+            $preparedSignature = !empty($summary->prepared_by) 
+                ? \App\Models\User::where('name', 'like', '%' . trim($summary->prepared_by) . '%')
+                    ->whereNotNull('signature')->where('signature', '!=', '')
+                    ->first()?->signature : null;
+            
+            $checkedSignature = !empty($summary->checked_by)
+                ? \App\Models\User::where('name', 'like', '%' . trim($summary->checked_by) . '%')
+                    ->whereNotNull('signature')->where('signature', '!=', '')
+                    ->first()?->signature : null;
+            
+            $confirmedSignature = !empty($summary->confirmed_by)
+                ? \App\Models\User::where('name', 'like', '%' . trim($summary->confirmed_by) . '%')
+                    ->whereNotNull('signature')->where('signature', '!=', '')
+                    ->first()?->signature : null;
+        }
+
+        return view('summaries.attendance-list', compact('training', 'preparedSignature', 'checkedSignature', 'confirmedSignature'));
     }
 
     public function searchUsers(Request $request)
@@ -425,5 +449,28 @@ class TrainingController extends Controller
             });
 
         return response()->json($users);
+    }
+
+    public function updatePersonPhoto(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'photo' => 'required|image|max:2048',
+        ]);
+
+        $user = \App\Models\User::where('name', $request->name)->first();
+
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'User dengan nama tersebut tidak ditemukan di sistem. Harap daftarkan di menu Employee/User dahulu.'], 404);
+        }
+
+        $path = $request->file('photo')->store('photos', 'public');
+        $user->update(['photo' => $path]);
+
+        return response()->json([
+            'success' => true,
+            'path' => asset('storage/' . $path),
+            'message' => 'Foto berhasil diperbarui!'
+        ]);
     }
 }

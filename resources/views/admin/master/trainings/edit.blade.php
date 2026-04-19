@@ -1,14 +1,20 @@
 <x-admin-layout>
-    <div class="mb-6">
-        <a href="{{ route('admin.master-trainings.index') }}"
-            class="inline-flex items-center text-sm text-gray-500 hover:text-indigo-600 transition-colors">
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Kembali ke Daftar
-        </a>
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mt-2">Edit Master Training</h2>
-    </div>
+    <x-slot name="header">
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.master-trainings.index') }}"
+                class="group p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-400 hover:text-indigo-600 hover:border-indigo-100 dark:hover:border-indigo-900 transition-all duration-200 shadow-sm">
+                <svg class="w-5 h-5 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </a>
+            <div>
+                <h1 class="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-500 dark:from-white dark:to-gray-400 bg-clip-text text-transparent mb-1">
+                    Edit Master Training
+                </h1>
+                <p class="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-widest">Memperbarui informasi template pelatihan.</p>
+            </div>
+        </div>
+    </x-slot>
 
     <div
         class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -35,9 +41,9 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">No. Training</label>
                     <input type="text" name="event_no" value="{{ old('event_no', $masterTraining->event_no) }}" required
-                        class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 font-mono text-gray-900 dark:text-white focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" readonly>
+                        class="block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 font-mono text-gray-900 dark:text-white focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                     @error('event_no') <p class="mt-1 text-xs text-red-500">{{ $message }}</p> @enderror
-                    <p class="mt-1 text-[10px] text-gray-400 font-bold uppercase tracking-widest text-orange-500">Nomor training bersifat permanen dan tidak dapat diubah.</p>
+                    <p class="mt-1 text-[10px] text-gray-400">Nomor training template master.</p>
                 </div>
 
                 <div>

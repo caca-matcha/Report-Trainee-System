@@ -60,31 +60,54 @@
 
     {{-- Filter Bar --}}
     <div class="mb-6">
-        <form action="{{ route('admin.trainings.index') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
-            <div class="flex-1 w-full">
+        <form action="{{ route('admin.trainings.index') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end bg-white dark:bg-gray-800 p-6 rounded-[2rem] shadow-sm border border-gray-100 dark:border-gray-700/50">
+            <div class="flex-[3] w-full">
                 <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block ml-1">Search Training</label>
                 <div class="relative group">
                     <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-indigo-500 transition-colors"></i>
                     <input type="text" name="search" value="{{ request('search') }}" 
                            placeholder="Search by title, topic..."
-                           class="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-sm font-semibold dark:text-white">
+                           class="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-sm font-semibold dark:text-white">
                 </div>
             </div>
-            <div class="w-full md:w-64">
+            <div class="w-full md:w-44">
                 <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block ml-1">Filter Status</label>
                 <select name="status" onchange="this.form.submit()"
-                        class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-sm font-semibold dark:text-white">
+                        class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-sm font-semibold dark:text-white">
                     <option value="all">All Records</option>
-                    <option value="ongoing" {{ request('status') === 'ongoing' ? 'selected' : '' }}>Ongoing (Live)</option>
-                    <option value="upcoming" {{ request('status') === 'upcoming' ? 'selected' : '' }}>Upcoming (Scheduled)</option>
-                    <option value="archive" {{ request('status') === 'archive' ? 'selected' : '' }}>Archive (Finished)</option>
+                    <option value="ongoing" {{ request('status') === 'ongoing' ? 'selected' : '' }}>Ongoing</option>
+                    <option value="upcoming" {{ request('status') === 'upcoming' ? 'selected' : '' }}>Upcoming</option>
+                    <option value="archive" {{ request('status') === 'archive' ? 'selected' : '' }}>Archive</option>
+                </select>
+            </div>
+            <div class="w-full md:w-40">
+                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block ml-1">Periode Bulan</label>
+                <select name="month" onchange="this.form.submit()"
+                        class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-sm font-semibold dark:text-white">
+                    <option value="">Semua Bulan</option>
+                    @foreach(range(1, 12) as $m)
+                        <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
+                            {{ \Carbon\Carbon::create()->month($m)->locale('id')->translatedFormat('F') }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="w-full md:w-32">
+                <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block ml-1">Tahun</label>
+                <select name="year" onchange="this.form.submit()"
+                        class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-sm font-semibold dark:text-white">
+                    <option value="">Semua</option>
+                    @php $startYear = 2024; $endYear = date('Y') + 1; @endphp
+                    @for($y = $endYear; $y >= $startYear; $y--)
+                        <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                    @endfor
                 </select>
             </div>
             <div class="flex gap-2">
                 <button type="submit" class="px-6 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 active:scale-95 transition-all">
                     Apply
                 </button>
-                @if(request()->anyFilled(['search', 'status']))
+                @if(request()->anyFilled(['search', 'status', 'month', 'year']))
                     <a href="{{ route('admin.trainings.index') }}" class="px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">
                         Reset
                     </a>
@@ -125,7 +148,7 @@
                                         </div>
                                         <div class="flex items-center gap-2 text-[10px] font-bold text-gray-400">
                                             <i data-lucide="clock" class="w-3.5 h-3.5 text-gray-400/50"></i>
-                                            {{ \Carbon\Carbon::parse($training->start_date)->format('d M Y') }}
+                                            {{ \Carbon\Carbon::parse($training->start_date)->translatedFormat('d M Y') }}
                                             @if(\Carbon\Carbon::parse($training->start_date)->isToday())
                                                 <span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 border border-emerald-500/20 font-black tracking-wider">
                                                     <span class="relative flex h-1.5 w-1.5">
@@ -177,7 +200,7 @@
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
                                     <form action="{{ route('admin.trainings.destroy', $training) }}" method="POST"
-                                        onsubmit="return confirm('Hapus data training ini?')">
+                                        onsubmit="confirmAction(event, 'Data training ini akan dihapus secara permanen. Lanjutkan?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 

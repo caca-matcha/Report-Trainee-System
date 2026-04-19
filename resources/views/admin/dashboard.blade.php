@@ -1,87 +1,132 @@
 <x-admin-layout>
-    {{-- Stunning Hero Greeting Section --}}
-    <div class="relative overflow-hidden mb-12">
-        {{-- Background Mesh Decor --}}
-        <div class="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-500/5 rounded-full blur-[100px] animate-pulse"></div>
-        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s"></div>
-
-        <div class="relative flex flex-col lg:flex-row lg:items-center justify-between gap-8 py-8 px-2">
-            <div class="space-y-2">
-                <div class="flex items-center gap-3 mb-2">
-                    <span class="px-3 py-1 bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-indigo-200 dark:border-indigo-500/20">
+    <x-slot name="header">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
+            <div class="space-y-0.5">
+                <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-emerald-500/20">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                         System Online
                     </span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ now()->format('l, d F Y') }}</span>
+                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{{ now()->translatedFormat('l, d F Y') }}</span>
                 </div>
-                <h1 class="text-4xl lg:text-5xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
-                    Welcome Home, <span class="bg-gradient-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">{{ auth()->user()->name }}</span>!
+                <h1 class="text-xl lg:text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-none mt-1">
+                    Welcome Back, <span class="bg-gradient-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">{{ auth()->user()->name }}</span>!
                 </h1>
-                <p class="text-gray-500 dark:text-gray-400 max-w-xl font-medium leading-relaxed">
-                    Ringkasan performa sistem pelatihan hari ini. Anda memiliki <span class="text-indigo-600 dark:text-indigo-400 font-bold">{{ $stats['ongoing'] }} sesi aktif</span> yang sedang berjalan.
-                </p>
-                <div class="flex items-center gap-4 mt-6">
-                    <a href="{{ route('admin.trainings.index') }}" class="inline-flex items-center gap-3 px-6 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 active:scale-95 transition-all">
-                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                        Mulai Eksekusi
-                    </a>
-                    <a href="{{ route('admin.employees.index') }}" class="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-100 dark:border-gray-700 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-gray-700 active:scale-95 transition-all">
-                        <i data-lucide="users" class="w-4 h-4"></i>
-                        Kelola User
-                    </a>
-                </div>
             </div>
 
-            {{-- Quick Insights Mini Widget --}}
-            <div class="hidden lg:flex items-center gap-6 p-2">
-                <div class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-xl p-6 rounded-[2rem] border border-white dark:border-white/5 shadow-2xl shadow-indigo-500/5 flex items-center gap-6">
-                    <div class="text-center">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total</p>
-                        <p class="text-2xl font-black text-gray-900 dark:text-white">{{ number_format($stats['total_users'] + $stats['ongoing'] + $stats['upcoming']) }}</p>
-                        <p class="text-[9px] font-bold text-gray-400 uppercase">Artifacts</p>
-                    </div>
-                    <div class="w-px h-12 bg-gray-100 dark:bg-gray-700"></div>
-                    <div class="text-center">
-                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Status</p>
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                            <p class="text-sm font-black text-emerald-600 uppercase">Optimal</p>
-                        </div>
-                        <p class="text-[9px] font-bold text-gray-400 uppercase">Performance</p>
-                    </div>
-                </div>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('admin.master-trainings.index') }}" class="inline-flex items-center gap-3 px-6 py-3 bg-indigo-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 active:scale-95 transition-all">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    Buat Training Baru
+                </a>
             </div>
         </div>
+    </x-slot>
+
+    <div class="mb-12">
+        <p class="text-sm text-gray-500 dark:text-gray-400 max-w-2xl font-medium leading-relaxed">
+            Ringkasan performa sistem manajemen pelatihan hari ini. Anda memiliki <span class="text-indigo-600 dark:text-indigo-400 font-bold underline decoration-indigo-500/30 underline-offset-4">{{ $stats['ongoing'] }} sesi aktif</span> yang sedang berjalan di seluruh departemen.
+        </p>
     </div>
 
     {{-- Stats Cards Layout --}}
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
         @php
             $cardConfigs = [
-                ['label' => 'Total Trainee', 'value' => $stats['total_users'], 'icon' => 'users', 'color' => 'indigo', 'sub' => 'Active System Members', 'route' => 'admin.employees.index'],
-                ['label' => 'Ongoing Now', 'value' => $stats['ongoing'], 'icon' => 'play-circle', 'color' => 'blue', 'sub' => 'Running Today', 'route' => 'admin.trainings.index', 'params' => ['status' => 'ongoing']],
-                ['label' => 'Upcoming', 'value' => $stats['upcoming'], 'icon' => 'calendar', 'color' => 'emerald', 'sub' => 'Scheduled Sessions', 'route' => 'admin.trainings.index', 'params' => ['status' => 'upcoming']],
-                ['label' => 'Archive', 'value' => $stats['archive'], 'icon' => 'archive', 'color' => 'slate', 'sub' => 'Completed Tasks', 'route' => 'admin.trainings.index', 'params' => ['status' => 'archive']]
+                [
+                    'label' => 'Total Trainee', 
+                    'value' => $stats['total_users'], 
+                    'icon' => 'users', 
+                    'color' => 'indigo', 
+                    'sub' => 'Active System Members', 
+                    'route' => 'admin.employees.index',
+                    'gradient' => 'from-indigo-500/10 via-transparent to-transparent',
+                    'active' => true
+                ],
+                [
+                    'label' => 'Ongoing Now', 
+                    'value' => $stats['ongoing'], 
+                    'icon' => 'play-circle', 
+                    'color' => 'blue', 
+                    'sub' => 'Running Today', 
+                    'route' => 'admin.trainings.index', 
+                    'params' => ['status' => 'ongoing'],
+                    'gradient' => 'from-blue-500/10 via-transparent to-transparent',
+                    'active' => $stats['ongoing'] > 0
+                ],
+                [
+                    'label' => 'Upcoming', 
+                    'value' => $stats['upcoming'], 
+                    'icon' => 'calendar', 
+                    'color' => 'emerald', 
+                    'sub' => 'Scheduled Sessions', 
+                    'route' => 'admin.trainings.index', 
+                    'params' => ['status' => 'upcoming'],
+                    'gradient' => 'from-emerald-500/10 via-transparent to-transparent',
+                    'active' => $stats['upcoming'] > 0
+                ],
+                [
+                    'label' => 'Archive', 
+                    'value' => $stats['archive'], 
+                    'icon' => 'archive', 
+                    'color' => 'slate', 
+                    'sub' => 'Completed Tasks', 
+                    'route' => 'admin.trainings.index', 
+                    'params' => ['status' => 'archive'],
+                    'gradient' => 'from-gray-500/10 via-transparent to-transparent',
+                    'active' => false
+                ]
             ];
         @endphp
 
         @foreach($cardConfigs as $card)
-        <a href="{{ route($card['route'], $card['params'] ?? []) }}" class="group relative bg-white dark:bg-gray-800 rounded-[2.5rem] p-8 shadow-sm border border-gray-100 dark:border-gray-700/50 hover:shadow-[0_20px_60px_rgba(0,0,0,0.05)] hover:scale-[1.02] hover:border-{{ $card['color'] }}-500/50 transition-all duration-500 overflow-hidden">
-            {{-- Card Decor --}}
-            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-{{ $card['color'] }}-500/[0.03] rounded-full group-hover:scale-125 transition-transform duration-700"></div>
+        <a href="{{ route($card['route'], $card['params'] ?? []) }}" 
+           class="group relative bg-white/70 dark:bg-gray-800/60 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-sm border border-{{ $card['color'] }}-500/10 hover:border-{{ $card['color'] }}-500/50 hover:shadow-[0_20px_60px_rgba(0,0,0,0.1)] hover:-translate-y-1.5 transition-all duration-500 overflow-hidden">
             
-            <div class="relative z-10 space-y-4">
-                <div class="flex items-center justify-between">
-                    <div class="p-4 bg-{{ $card['color'] }}-500/10 rounded-2xl text-{{ $card['color'] }}-600 transition-all duration-500 group-hover:bg-{{ $card['color'] }}-600 group-hover:text-white">
-                        <i data-lucide="{{ $card['icon'] }}" class="w-6 h-6"></i>
+            {{-- Decorative Accent Glow --}}
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br {{ $card['gradient'] }} opacity-40 group-hover:opacity-100 transition-opacity duration-700 blur-2xl"></div>
+            
+            {{-- Subtle Background Mesh --}}
+            <div class="absolute -left-12 -top-12 w-48 h-48 bg-{{ $card['color'] }}-500/[0.03] rounded-full blur-3xl group-hover:bg-{{ $card['color'] }}-500/[0.08] transition-all duration-1000"></div>
+
+            <div class="relative z-10 flex flex-col h-full">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-{{ $card['color'] }}-500/20 blur-xl rounded-full"></div>
+                        <div class="relative p-4 bg-{{ $card['color'] }}-500/10 dark:bg-{{ $card['color'] }}-500/20 rounded-2xl text-{{ $card['color'] }}-600 dark:text-white transition-all duration-500 group-hover:scale-110 group-hover:bg-{{ $card['color'] }}-600 group-hover:text-white group-hover:shadow-lg group-hover:shadow-{{ $card['color'] }}-500/40">
+                            @if($card['icon'] === 'users')
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            @elseif($card['icon'] === 'play-circle')
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            @elseif($card['icon'] === 'calendar')
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            @elseif($card['icon'] === 'archive')
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                            @endif
+                        </div>
                     </div>
-                    <i data-lucide="arrow-up-right" class="w-5 h-5 text-gray-200 dark:text-gray-700 group-hover:text-{{ $card['color'] }}-500 transition-colors"></i>
+                    @if($card['active'])
+                        <span class="flex h-3 w-3 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-{{ $card['color'] }}-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-{{ $card['color'] }}-500 shadow-[0_0_10px_rgba(var(--tw-color-{{ $card['color'] }}-500),0.5)]"></span>
+                        </span>
+                    @else
+                        <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 dark:bg-gray-700/50 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-4 group-hover:translate-x-0">
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-{{ $card['color'] }}-500"></i>
+                        </div>
+                    @endif
                 </div>
-                <div>
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{{ $card['label'] }}</p>
-                    <div class="flex items-baseline gap-2">
-                        <h3 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight">{{ number_format($card['value']) }}</h3>
-                        <span class="text-[10px] font-bold text-{{ $card['color'] }}-600 uppercase">{{ $card['sub'] }}</span>
+
+                <div class="space-y-1 mt-auto">
+                    <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">{{ $card['label'] }}</p>
+                    <div class="flex flex-col">
+                        <h3 class="text-4xl font-black text-gray-900 dark:text-white tracking-tighter mb-1 select-none">
+                            {{ number_format($card['value']) }}
+                        </h3>
+                        <div class="flex items-center gap-2">
+                             <div class="w-1.5 h-1.5 rounded-full bg-{{ $card['color'] }}-500 shadow-[0_0_8px_rgba(var(--tw-color-{{ $card['color'] }}-500),0.5)]"></div>
+                             <span class="text-[9px] font-black text-{{ $card['color'] }}-600 dark:text-{{ $card['color'] }}-400/80 uppercase tracking-widest">{{ $card['sub'] }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -132,27 +177,38 @@
     </div>
 
     {{-- Recent Trainings Table --}}
-    <div class="bg-white dark:bg-gray-800 rounded-[3rem] shadow-sm border border-gray-100 dark:border-gray-700/50 overflow-hidden mb-12">
-        <div class="px-10 py-8 border-b border-gray-100 dark:border-gray-700/50 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-            <div class="flex items-center gap-5">
-                <div class="w-14 h-14 bg-gray-50 dark:bg-gray-900 rounded-[1.5rem] flex items-center justify-center text-gray-400 shadow-inner">
-                    <i data-lucide="activity" class="w-7 h-7"></i>
+    <div class="bg-white/70 dark:bg-gray-800/60 backdrop-blur-2xl rounded-[3rem] shadow-2xl shadow-indigo-500/[0.03] border border-gray-100 dark:border-gray-700/50 overflow-hidden mb-12 transition-all duration-500 group/table">
+        <div class="px-10 py-8 flex flex-col xl:flex-row xl:items-center justify-between gap-6 border-b border-gray-100 dark:border-gray-700/50">
+            <div class="flex items-center gap-6">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-indigo-500 blur-xl opacity-10 group-hover/table:opacity-30 transition-opacity"></div>
+                    <div class="relative w-14 h-14 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-500/30 transform -rotate-3 group-hover/table:rotate-0 transition-all duration-700 ease-out">
+                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                         </svg>
+                    </div>
                 </div>
                 <div>
-                    <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-wider leading-none">Aktivitas Terkini</h2>
-                    <p class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] mt-2">Recently Updated Sessions</p>
+                    <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight leading-none mb-2">Aktivitas Terkini</h2>
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                        <p class="text-[10px] font-black text-indigo-500/60 dark:text-indigo-400/60 uppercase tracking-widest">Live System Feed</p>
+                    </div>
                 </div>
             </div>
             <a href="{{ route('admin.trainings.index') }}"
-                class="inline-flex items-center px-8 py-4 bg-indigo-600 text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 active:scale-95 transition-all w-max self-start sm:self-center">
-                Lihat Semua Rekaman
-                <i data-lucide="arrow-right" class="w-4 h-4 ml-3"></i>
+                class="group/btn inline-flex items-center justify-center px-8 py-3.5 bg-gray-900 dark:bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black dark:hover:bg-indigo-700 hover:shadow-2xl hover:shadow-indigo-500/40 active:scale-95 transition-all w-full xl:w-auto overflow-hidden relative">
+                <span class="relative z-10 flex items-center gap-3">
+                    Lihat Semua Rekaman
+                    <i data-lucide="arrow-right" class="w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform duration-300"></i>
+                </span>
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
             </a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="text-left bg-gray-50/50 dark:bg-gray-800/50">
+                    <tr class="text-left bg-gray-50/50 dark:bg-gray-800/40">
                         <th class="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Informasi Program Training</th>
                         <th class="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Tanggal Mulai</th>
                         <th class="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Status Sesi</th>
@@ -179,7 +235,7 @@
 
                             <td class="px-10 py-7">
                                 <div class="flex flex-col">
-                                    <span class="font-black text-gray-700 dark:text-gray-300 uppercase tracking-tighter leading-none">{{ \Carbon\Carbon::parse($training->start_date)->format('d M Y') }}</span>
+                                    <span class="font-black text-gray-700 dark:text-gray-300 uppercase tracking-tighter leading-none">{{ \Carbon\Carbon::parse($training->start_date)->translatedFormat('d M Y') }}</span>
                                     <div class="flex items-center gap-1.5 mt-1.5">
                                         <i data-lucide="clock" class="w-3 h-3 text-gray-400"></i>
                                         <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Scheduled Kickoff</span>
@@ -211,8 +267,9 @@
                             </td>
                             <td class="px-10 py-7 text-right">
                                 <a href="{{ route('admin.trainings.show', $training) }}"
-                                    class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600 text-gray-400 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95 transition-all duration-300">
-                                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 hover:bg-indigo-600 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 group/btn shadow-sm">
+                                    <span>Kelola Sesi</span>
+                                    <i data-lucide="chevron-right" class="w-4 h-4 group-hover/btn:translate-x-1 transition-transform"></i>
                                 </a>
                             </td>
                         </tr>
