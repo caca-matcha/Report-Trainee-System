@@ -81,9 +81,14 @@
                         </thead>
                         <tbody class="divide-y divide-slate-200">
                             <tr>
-                                <td class="px-6 py-4 font-medium text-slate-700 bg-slate-50"><code class="text-indigo-600">/admin/dashboard</code></td>
+                                <td class="px-6 py-4 font-medium text-slate-700 bg-slate-50"><code class="text-indigo-600">/admin/trainings</code></td>
                                 <td class="px-6 py-4 text-slate-600">
-                                    Halaman utama setelah login. Menampilkan pantauan keseluruhan aktivitas pelaskanaan training, jumlah peserta lulus/gagal, dan statistik ringkas pelaksanaan pelatihan perusahaan.
+                                    <strong>Oversight Training:</strong> Monitoring seluruh pelaksanaan training. Kini dilengkapi dengan:
+                                    <ul class="list-disc ml-4 mt-2 space-y-1">
+                                        <li><strong>Extended Search Bar:</strong> Kolom pencarian yang lebih lebar untuk memudahkan input judul training yang panjang.</li>
+                                        <li><strong>Period Filter:</strong> Dropdown filter per <strong>Bulan</strong> dan <strong>Tahun</strong> untuk mempermudah audit data berkala.</li>
+                                        <li><strong>Smart Alerts:</strong> Seluruh pesan sukses/gagal dan konfirmasi (seperti hapus data) kini menggunakan <strong>SweetAlert2</strong> yang lebih modern.</li>
+                                    </ul>
                                 </td>
                             </tr>
                         </tbody>
@@ -274,8 +279,14 @@
                         </thead>
                         <tbody class="divide-y divide-slate-200">
                             <tr>
-                                <td class="px-6 py-4 font-medium text-slate-700 bg-slate-50"><code class="text-indigo-600">/trainings/{id}/summary</code></td>
-                                <td class="px-6 py-4 text-slate-600">Preview resmi (berbentuk cetakan layar kertas A3 lengkap). Mencakup daftar tanda tangan (Prepared, Checked, Confirmed) dan bukti otentik.</td>
+                                <td class="px-6 py-4 font-medium text-slate-700 bg-slate-50"><code class="text-indigo-600">.../summary</code> & <code class="text-indigo-600">.../attendance-list</code></td>
+                                <td class="px-6 py-4 text-slate-600">
+                                    <strong>Report Center:</strong> Cetakan resmi kertas A3 (Summary) dan A4 (Daftar Hadir). 
+                                    <ul class="list-disc ml-4 mt-2 space-y-1">
+                                        <li><strong>Attendance List:</strong> Menggunakan format tabel horizontal standar (3 kolom: No, Nama, Tanda Tangan).</li>
+                                        <li><strong>Interactive Photo:</strong> Kolom tanda tangan mendukung <strong>Input Foto Langsung</strong> (klik area TTD untuk upload foto Trainer/PIC jika belum ada di sistem).</li>
+                                    </ul>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
