@@ -57,12 +57,11 @@
             <div class="flex items-center h-24 shrink-0 overflow-hidden px-6 relative"
                 :class="sidebarMinimized ? 'justify-center' : 'gap-4'">
                 <div
-                    class="w-12 h-12 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center shrink-0 shadow-lg border border-gray-100 dark:border-white/5 p-1.5">
-                    <img src="{{ asset('assets/dg-logo.png') }}" class="w-full h-full object-contain">
+                    class="bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center shrink-0 shadow-lg border border-gray-100 dark:border-white/5 p-2 transition-all duration-300"
+                    :class="sidebarMinimized ? 'w-12 h-12' : 'w-32 h-16'">
+                    <img src="{{ asset('assets/dlc-logo.png') }}" class="w-full h-full object-contain">
                 </div>
                 <div x-show="!sidebarMinimized" x-transition.opacity class="whitespace-nowrap overflow-hidden pt-0.5">
-                    <p class="text-sm font-black text-gray-900 dark:text-white tracking-tight leading-none mb-1.5">PT
-                        Dharma Polimetal Tbk.</p>
                     <p
                         class="text-[10px] text-indigo-500 dark:text-indigo-400 font-extrabold uppercase tracking-[0.15em] leading-none">
                         Report Trainee System</p>
