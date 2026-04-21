@@ -430,7 +430,7 @@
                             <div class="mb-4">
                                 <div class="w-12 h-1 bg-indigo-600 mb-2"></div>
                                 <h3 class="text-xs font-black uppercase tracking-[0.2em] text-gray-700">
-                                    C. TRAINER EVALUATION
+                                    C. TRAINER EVALUATION (CSI)
                                 </h3>
                             </div>
                             
@@ -615,14 +615,16 @@
                                         @php
                                             $allTrainerScores = [];
                                             foreach ($csiTrainersArr as $ct) {
-                                                foreach (($ct['scores'] ?? []) as $sc_id => $s) {
-                                                    if ($sc_id >= 25 && $sc_id <= 32) {
-                                                        $allTrainerScores[$sc_id][] = $s;
+                                                if (empty($ct['scores'])) continue;
+                                                $sValues = array_values($ct['scores']);
+                                                foreach ($sValues as $idx => $s) {
+                                                    if ($idx < 8) {
+                                                        $allTrainerScores[$idx][] = $s;
                                                     }
                                                 }
                                             }
                                             $avgTrainerScores = [];
-                                            for ($i = 25; $i <= 32; $i++) {
+                                            for ($i = 0; $i < 8; $i++) {
                                                 $vals = $allTrainerScores[$i] ?? [];
                                                 $avgTrainerScores[] = count($vals) > 0 ? round(array_sum($vals) / count($vals), 2) : 0;
                                             }

@@ -15,8 +15,12 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <a href="{{ route('admin.master-trainings.index') }}" class="inline-flex items-center gap-3 px-6 py-3 bg-indigo-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 active:scale-95 transition-all">
-                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <a href="{{ route('admin.master-trainings.index') }}" class="inline-flex items-center gap-2.5 px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:shadow-[0_15px_30px_-5px_rgba(79,70,229,0.4)] hover:-translate-y-0.5 active:scale-95 transition-all group">
+                    <div class="flex items-center justify-center w-5 h-5 bg-white/20 rounded-full group-hover:scale-110 transition-transform">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </div>
                     Buat Training Baru
                 </a>
             </div>

@@ -296,7 +296,7 @@
                 
                 <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium italic">Cari nama/NPK di kotak bawah untuk menambah peserta otomatis, atau klik Tambah Manual untuk data baru.</p>
                 
-                <div class="relative group max-w-3xl">
+                <div class="relative group max-w-3xl" id="quick-search-wrapper">
                     <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -304,8 +304,9 @@
                     </div>
                     <input type="text" id="quick-search-participant" placeholder="Ketik nama atau NPK peserta..." autocomplete="off"
                         class="block w-full pl-14 pr-6 py-4.5 bg-gray-50 dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-800 rounded-2xl text-sm focus:ring-0 focus:border-indigo-500 text-gray-900 dark:text-gray-100 shadow-sm transition-all focus:shadow-2xl focus:shadow-indigo-500/10 placeholder:text-gray-400">
-                    <div id="quick-search-suggestions" class="absolute z-50 w-full bg-white dark:bg-gray-800 border-2 border-gray-50 dark:border-gray-700 rounded-2xl shadow-2xl mt-3 hidden max-h-80 overflow-y-auto divide-y divide-gray-50 dark:divide-gray-700/50"></div>
                 </div>
+                {{-- Suggestions Portal: rendered in body via JS so it's never clipped --}}
+                <div id="quick-search-suggestions" class="fixed z-[99999] bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl hidden overflow-y-auto divide-y divide-gray-50 dark:divide-gray-700/50" style="max-height: min(360px, 60vh);"></div>
 
                 @if(!$training->is_approved)
                     <div class="flex flex-wrap gap-2 pt-2">
@@ -2458,6 +2459,32 @@
         const quickSearchInput = document.getElementById('quick-search-participant');
         const searchSuggestions = document.getElementById('quick-search-suggestions');
 
+        // Move portal to body so it escapes all overflow clipping
+        if (searchSuggestions) document.body.appendChild(searchSuggestions);
+
+        function positionSuggestions() {
+            const wrapper = document.getElementById('quick-search-wrapper');
+            if (!wrapper || !searchSuggestions) return;
+            const rect        = wrapper.getBoundingClientRect();
+            const spaceBelow  = window.innerHeight - rect.bottom - 12;
+            const spaceAbove  = rect.top - 12;
+            const maxH        = Math.min(380, Math.max(spaceBelow, 100));
+            const w           = Math.max(rect.width, 340);
+            const leftPos     = Math.min(rect.left, window.innerWidth - w - 8);
+
+            searchSuggestions.style.width     = w + 'px';
+            searchSuggestions.style.maxHeight = maxH + 'px';
+            searchSuggestions.style.left      = (leftPos + window.scrollX) + 'px';
+
+            if (spaceBelow >= 100 || spaceBelow >= spaceAbove) {
+                searchSuggestions.style.top    = (rect.bottom + window.scrollY + 8) + 'px';
+                searchSuggestions.style.bottom = 'auto';
+            } else {
+                searchSuggestions.style.top    = 'auto';
+                searchSuggestions.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+            }
+        }
+
         if (quickSearchInput) {
             quickSearchInput.addEventListener('input', function() {
                 const query = this.value;
@@ -2470,32 +2497,46 @@
                     .then(res => res.json())
                     .then(data => {
                         if (data.length > 0) {
-                            searchSuggestions.innerHTML = data.map(user => `
-                                <div class="px-4 py-3 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer border-b border-gray-50 dark:border-gray-700/50 last:border-0 flex items-center gap-3 group text-left" 
-                                    onclick="addSelectedParticipant('${user.name}', '${user.npk}', '${user.department}', '${user.subco}')">
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-xs font-black text-gray-800 dark:text-white truncate uppercase">${user.name}</p>
-                                        <p class="text-[9px] text-indigo-500 font-bold uppercase tracking-widest">${user.npk} • ${user.department}</p>
+                            const header = `<div style="padding:10px 16px 8px;border-bottom:1px solid rgba(148,163,184,.2);"><span style="font-size:9px;font-weight:900;color:#94a3b8;letter-spacing:.12em;text-transform:uppercase;">Hasil Pencarian (${data.length})</span></div>`;
+                            const items  = data.map(user => {
+                                const nm   = (user.name   || '').replace(/"/g, '&quot;').replace(/`/g, '\\`');
+                                const npk  = (user.npk    || '').replace(/"/g, '&quot;').replace(/`/g, '\\`');
+                                const dept = (user.department || '').replace(/"/g, '&quot;').replace(/`/g, '\\`');
+                                const sub  = (user.subco  || '').replace(/"/g, '&quot;').replace(/`/g, '\\`');
+                                const init = (user.name  || '?').charAt(0).toUpperCase();
+                                return `<div
+                                    onclick="addSelectedParticipant(\`${nm}\`,\`${npk}\`,\`${dept}\`,\`${sub}\`)"
+                                    onmouseenter="this.style.background='rgba(99,102,241,.1)'"
+                                    onmouseleave="this.style.background=''"
+                                    style="display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(148,163,184,.1);">
+                                    <div style="width:36px;height:36px;border-radius:10px;background:#4f46e5;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px;flex-shrink:0;">${init}</div>
+                                    <div style="flex:1;min-width:0;overflow:hidden;">
+                                        <div class="suggestion-name" style="font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${user.name}</div>
+                                        <div style="font-size:10px;color:#818cf8;font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.04em;">${npk ? npk + ' &bull; ' : ''}${user.department || '-'}</div>
                                     </div>
-                                    <div class="opacity-0 group-hover:opacity-100">
-                                        <span class="text-[9px] font-black bg-indigo-600 text-white px-2 py-1 rounded">ADD</span>
-                                    </div>
-                                </div>
-                            `).join('');
-                            searchSuggestions.classList.remove('hidden');
+                                    <span style="font-size:9px;font-weight:900;background:#4f46e5;color:#fff;padding:4px 9px;border-radius:6px;flex-shrink:0;">PILIH</span>
+                                </div>`;
+                            }).join('');
+                            searchSuggestions.innerHTML = header + items;
                         } else {
-                            searchSuggestions.innerHTML = '<div class="px-4 py-3 text-xs text-gray-400 italic">Tidak ditemukan...</div>';
-                            searchSuggestions.classList.remove('hidden');
+                            searchSuggestions.innerHTML = '<div style="padding:18px 16px;text-align:center;font-size:12px;color:#94a3b8;font-style:italic;">Tidak ada data yang cocok.</div>';
                         }
+                        positionSuggestions();
+                        searchSuggestions.classList.remove('hidden');
                     });
             });
 
+            quickSearchInput.addEventListener('focus', positionSuggestions);
+            window.addEventListener('scroll', positionSuggestions, true);
+            window.addEventListener('resize', positionSuggestions);
+
             document.addEventListener('click', (e) => {
-                if (!e.target.closest('#quick-search-participant') && !e.target.closest('#quick-search-suggestions')) {
+                if (!e.target.closest('#quick-search-suggestions') && !e.target.closest('#quick-search-wrapper')) {
                     searchSuggestions.classList.add('hidden');
                 }
             });
         }
+
 
         function addSelectedParticipant(name, npk, department, subco) {
             fetch(`{{ route('trainings.participants.store', $training) }}`, {

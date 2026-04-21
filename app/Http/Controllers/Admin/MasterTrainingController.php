@@ -96,18 +96,21 @@ class MasterTrainingController extends Controller
         // Enrich participants with photos from users table if available
         $masterTraining->participants = collect($masterTraining->participants ?? [])->map(function($p) {
             $user = \App\Models\User::where('npk', $p['npk'] ?? '')->orWhere('email', $p['npk'] ?? '')->first();
+            $p['id'] = $user ? $user->id : null;
             $p['photo'] = $user && $user->photo ? asset('storage/' . $user->photo) : null;
             return $p;
         })->toArray();
 
         $masterTraining->trainers = collect($masterTraining->trainers ?? [])->map(function($t) {
             $user = \App\Models\User::where('npk', $t['npk'] ?? '')->orWhere('email', $t['npk'] ?? '')->first();
+            $t['id'] = $user ? $user->id : null;
             $t['photo'] = $user && $user->photo ? asset('storage/' . $user->photo) : null;
             return $t;
         })->toArray();
 
         $masterTraining->pics = collect($masterTraining->pics ?? [])->map(function($pic) {
             $user = \App\Models\User::where('npk', $pic['npk'] ?? '')->orWhere('email', $pic['npk'] ?? '')->first();
+            $pic['id'] = $user ? $user->id : null;
             $pic['photo'] = $user && $user->photo ? asset('storage/' . $user->photo) : null;
             return $pic;
         })->toArray();
@@ -316,6 +319,7 @@ class MasterTrainingController extends Controller
             ->get()
             ->map(function($user) {
                 return [
+                    'id' => $user->id,
                     'name' => $user->name,
                     'npk' => $user->npk ?: $user->email, // The "Visual" NPK
                     'department' => $user->department ?: '-',

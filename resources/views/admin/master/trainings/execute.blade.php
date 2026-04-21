@@ -177,53 +177,83 @@
                                         class="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 px-4 py-2 rounded-2xl transition-all border border-emerald-100 dark:border-emerald-800">+
                                         Manual</button>
                                 </div>
-                                <div class="mt-8 relative group">
+                                <div class="mt-8 relative" id="quick-search-trainer-wrapper">
                                     <input type="text" id="quick-search-trainer" placeholder="Cari trainer..."
                                         class="w-full pl-12 pr-6 py-4.5 bg-gray-50 dark:bg-gray-900/50 border border-transparent focus:bg-white dark:focus:bg-gray-800 focus:border-emerald-500/30 focus:ring-8 focus:ring-emerald-500/5 rounded-3xl text-sm transition-all dark:text-white">
                                     <i data-lucide="search"
                                         class="absolute left-4.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-emerald-500 transition-colors"></i>
-                                    <div id="quick-search-trainer-suggestions"
-                                        class="absolute z-50 w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl mt-4 hidden max-h-72 overflow-y-auto overflow-x-hidden">
-                                    </div>
+                                </div>
+                                <div id="quick-search-trainer-suggestions"
+                                    class="fixed z-[99999] bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl hidden overflow-y-auto" style="min-width:340px;">
                                 </div>
                             </div>
                             <div id="trainer_list" class="flex-1 p-8 space-y-4 min-h-[160px]">
                                 @php $trainers = old('trainers', $masterTraining->trainers ?? []); @endphp
                                 @foreach($trainers as $index => $trainer)
-                                    <div
-                                        class="trainer-row flex items-center gap-4 bg-gray-50 dark:bg-gray-900/40 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-emerald-200 dark:hover:border-emerald-500/20 transition-all">
-                                        <div
-                                            class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 font-bold shrink-0 overflow-hidden">
+                                    <div class="trainer-row flex items-center gap-4 bg-gray-50 dark:bg-gray-900/40 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-emerald-200 dark:hover:border-emerald-500/20 transition-all relative z-10 hover:z-50 overflow-visible">
+                                        <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 font-bold shrink-0 overflow-hidden">
                                             @if(!empty($trainer['photo']))
                                                 <img src="{{ $trainer['photo'] }}" class="w-full h-full object-cover">
                                             @else
                                                 {{ substr(is_array($trainer) ? ($trainer['name'] ?? '?') : $trainer, 0, 1) }}
                                             @endif
                                         </div>
-                                        <div class="flex-1 min-w-0">
+                                        <div class="flex-1 min-w-0 pr-8">
                                             <div class="flex flex-col">
-                                                <span
-                                                    class="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-0.5">{{ is_array($trainer) ? ($trainer['name'] ?? '') : $trainer }}</span>
-                                                <span
-                                                    class="text-[10px] font-black text-emerald-500 uppercase tracking-tighter opacity-70">{{ is_array($trainer) ? ($trainer['npk'] ?? '-') : '-' }}</span>
+                                                <span class="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-0.5">{{ is_array($trainer) ? ($trainer['name'] ?? '') : $trainer }}</span>
+                                                <span class="text-[10px] font-black text-emerald-500 uppercase tracking-tighter opacity-70">{{ is_array($trainer) ? ($trainer['npk'] ?? '-') : '-' }}</span>
                                             </div>
-                                            <input type="hidden" name="trainers[{{ $index }}][name]"
-                                                value="{{ is_array($trainer) ? ($trainer['name'] ?? '') : $trainer }}">
-                                            <input type="hidden" name="trainers[{{ $index }}][npk]"
-                                                value="{{ is_array($trainer) ? ($trainer['npk'] ?? '') : '' }}">
-                                            <input type="hidden" name="trainers[{{ $index }}][department]"
-                                                value="{{ is_array($trainer) ? ($trainer['department'] ?? '') : '' }}">
-                                            <input type="hidden" name="trainers[{{ $index }}][subco]"
-                                                value="{{ is_array($trainer) ? ($trainer['subco'] ?? '') : '' }}">
+                                            <input type="hidden" name="trainers[{{ $index }}][name]" value="{{ is_array($trainer) ? ($trainer['name'] ?? '') : $trainer }}">
+                                            <input type="hidden" name="trainers[{{ $index }}][npk]" value="{{ is_array($trainer) ? ($trainer['npk'] ?? '') : '' }}">
+                                            <input type="hidden" name="trainers[{{ $index }}][id]" value="{{ is_array($trainer) ? ($trainer['id'] ?? '') : ($trainer->id ?? '') }}">
+                                            <input type="hidden" name="trainers[{{ $index }}][department]" value="{{ is_array($trainer) ? ($trainer['department'] ?? '') : '' }}">
+                                            <input type="hidden" name="trainers[{{ $index }}][subco]" value="{{ is_array($trainer) ? ($trainer['subco'] ?? '') : '' }}">
                                         </div>
-                                        <button type="button"
-                                            class="remove-trainer p-2 text-red-400 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                </path>
-                                            </svg>
+                                        {{-- Floating Profile Popover --}}
+                                        <div class="absolute right-0 bottom-full mb-3 w-64 bg-white dark:bg-gray-800 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-700/50 p-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[90] translate-y-4 group-hover:translate-y-0 scale-95 group-hover:scale-100 origin-bottom-right pointer-events-none group-hover:pointer-events-auto">
+                                            <div class="absolute -bottom-2 right-8 w-4 h-4 bg-white dark:bg-gray-800 border-b border-r border-gray-100 dark:border-gray-700/50 rotate-45"></div>
+                                            <div class="text-center relative z-10">
+                                                <div class="w-16 h-16 mx-auto rounded-[1.25rem] bg-emerald-50 dark:bg-emerald-900/50 text-emerald-600 font-extrabold flex items-center justify-center text-3xl shadow-sm overflow-hidden mb-3 ring-4 ring-white dark:ring-gray-800">
+                                                    @if(!empty($trainer['photo']))
+                                                        <img src="{{ $trainer['photo'] }}" class="w-full h-full object-cover">
+                                                    @else
+                                                        {{ strtoupper(substr(is_array($trainer) ? ($trainer['name'] ?? '?') : $trainer, 0, 1)) }}
+                                                    @endif
+                                                </div>
+                                                <h4 class="text-sm font-black text-gray-900 dark:text-white mb-0.5 truncate px-2">{{ is_array($trainer) ? ($trainer['name'] ?? '') : $trainer }}</h4>
+                                                <p class="text-[10px] font-bold text-emerald-500/80 uppercase tracking-widest mb-4">{{ is_array($trainer) ? ($trainer['npk'] ?? '-') : '-' }}</p>
+                                                
+                                                <div class="grid grid-cols-2 gap-2 mb-4 text-left bg-gray-50/50 dark:bg-gray-900/50 p-2.5 rounded-2xl border border-gray-100/50 dark:border-gray-700/30">
+                                                    <div>
+                                                        <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Departemen</p>
+                                                        <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">{{ is_array($trainer) ? ($trainer['department'] ?? '-') : '-' }}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Sub Divisi</p>
+                                                        <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">{{ is_array($trainer) ? ($trainer['subco'] ?? '-') : '-' }}</p>
+                                                    </div>
+                                                </div>
+                                                @php 
+                                                    $e_id = is_array($trainer) ? ($trainer['id'] ?? null) : ($trainer->id ?? null);
+                                                    $npk_t = is_array($trainer) ? ($trainer['npk'] ?? '') : ''; 
+                                                @endphp
+                                                @if($e_id)
+                                                    <a href="{{ route('admin.employees.edit', $e_id) }}" target="_blank"
+                                                       class="w-full flex items-center justify-center gap-2 py-3 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-600 dark:hover:bg-emerald-600 text-emerald-600 dark:text-emerald-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-emerald-100 dark:border-emerald-800">
+                                                        <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                                        Edit Trainee
+                                                    </a>
+                                                @elseif($npk_t)
+                                                    <a href="{{ route('admin.employees.index') }}?search={{ $npk_t }}" target="_blank"
+                                                       class="w-full flex items-center justify-center gap-2 py-3 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-600 dark:hover:bg-emerald-600 text-emerald-600 dark:text-emerald-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-emerald-100 dark:border-emerald-800">
+                                                        <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                                        Edit Profile
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <button type="button" class="remove-trainer absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-red-50 dark:bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white dark:hover:bg-red-500 z-20">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
                                         </button>
                                     </div>
                                 @endforeach
@@ -256,53 +286,84 @@
                                         class="text-[10px] font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 px-4 py-2 rounded-2xl transition-all border border-blue-100 dark:border-blue-800">+
                                         Manual</button>
                                 </div>
-                                <div class="mt-8 relative group">
+                                <div class="mt-8 relative" id="quick-search-pic-wrapper">
                                     <input type="text" id="quick-search-pic" placeholder="Cari PIC..."
                                         class="w-full pl-12 pr-6 py-4.5 bg-gray-50 dark:bg-gray-900/50 border border-transparent focus:bg-white dark:focus:bg-gray-800 focus:border-blue-500/30 focus:ring-8 focus:ring-blue-500/5 rounded-3xl text-sm transition-all dark:text-white">
                                     <i data-lucide="search"
                                         class="absolute left-4.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
-                                    <div id="quick-search-pic-suggestions"
-                                        class="absolute z-50 w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl mt-4 hidden max-h-72 overflow-y-auto overflow-x-hidden">
-                                    </div>
+                                </div>
+                                <div id="quick-search-pic-suggestions"
+                                    class="fixed z-[99999] bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl hidden overflow-y-auto" style="min-width:340px;">
                                 </div>
                             </div>
                             <div id="pic_list" class="flex-1 p-8 space-y-4 min-h-[160px]">
                                 @php $pics = old('pics', $masterTraining->pics ?? []); @endphp
                                 @foreach($pics as $index => $pic)
-                                    <div
-                                        class="pic-row flex items-center gap-5 bg-gray-50 dark:bg-gray-900/40 p-4 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-blue-200 dark:hover:border-blue-500/10 transition-all shadow-sm">
-                                        <div
-                                            class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 font-bold shrink-0 shadow-sm overflow-hidden">
+                                    <div class="pic-row flex items-center gap-5 bg-gray-50 dark:bg-gray-900/40 p-4 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-blue-200 dark:hover:border-blue-500/10 transition-all shadow-sm relative z-10 hover:z-50 overflow-visible">
+                                        <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 font-bold shrink-0 shadow-sm overflow-hidden">
                                             @if(!empty($pic['photo']))
                                                 <img src="{{ $pic['photo'] }}" class="w-full h-full object-cover">
                                             @else
                                                 {{ substr(is_array($pic) ? ($pic['name'] ?? '?') : $pic, 0, 1) }}
                                             @endif
                                         </div>
-                                        <div class="flex-1 min-w-0">
+                                        <div class="flex-1 min-w-0 pr-8">
                                             <div class="flex flex-col">
-                                                <span
-                                                    class="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-0.5">{{ is_array($pic) ? ($pic['name'] ?? '') : $pic }}</span>
-                                                <span
-                                                    class="text-[10px] font-black text-blue-500 uppercase tracking-tighter opacity-70">{{ is_array($pic) ? ($pic['npk'] ?? '-') : '-' }}</span>
+                                                <span class="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-0.5">{{ is_array($pic) ? ($pic['name'] ?? '') : $pic }}</span>
+                                                <span class="text-[10px] font-black text-blue-500 uppercase tracking-tighter opacity-70">{{ is_array($pic) ? ($pic['npk'] ?? '-') : '-' }}</span>
                                             </div>
-                                            <input type="hidden" name="pics[{{ $index }}][name]"
-                                                value="{{ is_array($pic) ? ($pic['name'] ?? '') : $pic }}">
-                                            <input type="hidden" name="pics[{{ $index }}][npk]"
-                                                value="{{ is_array($pic) ? ($pic['npk'] ?? '') : '' }}">
-                                            <input type="hidden" name="pics[{{ $index }}][department]"
-                                                value="{{ is_array($pic) ? ($pic['department'] ?? '') : '' }}">
-                                            <input type="hidden" name="pics[{{ $index }}][subco]"
-                                                value="{{ is_array($pic) ? ($pic['subco'] ?? '') : '' }}">
+                                            <input type="hidden" name="pics[{{ $index }}][name]" value="{{ is_array($pic) ? ($pic['name'] ?? '') : $pic }}">
+                                            <input type="hidden" name="pics[{{ $index }}][npk]" value="{{ is_array($pic) ? ($pic['npk'] ?? '') : '' }}">
+                                            <input type="hidden" name="pics[{{ $index }}][id]" value="{{ is_array($pic) ? ($pic['id'] ?? '') : ($pic->id ?? '') }}">
+                                            <input type="hidden" name="pics[{{ $index }}][department]" value="{{ is_array($pic) ? ($pic['department'] ?? '') : '' }}">
+                                            <input type="hidden" name="pics[{{ $index }}][subco]" value="{{ is_array($pic) ? ($pic['subco'] ?? '') : '' }}">
                                         </div>
-                                        <button type="button"
-                                            class="remove-pic p-2.5 text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-colors opacity-0 group-hover:opacity-100">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                </path>
-                                            </svg>
+                                        {{-- Floating Profile Popover --}}
+                                        <div class="absolute right-0 bottom-full mb-3 w-64 bg-white dark:bg-gray-800 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-700/50 p-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[90] translate-y-4 group-hover:translate-y-0 scale-95 group-hover:scale-100 origin-bottom-right pointer-events-none group-hover:pointer-events-auto">
+                                            <div class="absolute -bottom-2 right-8 w-4 h-4 bg-white dark:bg-gray-800 border-b border-r border-gray-100 dark:border-gray-700/50 rotate-45"></div>
+                                            <div class="text-center relative z-10">
+                                                <div class="w-16 h-16 mx-auto rounded-[1.25rem] bg-blue-50 dark:bg-blue-900/50 text-blue-600 font-extrabold flex items-center justify-center text-3xl shadow-sm overflow-hidden mb-3 ring-4 ring-white dark:ring-gray-800">
+                                                    @if(!empty($pic['photo']))
+                                                        <img src="{{ $pic['photo'] }}" class="w-full h-full object-cover">
+                                                    @else
+                                                        {{ strtoupper(substr(is_array($pic) ? ($pic['name'] ?? '?') : $pic, 0, 1)) }}
+                                                    @endif
+                                                </div>
+                                                <h4 class="text-sm font-black text-gray-900 dark:text-white mb-0.5 truncate px-2">{{ is_array($pic) ? ($pic['name'] ?? '') : $pic }}</h4>
+                                                <p class="text-[10px] font-bold text-blue-500/80 uppercase tracking-widest mb-4">{{ is_array($pic) ? ($pic['npk'] ?? '-') : '-' }}</p>
+                                                
+                                                <div class="grid grid-cols-2 gap-2 mb-4 text-left bg-gray-50/50 dark:bg-gray-900/50 p-2.5 rounded-2xl border border-gray-100/50 dark:border-gray-700/30">
+                                                    <div>
+                                                        <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Departemen</p>
+                                                        <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">{{ is_array($pic) ? ($pic['department'] ?? '-') : '-' }}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Sub Divisi</p>
+                                                        <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">{{ is_array($pic) ? ($pic['subco'] ?? '-') : '-' }}</p>
+                                                    </div>
+                                                </div>
+                                                @php $npk_p = is_array($pic) ? ($pic['npk'] ?? '') : ''; @endphp
+                                                @php 
+                                                    $pic_id = is_array($pic) ? ($pic['id'] ?? null) : ($pic->id ?? null);
+                                                    $npk_p = is_array($pic) ? ($pic['npk'] ?? '') : ''; 
+                                                @endphp
+                                                @if($pic_id)
+                                                    <a href="{{ route('admin.employees.edit', $pic_id) }}" target="_blank"
+                                                       class="w-full flex items-center justify-center gap-2 py-3 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-600 dark:hover:bg-blue-600 text-blue-600 dark:text-blue-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-blue-100 dark:border-blue-800">
+                                                        <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                                        Edit Trainee
+                                                    </a>
+                                                @elseif($npk_p)
+                                                    <a href="{{ route('admin.employees.index') }}?search={{ $npk_p }}" target="_blank"
+                                                       class="w-full flex items-center justify-center gap-2 py-3 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-600 dark:hover:bg-blue-600 text-blue-600 dark:text-blue-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-blue-100 dark:border-blue-800">
+                                                        <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                                        Edit Profile
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <button type="button" class="remove-pic absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-red-50 dark:bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white dark:hover:bg-red-500 z-20">
+                                            <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
                                         </button>
                                     </div>
                                 @endforeach
@@ -344,14 +405,14 @@
                                     <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
                                     Manual
                                 </button>
-                                <div class="relative flex-1 md:w-80 group">
+                                <div class="relative flex-1 md:w-80" id="quick-search-participant-wrapper">
                                     <input type="text" id="quick-search-participant" placeholder="Tambah peserta..."
                                         class="block w-full pl-12 pr-6 py-4 bg-gray-50 dark:bg-gray-900/50 border border-transparent focus:bg-white dark:focus:bg-gray-800 focus:border-indigo-500/30 focus:ring-8 focus:ring-indigo-500/5 rounded-3xl text-sm transition-all text-gray-900 dark:text-gray-100 shadow-sm">
                                     <i data-lucide="search"
                                         class="absolute left-4.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-indigo-500 transition-colors"></i>
-                                    <div id="quick-search-suggestions"
-                                        class="absolute z-50 w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl mt-4 hidden max-h-96 overflow-y-auto">
-                                    </div>
+                                </div>
+                                <div id="quick-search-suggestions"
+                                    class="fixed z-[99999] bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-[2rem] shadow-2xl hidden overflow-y-auto" style="min-width:340px;">
                                 </div>
                             </div>
                         </div>
@@ -360,7 +421,7 @@
                             <div id="participant_grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 p-8">
                                 @php $participants = old('participants', $masterTraining->participants ?? []); @endphp
                                 @forelse($participants as $index => $participant)
-                                    <div class="participant-card group flex items-center gap-4 bg-gray-50/50 dark:bg-gray-900/40 p-4 rounded-[1.5rem] border border-gray-100 dark:border-gray-700/30 hover:border-indigo-200 dark:hover:border-indigo-500/20 transition-all animate-fade-in relative">
+                                    <div class="participant-card group flex items-center gap-4 bg-gray-50/50 dark:bg-gray-900/40 p-4 rounded-[1.5rem] border border-gray-100 dark:border-gray-700/30 hover:border-indigo-200 dark:hover:border-indigo-500/20 transition-all animate-fade-in relative z-10 hover:z-50 overflow-visible">
                                         <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 font-bold shrink-0 shadow-sm overflow-hidden">
                                             @if(!empty($participant['photo']))
                                                 <img src="{{ $participant['photo'] }}" class="w-full h-full object-cover">
@@ -368,22 +429,67 @@
                                                 {{ substr(is_array($participant) ? ($participant['name'] ?? '?') : $participant->name, 0, 1) }}
                                             @endif
                                         </div>
-                                        <div class="flex-1 min-w-0">
+                                        <div class="flex-1 min-w-0 pr-8">
                                             <div class="flex flex-col">
-                                                <span class="text-xs font-black text-gray-900 dark:text-white leading-tight mb-0.5 truncate group-hover:text-indigo-600 transition-colors uppercase">{{ is_array($participant) ? ($participant['name'] ?? '') : $participant->name }}</span>
+                                                <span class="text-xs font-black text-gray-900 dark:text-white leading-tight mb-0.5 truncate uppercase">{{ is_array($participant) ? ($participant['name'] ?? '') : $participant->name }}</span>
                                                 <div class="flex items-center gap-2">
                                                     <span class="text-[9px] font-black text-indigo-500/70 uppercase tracking-tighter">{{ is_array($participant) ? ($participant['npk'] ?? '-') : $participant->npk }}</span>
                                                     <span class="text-gray-300 dark:text-gray-700 text-[10px]">|</span>
                                                     <span class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase truncate">{{ is_array($participant) ? ($participant['department'] ?? '-') : $participant->department }}</span>
                                                 </div>
                                             </div>
-                                            <input type="hidden" name="participants[{{ $index }}][npk]" value="{{ is_array($participant) ? ($participant['npk'] ?? '') : $participant->npk }}">
                                             <input type="hidden" name="participants[{{ $index }}][name]" value="{{ is_array($participant) ? ($participant['name'] ?? '') : $participant->name }}">
+                                            <input type="hidden" name="participants[{{ $index }}][npk]" value="{{ is_array($participant) ? ($participant['npk'] ?? '') : $participant->npk }}">
+                                            <input type="hidden" name="participants[{{ $index }}][id]" value="{{ is_array($participant) ? ($participant['id'] ?? '') : ($participant->id ?? '') }}">
                                             <input type="hidden" name="participants[{{ $index }}][department]" value="{{ is_array($participant) ? ($participant['department'] ?? '-') : $participant->department }}">
                                             <input type="hidden" name="participants[{{ $index }}][subco]" value="{{ is_array($participant) ? ($participant['subco'] ?? '-') : $participant->subco }}">
                                         </div>
-                                        <button type="button" class="remove-participant absolute -right-1 -top-1 w-7 h-7 bg-white dark:bg-gray-800 text-red-500 rounded-full shadow-lg border border-red-50 dark:border-red-900/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 active:scale-95">
-                                            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                        {{-- Floating Profile Popover --}}
+                                        <div class="absolute right-0 bottom-full mb-3 w-64 bg-white dark:bg-gray-800 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-700/50 p-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[90] translate-y-4 group-hover:translate-y-0 scale-95 group-hover:scale-100 origin-bottom-right pointer-events-none group-hover:pointer-events-auto">
+                                            <div class="absolute -bottom-2 right-8 w-4 h-4 bg-white dark:bg-gray-800 border-b border-r border-gray-100 dark:border-gray-700/50 rotate-45"></div>
+                                            <div class="text-center relative z-10">
+                                                <div class="w-16 h-16 mx-auto rounded-[1.25rem] bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 font-extrabold flex items-center justify-center text-3xl shadow-sm overflow-hidden mb-3 ring-4 ring-white dark:ring-gray-800">
+                                                    @if(!empty($participant['photo']))
+                                                        <img src="{{ $participant['photo'] }}" class="w-full h-full object-cover">
+                                                    @else
+                                                        {{ strtoupper(substr(is_array($participant) ? ($participant['name'] ?? '?') : $participant->name, 0, 1)) }}
+                                                    @endif
+                                                </div>
+                                                <h4 class="text-sm font-black text-gray-900 dark:text-white mb-0.5 truncate px-2">{{ is_array($participant) ? ($participant['name'] ?? '') : $participant->name }}</h4>
+                                                <p class="text-[10px] font-bold text-indigo-500/80 uppercase tracking-widest mb-4">{{ is_array($participant) ? ($participant['npk'] ?? '-') : $participant->npk }}</p>
+                                                
+                                                <div class="grid grid-cols-2 gap-2 mb-4 text-left bg-gray-50/50 dark:bg-gray-900/50 p-2.5 rounded-2xl border border-gray-100/50 dark:border-gray-700/30">
+                                                    <div>
+                                                        <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Departemen</p>
+                                                        <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">{{ is_array($participant) ? ($participant['department'] ?? '-') : $participant->department }}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Sub Divisi</p>
+                                                        <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">{{ is_array($participant) ? ($participant['subco'] ?? '-') : $participant->subco }}</p>
+                                                    </div>
+                                                </div>
+
+                                                @php 
+                                                    $p_id = is_array($participant) ? ($participant['id'] ?? null) : ($participant->id ?? null);
+                                                    $npk = is_array($participant) ? ($participant['npk'] ?? '') : $participant->npk; 
+                                                @endphp
+                                                @if($p_id)
+                                                    <a href="{{ route('admin.employees.edit', $p_id) }}" target="_blank"
+                                                       class="w-full flex items-center justify-center gap-2 py-3 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-600 dark:hover:bg-indigo-600 text-indigo-600 dark:text-indigo-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-indigo-100 dark:border-indigo-800">
+                                                        <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                                        Edit Trainee
+                                                    </a>
+                                                @elseif($npk)
+                                                    <a href="{{ route('admin.employees.index') }}?search={{ $npk }}" target="_blank"
+                                                       class="w-full flex items-center justify-center gap-2 py-3 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-600 dark:hover:bg-indigo-600 text-indigo-600 dark:text-indigo-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-indigo-100 dark:border-indigo-800">
+                                                        <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                                        Edit Profile
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <button type="button" class="remove-participant absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-red-50 text-red-500 dark:bg-red-500/10 dark:text-red-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white dark:hover:bg-red-500 z-20">
+                                            <i data-lucide="x" class="w-4 h-4"></i>
                                         </button>
                                     </div>
                                 @empty
@@ -414,14 +520,37 @@
                 const picList = document.getElementById('pic_list');
                 const participantGrid = document.getElementById('participant_grid');
 
-                // --- COMMON SEARCH LOGIC ---
-                const highlightText = (text, query) => {
-                    if (!query) return text;
-                    const regex = new RegExp(`(${query})`, 'gi');
-                    return text.replace(regex, '<mark class="bg-indigo-500/30 text-indigo-600 dark:text-indigo-200 rounded px-0.5">$1</mark>');
-                };
+                // --- ADAPTIVE POSITIONING LOGIC ---
+                function positionSuggestions(wrapperId, suggestionsEl) {
+                    const wrapper = document.getElementById(wrapperId);
+                    if (!wrapper || !suggestionsEl) return;
+                    
+                    const rect = wrapper.getBoundingClientRect();
+                    const spaceBelow = window.innerHeight - rect.bottom - 12;
+                    const spaceAbove = rect.top - 12;
+                    const maxH = Math.min(380, Math.max(spaceBelow, 120));
+                    
+                    const w = Math.max(rect.width, 340);
+                    suggestionsEl.style.width = w + 'px';
+                    suggestionsEl.style.left = Math.min(rect.left + window.scrollX, window.innerWidth - w - 8) + 'px';
+                    suggestionsEl.style.maxHeight = maxH + 'px';
 
-                const performSearch = (query, suggestionsEl, onSelect) => {
+                    if (spaceBelow >= 120 || spaceBelow >= spaceAbove) {
+                        suggestionsEl.style.top = (rect.bottom + window.scrollY + 8) + 'px';
+                        suggestionsEl.style.bottom = 'auto';
+                    } else {
+                        suggestionsEl.style.top = 'auto';
+                        suggestionsEl.style.bottom = (window.innerHeight - rect.top + 8) + 'px';
+                    }
+                }
+
+                // Move portals to body
+                ['quick-search-trainer-suggestions', 'quick-search-pic-suggestions', 'quick-search-suggestions'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) document.body.appendChild(el);
+                });
+
+                const performSearch = (query, suggestionsEl, wrapperId, onSelect) => {
                     if (query.length < 3) {
                         suggestionsEl.classList.add('hidden');
                         return;
@@ -432,30 +561,35 @@
                         .then(data => {
                             if (data.length > 0) {
                                 suggestionsEl.innerHTML = `
-                                    <div class="p-3 border-b border-gray-50 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-900/30">
-                                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-2">Hasil Pencarian (${data.length})</p>
+                                    <div style="padding:12px 20px 8px; border-bottom:1px solid rgba(148,163,184,0.15); background: rgba(148,163,184,0.03);">
+                                        <p style="font-size:9px; font-weight:900; color:#94a3b8; text-transform:uppercase; letter-spacing:0.12em; margin:0;">Hasil Pencarian (${data.length})</p>
                                     </div>
-                                    ${data.map(user => `
-                                        <div class="suggestion-item px-5 py-4 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 cursor-pointer border-b border-gray-50 dark:border-gray-700/50 last:border-0 flex items-center gap-3 md:gap-4 group transition-all w-full overflow-hidden" 
-                                             data-user='${JSON.stringify(user).replace(/'/g, "&apos;")}'>
-                                            <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 font-black shrink-0 shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
-                                                ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0)}
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center gap-2 mb-0.5 overflow-hidden">
-                                                    <p class="text-[9px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest truncate shrink-0">${highlightText(user.npk || '-', query)}</p>
-                                                    <span class="text-gray-300 dark:text-gray-700 shrink-0">•</span>
-                                                    <p class="text-[9px] text-gray-400 font-bold uppercase tracking-tight truncate">${user.department || 'GENERAL'}</p>
+                                    ${data.map(user => {
+                                        const initial = (user.name || '?').charAt(0).toUpperCase();
+                                        return `
+                                            <div class="suggestion-item" 
+                                                 style="padding:12px 20px; cursor:pointer; border-bottom:1px solid rgba(148,163,184,0.08); display:flex; align-items:center; gap:16px; transition:all 0.2s;"
+                                                 onmouseenter="this.style.background='rgba(99,102,241,0.08)'"
+                                                 onmouseleave="this.style.background=''"
+                                                 data-user='${JSON.stringify(user).replace(/'/g, "&apos;")}'>
+                                                <div style="width:40px; height:40px; border-radius:12px; background:#4f46e5; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:16px; flex-shrink:0; overflow:hidden; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);">
+                                                    ${user.photo ? `<img src="${user.photo}" style="width:100%; height:100%; object-fit:cover;">` : initial}
                                                 </div>
-                                                <p class="text-xs md:text-sm font-black text-gray-800 dark:text-white truncate">${highlightText(user.name, query)}</p>
+                                                <div style="flex:1; min-width:0; overflow:hidden;">
+                                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; overflow:hidden;">
+                                                        <span style="font-size:10px; font-weight:900; color:#6366f1; text-transform:uppercase; letter-spacing:0.05em; white-space:nowrap;">${user.npk || '-'}</span>
+                                                        <span style="color:#cbd5e1; font-size:10px;">&bull;</span>
+                                                        <span style="font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${user.department || '-'}</span>
+                                                    </div>
+                                                    <div class="suggestion-name" style="font-size:14px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${user.name}</div>
+                                                </div>
+                                                <div style="flex-shrink:0; font-size:9px; font-weight:900; background:#4f46e5; color:#white; padding:5px 10px; border-radius:8px; color:#fff;">PILIH</div>
                                             </div>
-                                            <div class="opacity-0 group-hover:opacity-100 transition-all translate-x-1 group-hover:translate-x-0 shrink-0">
-                                                <span class="text-[9px] font-black bg-indigo-600 text-white px-2.5 py-1 rounded-lg">PILIH</span>
-                                            </div>
-                                        </div>
-                                    `).join('')}
+                                        `;
+                                    }).join('')}
                                 `;
                                 suggestionsEl.classList.remove('hidden');
+                                positionSuggestions(wrapperId, suggestionsEl);
 
                                 // Attach click events
                                 suggestionsEl.querySelectorAll('.suggestion-item').forEach(item => {
@@ -465,9 +599,9 @@
                                     });
                                 });
                             } else {
-                                suggestionsEl.innerHTML = '<div class="px-8 py-8 text-center"><i data-lucide="search-x" class="w-8 h-8 mx-auto mb-2 text-gray-300"></i><p class="text-xs text-gray-400 italic font-medium">Tidak ada hasil ditemukan.</p></div>';
+                                suggestionsEl.innerHTML = '<div style="padding:40px 20px; text-align:center; color:#94a3b8; font-style:italic; font-size:13px;">Tidak ada hasil ditemukan.</div>';
                                 suggestionsEl.classList.remove('hidden');
-                                lucide.createIcons();
+                                positionSuggestions(wrapperId, suggestionsEl);
                             }
                         });
                 };
@@ -475,29 +609,65 @@
                 // --- TRAINER SEARCH ---
                 const trainerInput = document.getElementById('quick-search-trainer');
                 const trainerSug = document.getElementById('quick-search-trainer-suggestions');
-                trainerInput.addEventListener('input', (e) => performSearch(e.target.value, trainerSug, addTrainerRow));
+                trainerInput.addEventListener('input', (e) => performSearch(e.target.value, trainerSug, 'quick-search-trainer-wrapper', addTrainerRow));
+                trainerInput.addEventListener('focus', () => performSearch(trainerInput.value, trainerSug, 'quick-search-trainer-wrapper', addTrainerRow));
 
                 function addTrainerRow(user) {
                     const emptyMsg = trainerList.querySelector('.italic');
                     if (emptyMsg) emptyMsg.parentElement.remove();
 
                     const html = `
-                        <div class="trainer-row flex items-center gap-4 bg-gray-50 dark:bg-gray-900/40 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-emerald-200 dark:hover:border-emerald-500/20 transition-all animate-fade-in">
+                        <div class="trainer-row flex items-center gap-4 bg-gray-50 dark:bg-gray-900/40 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-emerald-200 dark:hover:border-emerald-500/20 transition-all animate-fade-in relative overflow-visible">
                             <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 font-bold shrink-0 overflow-hidden">
-                                ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0)}
+                                ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0).toUpperCase()}
                             </div>
-                            <div class="flex-1 min-w-0">
+                            <div class="flex-1 min-w-0 pr-8">
                                 <div class="flex flex-col">
                                     <span class="text-sm font-bold text-gray-800 dark:text-white leading-tight mb-0.5">${user.name}</span>
                                     <span class="text-[10px] font-black text-emerald-500 uppercase tracking-tighter opacity-70">${user.npk || '-'}</span>
                                 </div>
                                 <input type="hidden" name="trainers[${trainerIndex}][name]" value="${user.name}">
                                 <input type="hidden" name="trainers[${trainerIndex}][npk]" value="${user.npk || ''}">
+                                <input type="hidden" name="trainers[${trainerIndex}][id]" value="${user.id || ''}">
                                 <input type="hidden" name="trainers[${trainerIndex}][department]" value="${user.department || ''}">
                                 <input type="hidden" name="trainers[${trainerIndex}][subco]" value="${user.subco || ''}">
                             </div>
-                            <button type="button" class="remove-trainer p-2 text-red-400 hover:text-red-600 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            <!-- Floating Profile Popover -->
+                            <div class="absolute right-0 bottom-full mb-3 w-64 bg-white dark:bg-gray-800 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-700/50 p-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[90] translate-y-4 group-hover:translate-y-0 scale-95 group-hover:scale-100 origin-bottom-right pointer-events-none group-hover:pointer-events-auto">
+                                <div class="absolute -bottom-2 right-8 w-4 h-4 bg-white dark:bg-gray-800 border-b border-r border-gray-100 dark:border-gray-700/50 rotate-45"></div>
+                                <div class="text-center relative z-10">
+                                    <div class="w-16 h-16 mx-auto rounded-[1.25rem] bg-emerald-50 dark:bg-emerald-900/50 text-emerald-600 font-extrabold flex items-center justify-center text-3xl shadow-sm overflow-hidden mb-3 ring-4 ring-white dark:ring-gray-800">
+                                        ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <h4 class="text-sm font-black text-gray-900 dark:text-white mb-0.5 truncate px-2">${user.name}</h4>
+                                    <p class="text-[10px] font-bold text-emerald-500/80 uppercase tracking-widest mb-4">${user.npk || '-'}</p>
+                                    <div class="grid grid-cols-2 gap-2 mb-4 text-left bg-gray-50/50 dark:bg-gray-900/50 p-2.5 rounded-2xl border border-gray-100/50 dark:border-gray-700/30">
+                                        <div>
+                                            <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Departemen</p>
+                                            <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">${user.department || '-'}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Sub Divisi</p>
+                                            <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">${user.subco || '-'}</p>
+                                        </div>
+                                    </div>
+                                    ${user.id ? `
+                                        <a href="/admin/employees/${user.id}/edit" target="_blank"
+                                           class="w-full flex items-center justify-center gap-2 py-3 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-600 dark:hover:bg-emerald-600 text-emerald-600 dark:text-emerald-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-emerald-100 dark:border-emerald-800">
+                                            <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                            Edit Trainee
+                                        </a>
+                                    ` : user.npk ? `
+                                        <a href="{{ route('admin.employees.index') }}?search=${user.npk}" target="_blank"
+                                           class="w-full flex items-center justify-center gap-2 py-3 bg-emerald-50 dark:bg-emerald-500/10 hover:bg-emerald-600 dark:hover:bg-emerald-600 text-emerald-600 dark:text-emerald-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-emerald-100 dark:border-emerald-800">
+                                            <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                            Edit Profile
+                                        </a>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <button type="button" class="remove-trainer absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-red-50 dark:bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white dark:hover:bg-red-500 z-20">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </div>
                     `;
@@ -510,29 +680,65 @@
                 // --- PIC SEARCH ---
                 const picInput = document.getElementById('quick-search-pic');
                 const picSug = document.getElementById('quick-search-pic-suggestions');
-                picInput.addEventListener('input', (e) => performSearch(e.target.value, picSug, addPicRow));
+                picInput.addEventListener('input', (e) => performSearch(e.target.value, picSug, 'quick-search-pic-wrapper', addPicRow));
+                picInput.addEventListener('focus', () => performSearch(picInput.value, picSug, 'quick-search-pic-wrapper', addPicRow));
 
                 function addPicRow(user) {
                     const emptyMsg = picList.querySelector('.italic');
                     if (emptyMsg) emptyMsg.parentElement.remove();
 
                     const html = `
-                        <div class="pic-row flex items-center gap-4 bg-gray-50 dark:bg-gray-900/40 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-blue-200 dark:hover:border-blue-500/20 transition-all animate-fade-in">
+                        <div class="pic-row flex items-center gap-4 bg-gray-50 dark:bg-gray-900/40 p-3.5 rounded-2xl border border-gray-100 dark:border-gray-700/30 group hover:border-blue-200 dark:hover:border-blue-500/20 transition-all animate-fade-in relative overflow-visible">
                             <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 font-bold shrink-0 overflow-hidden">
-                                ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0)}
+                                ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0).toUpperCase()}
                             </div>
-                            <div class="flex-1 min-w-0">
+                            <div class="flex-1 min-w-0 pr-8">
                                 <div class="flex flex-col">
                                     <span class="text-sm font-bold text-gray-800 dark:text-white leading-tight mb-0.5">${user.name}</span>
                                     <span class="text-[10px] font-black text-blue-500 uppercase tracking-tighter opacity-70">${user.npk || '-'}</span>
                                 </div>
                                 <input type="hidden" name="pics[${picIndex}][name]" value="${user.name}">
                                 <input type="hidden" name="pics[${picIndex}][npk]" value="${user.npk || ''}">
+                                <input type="hidden" name="pics[${picIndex}][id]" value="${user.id || ''}">
                                 <input type="hidden" name="pics[${picIndex}][department]" value="${user.department || ''}">
                                 <input type="hidden" name="pics[${picIndex}][subco]" value="${user.subco || ''}">
                             </div>
-                            <button type="button" class="remove-pic p-2 text-red-400 hover:text-red-600 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            <!-- Floating Profile Popover -->
+                            <div class="absolute right-0 bottom-full mb-3 w-64 bg-white dark:bg-gray-800 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-700/50 p-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[90] translate-y-4 group-hover:translate-y-0 scale-95 group-hover:scale-100 origin-bottom-right pointer-events-none group-hover:pointer-events-auto">
+                                <div class="absolute -bottom-2 right-8 w-4 h-4 bg-white dark:bg-gray-800 border-b border-r border-gray-100 dark:border-gray-700/50 rotate-45"></div>
+                                <div class="text-center relative z-10">
+                                    <div class="w-16 h-16 mx-auto rounded-[1.25rem] bg-blue-50 dark:bg-blue-900/50 text-blue-600 font-extrabold flex items-center justify-center text-3xl shadow-sm overflow-hidden mb-3 ring-4 ring-white dark:ring-gray-800">
+                                        ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <h4 class="text-sm font-black text-gray-900 dark:text-white mb-0.5 truncate px-2">${user.name}</h4>
+                                    <p class="text-[10px] font-bold text-blue-500/80 uppercase tracking-widest mb-4">${user.npk || '-'}</p>
+                                    <div class="grid grid-cols-2 gap-2 mb-4 text-left bg-gray-50/50 dark:bg-gray-900/50 p-2.5 rounded-2xl border border-gray-100/50 dark:border-gray-700/30">
+                                        <div>
+                                            <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Departemen</p>
+                                            <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">${user.department || '-'}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Sub Divisi</p>
+                                            <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">${user.subco || '-'}</p>
+                                        </div>
+                                    </div>
+                                    ${user.id ? `
+                                        <a href="/admin/employees/${user.id}/edit" target="_blank"
+                                           class="w-full flex items-center justify-center gap-2 py-3 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-600 dark:hover:bg-blue-600 text-blue-600 dark:text-blue-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-blue-100 dark:border-blue-800">
+                                            <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                            Edit Trainee
+                                        </a>
+                                    ` : user.npk ? `
+                                        <a href="{{ route('admin.employees.index') }}?search=${user.npk}" target="_blank"
+                                           class="w-full flex items-center justify-center gap-2 py-3 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-600 dark:hover:bg-blue-600 text-blue-600 dark:text-blue-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-blue-100 dark:border-blue-800">
+                                            <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                            Edit Profile
+                                        </a>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <button type="button" class="remove-pic absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-red-50 dark:bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white dark:hover:bg-red-500 z-20">
+                                <i data-lucide="trash-2" class="w-4.5 h-4.5"></i>
                             </button>
                         </div>
                     `;
@@ -545,20 +751,21 @@
                 // --- PARTICIPANT SEARCH ---
                 const participantInput = document.getElementById('quick-search-participant');
                 const participantSug = document.getElementById('quick-search-suggestions');
-                participantInput.addEventListener('input', (e) => performSearch(e.target.value, participantSug, addParticipantRow));
+                participantInput.addEventListener('input', (e) => performSearch(e.target.value, participantSug, 'quick-search-participant-wrapper', addParticipantRow));
+                participantInput.addEventListener('focus', () => performSearch(participantInput.value, participantSug, 'quick-search-participant-wrapper', addParticipantRow));
 
                 function addParticipantRow(user) {
                     const emptyMsg = document.getElementById('empty_grid_msg');
                     if (emptyMsg) emptyMsg.remove();
 
                     const html = `
-                        <div class="participant-card group flex items-center gap-4 bg-gray-50/50 dark:bg-gray-900/40 p-4 rounded-[1.5rem] border border-gray-100 dark:border-gray-700/30 hover:border-indigo-200 dark:hover:border-indigo-500/20 transition-all animate-fade-in relative">
+                        <div class="participant-card group flex items-center gap-4 bg-gray-50/50 dark:bg-gray-900/40 p-4 rounded-[1.5rem] border border-gray-100 dark:border-gray-700/30 hover:border-indigo-200 dark:hover:border-indigo-500/20 transition-all animate-fade-in relative overflow-visible">
                             <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-900/50 flex items-center justify-center text-indigo-600 font-bold shrink-0 shadow-sm overflow-hidden">
-                                ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0)}
+                                ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0).toUpperCase()}
                             </div>
-                            <div class="flex-1 min-w-0">
+                            <div class="flex-1 min-w-0 pr-8">
                                 <div class="flex flex-col">
-                                    <span class="text-xs font-black text-gray-900 dark:text-white leading-tight mb-0.5 truncate group-hover:text-indigo-600 transition-colors">${user.name}</span>
+                                    <span class="text-xs font-black text-gray-900 dark:text-white leading-tight mb-0.5 truncate uppercase">${user.name}</span>
                                     <div class="flex items-center gap-2">
                                         <span class="text-[9px] font-black text-indigo-500/70 uppercase tracking-tighter">${user.npk || '-'}</span>
                                         <span class="text-gray-300 dark:text-gray-700 text-[10px]">|</span>
@@ -567,11 +774,46 @@
                                 </div>
                                 <input type="hidden" name="participants[${participantIndex}][npk]" value="${user.npk || ''}">
                                 <input type="hidden" name="participants[${participantIndex}][name]" value="${user.name}">
+                                <input type="hidden" name="participants[${participantIndex}][id]" value="${user.id || ''}">
                                 <input type="hidden" name="participants[${participantIndex}][department]" value="${user.department || ''}">
                                 <input type="hidden" name="participants[${participantIndex}][subco]" value="${user.subco || ''}">
                             </div>
-                            <button type="button" class="remove-participant absolute -right-1 -top-1 w-7 h-7 bg-white dark:bg-gray-800 text-red-500 rounded-full shadow-lg border border-red-50 dark:border-red-900/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 active:scale-95">
-                                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                            <!-- Floating Profile Popover -->
+                            <div class="absolute right-0 bottom-full mb-3 w-64 bg-white dark:bg-gray-800 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-700/50 p-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[90] translate-y-4 group-hover:translate-y-0 scale-95 group-hover:scale-100 origin-bottom-right pointer-events-none group-hover:pointer-events-auto">
+                                <div class="absolute -bottom-2 right-8 w-4 h-4 bg-white dark:bg-gray-800 border-b border-r border-gray-100 dark:border-gray-700/50 rotate-45"></div>
+                                <div class="text-center relative z-10">
+                                    <div class="w-16 h-16 mx-auto rounded-[1.25rem] bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 font-extrabold flex items-center justify-center text-3xl shadow-sm overflow-hidden mb-3 ring-4 ring-white dark:ring-gray-800">
+                                        ${user.photo ? `<img src="${user.photo}" class="w-full h-full object-cover">` : user.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <h4 class="text-sm font-black text-gray-900 dark:text-white mb-0.5 truncate px-2">${user.name}</h4>
+                                    <p class="text-[10px] font-bold text-indigo-500/80 uppercase tracking-widest mb-4">${user.npk || '-'}</p>
+                                    <div class="grid grid-cols-2 gap-2 mb-4 text-left bg-gray-50/50 dark:bg-gray-900/50 p-2.5 rounded-2xl border border-gray-100/50 dark:border-gray-700/30">
+                                        <div>
+                                            <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Departemen</p>
+                                            <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">${user.department || '-'}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Sub Divisi</p>
+                                            <p class="text-[10px] font-black text-gray-700 dark:text-gray-300 truncate">${user.subco || '-'}</p>
+                                        </div>
+                                    </div>
+                                    ${user.id ? `
+                                        <a href="/admin/employees/${user.id}/edit" target="_blank"
+                                           class="w-full flex items-center justify-center gap-2 py-3 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-600 dark:hover:bg-indigo-600 text-indigo-600 dark:text-indigo-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-indigo-100 dark:border-indigo-800">
+                                            <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                            Edit Trainee
+                                        </a>
+                                    ` : user.npk ? `
+                                        <a href="{{ route('admin.employees.index') }}?search=${user.npk}" target="_blank"
+                                           class="w-full flex items-center justify-center gap-2 py-3 bg-indigo-50 dark:bg-indigo-500/10 hover:bg-indigo-600 dark:hover:bg-indigo-600 text-indigo-600 dark:text-indigo-400 hover:text-white rounded-xl transition-all cursor-pointer font-bold text-[10px] uppercase tracking-widest group/btn mt-1 border border-indigo-100 dark:border-indigo-800">
+                                            <i data-lucide="user-cog" class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110"></i>
+                                            Edit Profile
+                                        </a>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <button type="button" class="remove-participant absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-red-50 text-red-500 dark:bg-red-500/10 dark:text-red-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white dark:hover:bg-red-500 z-20">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
                             </button>
                         </div>
                     `;
@@ -588,7 +830,7 @@
                     if (emptyMsg) emptyMsg.parentElement.remove();
 
                     const html = `
-                        <div class="trainer-row border-2 border-emerald-500/30 dark:border-emerald-500/20 flex items-center gap-5 bg-emerald-50/50 dark:bg-emerald-500/10 p-5 rounded-[2rem] animate-fade-in group shadow-sm shadow-emerald-500/5">
+                        <div class="trainer-row border-2 border-emerald-500/30 dark:border-emerald-500/20 flex items-center gap-5 bg-emerald-50/50 dark:bg-emerald-500/10 p-5 rounded-[2rem] animate-fade-in group shadow-sm shadow-emerald-500/5 relative z-10 hover:z-50">
                             <div class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-black shrink-0 shadow-sm">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                             </div>
@@ -714,10 +956,22 @@
 
                 // Close suggestions on outside click
                 document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.relative')) {
+                    if (!e.target.closest('[id$="-wrapper"]') && !e.target.closest('[id$="-suggestions"]')) {
                         document.querySelectorAll('[id$="-suggestions"]').forEach(el => el.classList.add('hidden'));
                     }
                 });
+
+                // Update positions on scroll/resize
+                window.addEventListener('resize', () => {
+                    positionSuggestions('quick-search-trainer-wrapper', trainerSug);
+                    positionSuggestions('quick-search-pic-wrapper', picSug);
+                    positionSuggestions('quick-search-participant-wrapper', participantSug);
+                });
+                window.addEventListener('scroll', () => {
+                    positionSuggestions('quick-search-trainer-wrapper', trainerSug);
+                    positionSuggestions('quick-search-pic-wrapper', picSug);
+                    positionSuggestions('quick-search-participant-wrapper', participantSug);
+                }, true);
 
                 // --- DURATION CALCULATOR ---
                 const startDateInput = document.getElementById('start_date');
@@ -750,6 +1004,135 @@
                     endDateInput.addEventListener('change', updateDuration);
                     updateDuration();
                 }
+                // --- ADAPTIVE PROFILE POPOVERS ---
+                const popoversMap = new Map();
+                let hoverTimeout = null;
+                let activePopover = null;
+                let activeRow = null;
+
+                function showGlobalPopover(row) {
+                    if (activePopover && activeRow !== row) {
+                        hideGlobalPopover(activePopover);
+                    }
+                    
+                    let popover = popoversMap.get(row) || row.querySelector('.absolute.w-64.origin-bottom-right, .absolute.w-64.origin-top-right');
+                    if (!popover) return;
+                    
+                    if (!popoversMap.has(row)) {
+                        popoversMap.set(row, popover);
+                        document.body.appendChild(popover);
+                        // Convert from CSS-hover-based to JS-controlled
+                        popover.classList.remove('group-hover:opacity-100', 'group-hover:visible', 'group-hover:translate-y-0', 'group-hover:scale-100');
+                        popover.classList.add('transition-all', 'duration-300');
+                    }
+                    
+                    activeRow = row;
+                    activePopover = popover;
+                    
+                    const rect = row.getBoundingClientRect();
+                    popover.style.position = 'fixed';
+                    popover.style.zIndex = '999999';
+                    
+                    // Force solid background to bypass tailwind class removal or bleed-through issues
+                    const isDark = document.documentElement.classList.contains('dark');
+                    const bgColor = isDark ? '#111827' : '#ffffff';
+                    
+                    // Force the color on the main container with !important
+                    popover.style.setProperty('background-color', bgColor, 'important');
+                    popover.style.opacity = '1';
+                    popover.style.visibility = 'visible';
+                    popover.style.pointerEvents = 'auto';
+                    popover.style.display = 'block';
+                    popover.style.height = 'auto';
+                    popover.style.minHeight = 'max-content';
+                    popover.style.overflow = 'visible';
+                    popover.style.boxShadow = isDark ? '0 25px 50px -12px rgba(0, 0, 0, 0.8)' : '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+                    
+                    // Show it to measure it
+                    popover.classList.remove('invisible', 'opacity-0', 'scale-95', 'translate-y-4');
+                    popover.classList.add('visible', 'opacity-100', 'scale-100', 'translate-y-0');
+                    
+                    const pHeight = popover.offsetHeight || 260; 
+                    const pWidth = popover.offsetWidth || 256;
+                    
+                    let top = rect.top - pHeight - 12;
+                    let position = 'top';
+                    
+                    if (top < 70) {
+                        // Not enough space above, flip to bottom
+                        top = rect.bottom + 12;
+                        position = 'bottom';
+                    }
+                    
+                    // Adaptive horizontal positioning (try to center over the card)
+                    let left = rect.left + (rect.width / 2) - (pWidth / 2);
+                    
+                    // Prevent rendering off-screen (keep it at least 16px from edges)
+                    if (left < 16) left = 16;
+                    if (left + pWidth > window.innerWidth - 16) left = window.innerWidth - pWidth - 16;
+                    
+                    let arrow = popover.querySelector('.rotate-45');
+                    if (arrow) {
+                        arrow.style.backgroundColor = isDark ? '#111827' : '#ffffff';
+                        // Remove manual right constraints
+                        arrow.classList.remove('right-8');
+                        
+                        // Dynamically center the arrow pointing exactly at the center of the card
+                        let arrowLeftOffset = rect.left + (rect.width / 2) - left - 8; // -8 for half arrow width
+                        // Keep arrow within popover bounds
+                        if (arrowLeftOffset < 16) arrowLeftOffset = 16;
+                        if (arrowLeftOffset > pWidth - 24) arrowLeftOffset = pWidth - 24;
+                        
+                        arrow.style.left = arrowLeftOffset + 'px';
+                        
+                        if (position === 'bottom') {
+                            arrow.className = arrow.className.replace('-bottom-2', '-top-2').replace('border-b', 'border-t').replace('border-r', 'border-l');
+                        } else {
+                            arrow.className = arrow.className.replace('-top-2', '-bottom-2').replace('border-t', 'border-b').replace('border-l', 'border-r');
+                        }
+                    }
+                    
+                    popover.style.top = top + 'px';
+                    popover.style.left = left + 'px';
+                }
+
+                function hideGlobalPopover(popover) {
+                    if (!popover) return;
+                    popover.classList.remove('visible', 'opacity-100', 'scale-100', 'translate-y-0');
+                    popover.classList.add('invisible', 'opacity-0', 'scale-95', 'translate-y-4');
+                    // Reset inline styles that override classes
+                    popover.style.opacity = '0';
+                    popover.style.visibility = 'hidden';
+                    popover.style.pointerEvents = 'none';
+                }
+
+                document.addEventListener('mouseover', (e) => {
+                    // Try to find if user is hovering over a trigger row or the popover itself
+                    const row = e.target.closest('.trainer-row, .pic-row, .participant-card');
+                    const isHoveringPopover = e.target.closest('.absolute.w-64.origin-bottom-right, .absolute.w-64.origin-top-right');
+                    
+                    if (row) {
+                        clearTimeout(hoverTimeout);
+                        showGlobalPopover(row);
+                    } else if (isHoveringPopover) {
+                        clearTimeout(hoverTimeout);
+                    } else if (activePopover) {
+                        clearTimeout(hoverTimeout);
+                        hoverTimeout = setTimeout(() => {
+                            hideGlobalPopover(activePopover);
+                            activePopover = null;
+                            activeRow = null;
+                        }, 150);
+                    }
+                });
+
+                window.addEventListener('scroll', () => {
+                    if (activePopover) {
+                        hideGlobalPopover(activePopover);
+                        activePopover = null;
+                        activeRow = null;
+                    }
+                }, true);
             });
         </script>
         <style>
@@ -784,6 +1167,9 @@
             .animate-fade-out {
                 animation: fadeOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             }
+
+            .suggestion-name { color: #1e293b; }
+            .dark .suggestion-name { color: #f8fafc; }
 
             /* Custom Scrollbar for Participant List */
             .scrollbar-thin::-webkit-scrollbar { width: 6px; }
