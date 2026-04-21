@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Panduan Admin - Report Trainee System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .nav-link { transition: all 0.2s; position: relative; }
+        .nav-link:hover { color: #4f46e5; transform: translateX(8px); }
+        .nav-link::before { content: '→'; position: absolute; left: -1.5rem; opacity: 0; transition: all 0.2s; }
+        .nav-link:hover::before { opacity: 1; left: -1.25rem; }
+        .content-card { @apply bg-white border border-slate-100 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 transition-all duration-500; }
+        .step-number { @apply w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-black text-xs shrink-0; }
+    </style>
+</head>
+<body class="bg-[#f8fafc] py-16 px-4">
+
+<div class="max-w-5xl mx-auto bg-white shadow-2xl shadow-indigo-900/5 rounded-[2.5rem] border border-slate-100 p-8 md:p-20 overflow-hidden relative">
+    
+    <!-- Decorative Background -->
+    <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-[100px] -mt-20 -mr-20"></div>
+
+    <!-- Header Section -->
+    <header class="mb-20 relative z-10">
+        <div class="flex flex-col md:flex-row items-center gap-10 border-b border-slate-100 pb-16">
+            <!-- Logo Box -->
+            <div class="w-36 h-36 flex-shrink-0 bg-indigo-600 rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-indigo-500/40 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
+                <i class="fas fa-user-shield text-6xl text-white"></i>
+            </div>
+            
+            <div class="text-center md:text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-4 border border-indigo-100">
+                    <i class="fas fa-shield-halved"></i> Administrator Guidebook
+                </div>
+                <h1 class="text-4xl md:text-6xl font-black text-slate-900 mb-4 tracking-tighter leading-none">RTS Admin Guide</h1>
+                <p class="text-xl text-slate-500 mb-2 font-medium">Report Trainee System &mdash; Manajemen Pelatihan Terpadu</p>
+                <p class="text-sm text-slate-400 font-bold uppercase tracking-widest leading-none">PT Dharma Polimetal Tbk.</p>
+                
+                <div class="flex flex-wrap justify-center md:justify-start gap-4 mt-8">
+                    <span class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-[11px] font-bold text-slate-500"><i class="fas fa-file-invoice text-indigo-500 font-black"></i> Versi 1.5 - April 2026</span>
+                    <span class="flex items-center gap-2 bg-indigo-600 px-3 py-1.5 rounded-xl text-[11px] font-bold text-white shadow-lg shadow-indigo-500/20"><i class="fas fa-user-lock"></i> Khusus Admin HRMS</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Quick Navigation -->
+    <section class="bg-indigo-50/40 rounded-[2rem] p-10 mb-20 border border-indigo-100/50 relative overflow-hidden group">
+        <h3 class="text-indigo-600 font-black tracking-[0.25em] text-[10px] uppercase mb-8 relative z-10 flex items-center gap-2">
+            <span class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></span>
+            Navigasi Panduan Sistem
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-5 gap-x-12 text-slate-600 font-bold text-xs relative z-10 uppercase tracking-wider">
+            <a href="#akses" class="nav-link flex items-center gap-3"><i class="fas fa-key w-4 text-indigo-400"></i> 1. Hak Akses & Dashboard</a>
+            <a href="#master" class="nav-link flex items-center gap-3"><i class="fas fa-database w-4 text-indigo-400"></i> 2. Kelola Master Program</a>
+            <a href="#eksekusi" class="nav-link flex items-center gap-3"><i class="fas fa-calendar-check w-4 text-indigo-400"></i> 3. Eksekusi Batch Training</a>
+            <a href="#presensi" class="nav-link flex items-center gap-3"><i class="fas fa-qrcode w-4 text-indigo-400"></i> 4. Monitoring Presensi QR</a>
+            <a href="#scoring" class="nav-link flex items-center gap-3"><i class="fas fa-chart-line w-4 text-indigo-400"></i> 5. Input Skor & Evaluasi</a>
+            <a href="#summary" class="nav-link flex items-center gap-3"><i class="fas fa-file-contract w-4 text-indigo-400"></i> 6. Summary & Approval</a>
+            <a href="#user" class="nav-link flex items-center gap-3"><i class="fas fa-users-gear w-4 text-indigo-400"></i> 7. Database Karyawan</a>
+        </div>
+    </section>
+
+    <!-- 1. Hak Akses -->
+    <section id="akses" class="mb-24 scroll-mt-10">
+        <div class="flex items-center gap-4 mb-8">
+            <span class="step-number">01</span>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Hak Akses & Dashboard</h2>
+        </div>
+        <p class="text-slate-600 mb-8 leading-relaxed text-lg font-medium">Sistem RTS memisahkan akses Dashboard berdasarkan peran pengguna. Hanya pengguna dengan mandat <code class="bg-indigo-50 text-indigo-600 px-2 py-1 rounded-lg border border-indigo-100 text-sm font-bold">role:admin</code> yang memiliki kendali penuh.</p>
+        
+        <div class="content-card bg-slate-900 text-white border-none relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <div class="relative z-10 flex flex-col md:flex-row gap-8">
+                <div class="flex-1 space-y-4">
+                    <h4 class="text-indigo-400 font-black uppercase text-xs tracking-widest mb-4">Statistik Dashboard Utama</h4>
+                    <ul class="space-y-3 text-sm font-medium opacity-80">
+                        <li class="flex items-center gap-3"><i class="fas fa-circle-play text-indigo-400 text-[8px]"></i> <strong>Ongoing:</strong> Sesi pelatihan yang sedang berjalan hari ini.</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-calendar-day text-indigo-400 text-[8px]"></i> <strong>Upcoming:</strong> Sesi yang dijadwalkan di masa mendatang.</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-box-archive text-indigo-400 text-[8px]"></i> <strong>Archive:</strong> Histori laporan pelatihan yang sudah disetujui.</li>
+                    </ul>
+                </div>
+                <div class="hidden md:block w-px bg-white/10 shrink-0"></div>
+                <div class="flex-1 space-y-4">
+                    <h4 class="text-indigo-400 font-black uppercase text-xs tracking-widest mb-4">Aktivitas Terkini</h4>
+                    <p class="text-xs leading-relaxed opacity-70">Bagian bawah Dashboard menyajikan "Live Feed" aktivitas entry data terbaru, memudahkan Admin untuk melompat langsung ke sesi yang paling aktif.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Kelola Master -->
+    <section id="master" class="mb-24 scroll-mt-10">
+        <div class="flex items-center gap-4 mb-8">
+            <span class="step-number">02</span>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Manajemen Katalog Master Program</h2>
+        </div>
+        <p class="text-slate-600 mb-8 leading-relaxed text-lg font-medium">Master Data berfungsi sebagai "Template" untuk setiap program pelatihan agar identitas kode dan topik tetap konsisten.</p>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="content-card border-l-4 border-l-indigo-600">
+                <i class="fas fa-tags text-2xl text-indigo-500 mb-6 block"></i>
+                <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">Metode Penginputan</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    Admin dapat mengunggah file **CSV/Excel** untuk mendaftarkan ratusan program sekaligus melalui panel <strong>Import</strong>. Sistem akan memvalidasi duplikasi <i>Event No</i> secara otomatis untuk mencegah tumpang tindih data.
+                </p>
+            </div>
+            <div class="content-card border-l-4 border-l-slate-800">
+                <i class="fas fa-graduation-cap text-2xl text-slate-400 mb-6 block"></i>
+                <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest mb-4">Parameter Standar</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    Setiap Master menyimpan standar <strong>Passing Grade</strong>, estimasi durasi, dan kategori (Mandatory/Managerial/Technical). Parameter ini akan diwariskan ke setiap Batch Training yang dibuat.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Eksekusi Batch -->
+    <section id="eksekusi" class="mb-24 scroll-mt-10">
+        <div class="flex items-center gap-4 mb-8">
+            <span class="step-number">03</span>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Eksekusi Batch & Penjadwalan</h2>
+        </div>
+        
+        <div class="bg-indigo-600 rounded-[2rem] p-10 text-white relative shadow-2xl shadow-indigo-500/20 overflow-hidden group">
+            <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-white/5 rounded-full blur-[80px]"></div>
+            <h4 class="text-xs font-black uppercase tracking-[0.2em] text-white/50 mb-6">Langkah Eksekusi Training</h4>
+            <div class="space-y-8 relative z-10">
+                <div class="flex gap-4">
+                    <div class="w-6 h-6 rounded-full bg-white text-indigo-600 flex items-center justify-center text-[10px] font-black shrink-0">1</div>
+                    <p class="text-sm">Pilih program dari menu Master Training dan klik tombol <code class="bg-white/10 px-1.5 py-0.5 rounded font-mono">EXECUTE</code>.</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-6 h-6 rounded-full bg-white text-indigo-600 flex items-center justify-center text-[10px] font-black shrink-0">2</div>
+                    <p class="text-sm">Tentukan Periode (Mulai & Selesai), Lokasi Pelatihan, serta daftar PIC & Trainer penanggung jawab.</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-6 h-6 rounded-full bg-white text-indigo-600 flex items-center justify-center text-[10px] font-black shrink-0">3</div>
+                    <p class="text-sm">Sistem akan otomatis men-generate **Unique Training Code** (Contoh: MDT_2026_01) berdasarkan sekuensial sistem.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Presensi QR -->
+    <section id="presensi" class="mb-24 scroll-mt-10">
+        <div class="flex items-center gap-4 mb-8">
+            <span class="step-number">04</span>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Monitoring & Presensi QR</h2>
+        </div>
+        <p class="text-slate-600 mb-8 leading-relaxed text-lg font-medium">Lupakan absensi manual kertas. RTS menggunakan teknologi QR Code dinamis untuk validasi kehadiran fisik.</p>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="content-card bg-slate-50 border-slate-200">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-white border border-slate-200 rounded-3xl flex items-center justify-center mb-6 shadow-sm">
+                        <i class="fas fa-qrcode text-4xl text-indigo-600"></i>
+                    </div>
+                    <h5 class="font-black text-slate-800 text-xs uppercase tracking-widest mb-3">Live Presence QR</h5>
+                    <p class="text-xs text-slate-500 leading-relaxed">Setiap Batch memiliki menu **Attendance QR**. Admin dapat menampilkan ini di layar proyektor ruang kelas untuk di-scan oleh peserta yang hadir.</p>
+                </div>
+            </div>
+            <div class="content-card bg-slate-50 border-slate-200">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-white border border-slate-200 rounded-3xl flex items-center justify-center mb-6 shadow-sm">
+                        <i class="fas fa-camera text-4xl text-indigo-600"></i>
+                    </div>
+                    <h5 class="font-black text-slate-800 text-xs uppercase tracking-widest mb-3">Photo Verification</h5>
+                    <p class="text-xs text-slate-500 leading-relaxed">Peserta wajib mengambil foto wajah saat proses scan untuk memastikan validitas presensi sesuai dengan NPK karyawan yang terdaftar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Scoring & Evaluasi -->
+    <section id="scoring" class="mb-24 scroll-mt-10">
+        <div class="flex items-center gap-4 mb-8">
+            <span class="step-number">05</span>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Manajemen Nilai & Evaluasi</h2>
+        </div>
+        
+        <div class="overflow-hidden rounded-[2rem] border border-slate-100 shadow-xl overflow-hidden">
+            <table class="w-full text-left text-sm text-slate-600">
+                <thead class="bg-slate-900 text-white text-[10px] uppercase font-black tracking-[0.2em]">
+                    <tr>
+                        <th class="px-8 py-5">Aspek Penilaian</th>
+                        <th class="px-8 py-5">Metode Pengisian</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 bg-white italic">
+                    <tr>
+                        <td class="px-8 py-6 font-bold text-slate-800">Skor Akademik (Pre/Post Test)</td>
+                        <td class="px-8 py-6 text-sm">Gunakan fitur <code>Import Participant CSV</code> untuk mengisikan nilai secara massal dari lembar koreksi ujian.</td>
+                    </tr>
+                    <tr>
+                        <td class="px-8 py-6 font-bold text-slate-800">Evaluasi & Atmosfer (CSI)</td>
+                        <td class="px-8 py-6 text-sm">Input rata-rata skor kepuasan peserta (Skala 1-4) dan suasana pelatihan untuk kalkulasi indeks kepuasan program.</td>
+                    </tr>
+                    <tr>
+                        <td class="px-8 py-6 font-bold text-slate-800">Observasi Skill (Gap Analysis)</td>
+                        <td class="px-8 py-6 text-sm">Sinkronisasikan data hasil observasi lapangan via <strong>Google Sheets URL</strong> jika diperlukan integrasi data eksternal.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 6. Summary -->
+    <section id="summary" class="mb-24 scroll-mt-10">
+        <div class="flex items-center gap-4 mb-8">
+            <span class="step-number">06</span>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Summary Report & Approval</h2>
+        </div>
+        <p class="text-slate-600 mb-8 leading-relaxed text-lg font-medium">Finalisasi laporan adalah langkah krusial untuk mencatat "Sertifikasi" resmi ke dalam track record karyawan.</p>
+        
+        <div class="content-card bg-indigo-50/50 border-indigo-100 text-slate-700">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-indigo-600 shadow-lg text-xl shrink-0"><i class="fas fa-check-double"></i></div>
+                <div class="space-y-4">
+                    <p class="text-sm font-bold leading-relaxed">Setelah data nilai dan foto lengkap, klik tombol <span class="bg-indigo-600 text-white px-2 py-0.5 rounded-lg text-[10px] uppercase font-black mx-1">Approve Training</span> di panel detail. Sistem akan secara otomatis:</p>
+                    <ul class="text-[13px] space-y-2 opacity-80 pl-4 list-disc font-medium">
+                        <li>Membubuhkan **APPROVED STAMP** digital.</li>
+                        <li>Mengunci data report (Read-only) untuk integritas audit.</li>
+                        <li>Memasukkan status training ke dalam riwayat **Archive**.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Database -->
+    <section id="user" class="mb-10 scroll-mt-10">
+        <div class="flex items-center gap-4 mb-8">
+            <span class="step-number">07</span>
+            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Administrasi User & Karyawan</h2>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="md:col-span-2 content-card">
+                <h4 class="font-black text-slate-800 text-[10px] uppercase tracking-widest mb-4">Bulk Employee Import</h4>
+                <p class="text-sm text-slate-600 leading-relaxed mb-6">Sinkronisasi data karyawan secara massal untuk mengakomodasi Trainee baru atau perubahan jabatan/departemen dari sistem SDM pusat.</p>
+                <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-2xl flex items-center gap-3 text-[11px] font-black text-indigo-600 uppercase tracking-widest leading-none">
+                    <i class="fas fa-lightbulb"></i> Tips: Gunakan penamaan file Foto NPK.JPG untuk Bulk Import Foto.
+                </div>
+            </div>
+            <div class="content-card bg-slate-900 border-none flex flex-col justify-center items-center text-center py-10">
+                <i class="fas fa-user-plus text-3xl text-indigo-500 mb-4"></i>
+                <p class="text-[10px] font-black text-white/40 uppercase tracking-widest mb-2">Internal Users</p>
+                <h3 class="text-white font-black leading-tight text-lg mb-4">Reset & Update Admin Credentials</h3>
+                <p class="text-[10px] text-white/50 leading-relaxed uppercase">Kontrol penuh atas ganti password & hak akses staff HRMS.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-32 pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center text-[10px] font-bold text-slate-400 gap-4 uppercase tracking-[0.2em]">
+        <div>&copy; 2026 PT Dharma Polimetal Tbk. &mdash; Dokumen Internal.</div>
+        <div class="text-indigo-500">Report Trainee System Guide v1.5</div>
+    </footer>
+
+</div>
+
+</body>
+</html>
