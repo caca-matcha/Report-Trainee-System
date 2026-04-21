@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuskrip & Dokumentasi Teknikal - Report Trainee System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .prose h1, .prose h2, .prose h3 { color: #1e293b; font-weight: 800; tracking: tight; }
+        .prose p { color: #475569; line-height: 1.75; }
+        pre { background: #1e293b; color: #f8fafc; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; }
+        code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+        .sidebar-link { transition: all 0.2s; }
+        .sidebar-link:hover { color: #4f46e5; transform: translateX(4px); }
+        @media print {
+            .no-print { display: none; }
+            .print-break { page-break-before: always; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 antialiased text-gray-800">
+
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row min-h-screen">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="lg:w-80 bg-white border-r border-gray-200 p-8 lg:sticky lg:top-0 h-fit lg:h-screen overflow-y-auto no-print shrink-0">
+            <div class="mb-10">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">RT</div>
+                    <h1 class="text-xl font-extrabold tracking-tighter text-slate-900 leading-none">Report Trainee<br><span class="text-indigo-600">System</span></h1>
+                </div>
+                <p class="text-[10px] uppercase font-black tracking-widest text-slate-400">Handover Manual Book</p>
+            </div>
+
+            <nav class="space-y-1">
+                <a href="#pendahuluan" class="sidebar-link block py-2 text-sm font-semibold text-slate-600">1. Pendahuluan</a>
+                <a href="#tech-stack" class="sidebar-link block py-2 text-sm font-semibold text-slate-600">2. Teknologi & Stack</a>
+                <a href="#arsitektur" class="sidebar-link block py-2 text-sm font-semibold text-slate-600">3. Arsitektur</a>
+                <a href="#database" class="sidebar-link block py-2 text-sm font-semibold text-slate-600">4. Database & Entitas</a>
+                <a href="#workflow" class="sidebar-link block py-2 text-sm font-semibold text-slate-600">5. Alur Bisnis</a>
+                <a href="#instalasi" class="sidebar-link block py-2 text-sm font-semibold text-slate-600">6. Panduan Instalasi</a>
+                <a href="#testing" class="sidebar-link block py-2 text-sm font-semibold text-slate-600">7. Pengujian</a>
+                <a href="#maintenance" class="sidebar-link block py-2 text-sm font-semibold text-slate-600">8. Maintenance</a>
+                <a href="#handover" class="sidebar-link block py-2 text-sm font-semibold text-slate-600">9. Catatan Handover</a>
+                <a href="#kontak" class="sidebar-link block py-2 text-sm font-semibold text-slate-600 text-indigo-600">10. Kontak Darurat</a>
+            </nav>
+
+            <div class="mt-12 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest mb-1">Company</p>
+                <p class="text-xs font-bold text-slate-800">PT Dharma Polimetal Tbk.</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8 lg:p-16 lg:max-w-4xl">
+            <header class="mb-16 border-b border-slate-100 pb-12">
+                <h1 class="text-4xl lg:text-5xl font-black text-slate-900 tracking-tight mb-4">Manuskrip & Dokumentasi Teknikal</h1>
+                <p class="text-lg text-slate-500 font-medium leading-relaxed">Platform Manajemen Pelatihan & Sertifikasi Karyawan — Panduan lengkap handover sistem untuk pengembang.</p>
+                
+                <div class="flex items-center gap-6 mt-8">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-black uppercase text-slate-400 tracking-widest leading-none mb-2">Developed By</span>
+                        <span class="text-sm font-bold text-slate-800 uppercase">Antigravity AI (Coding Assistant)</span>
+                    </div>
+                </div>
+            </header>
+
+            <section id="pendahuluan" class="prose max-w-none mb-20">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                    <span class="w-8 h-8 bg-slate-900 text-white flex items-center justify-center rounded-lg text-sm">1</span>
+                    Pendahuluan
+                </h2>
+                <p>Dokumen ini disusun sebagai panduan <strong>Technical Handover</strong> untuk pengembang (developer) yang akan melanjutkan, memelihara, atau menambah fitur di dalam aplikasi <strong>Report Trainee System</strong>. Dokumen ini merangkum arsitektur, teknologi, serta aliran proses bisnis yang telah diimplementasikan, guna mempercepat proses adaptasi (onboarding) tim IT yang baru di PT Dharma Polimetal Tbk.</p>
+            </section>
+
+            <section id="tech-stack" class="prose max-w-none mb-20">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                    <span class="w-8 h-8 bg-slate-900 text-white flex items-center justify-center rounded-lg text-sm">2</span>
+                    Teknologi & Stack
+                </h2>
+                <p>Aplikasi ini berjalan menggunakan stack teknologi modern terstandarisasi:</p>
+                <ul class="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0">
+                    <li class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                        <strong class="text-indigo-600 block mb-1">Backend</strong>
+                        PHP ^8.2 & Framework Laravel 12
+                    </li>
+                    <li class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                        <strong class="text-indigo-600 block mb-1">Frontend CSS</strong>
+                        Tailwind CSS v3 (Compiled via Vite)
+                    </li>
+                    <li class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                        <strong class="text-indigo-600 block mb-1">UI Interaktif</strong>
+                        Alpine.js & Blade Components
+                    </li>
+                    <li class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                        <strong class="text-indigo-600 block mb-1">Database</strong>
+                        MySQL / MariaDB
+                    </li>
+                </ul>
+            </section>
+
+            <section id="arsitektur" class="prose max-w-none mb-20">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                    <span class="w-8 h-8 bg-slate-900 text-white flex items-center justify-center rounded-lg text-sm">3</span>
+                    Arsitektur & Struktur Direktori
+                </h2>
+                <p>Sistem mengikuti struktur standar <strong>Laravel 12</strong> untuk memudahkan skalabilitas dan kolaborasi tim:</p>
+                <div class="space-y-4">
+                    <div class="flex gap-4">
+                        <code class="text-indigo-600 font-bold">app/Http/Controllers/</code>
+                        <span class="text-slate-500">Menampung seluruh logika bisnis aplikasi.</span>
+                    </div>
+                    <div class="flex gap-4">
+                        <code class="text-indigo-600 font-bold">app/Models/</code>
+                        <span class="text-slate-500">Definisi entitas database dengan Eloquent ORM.</span>
+                    </div>
+                    <div class="flex gap-4">
+                        <code class="text-indigo-600 font-bold">resources/views/</code>
+                        <span class="text-slate-500">Folder template tampilan (Blade Engine).</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="database" class="prose max-w-none mb-20">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                    <span class="w-8 h-8 bg-slate-900 text-white flex items-center justify-center rounded-lg text-sm">4</span>
+                    Struktur Database & Entitas
+                </h2>
+                <p>Pilar utama data dalam aplikasi ini meliputi:</p>
+                <div class="space-y-6">
+                    <div class="bg-indigo-50/50 p-6 rounded-2xl">
+                        <h4 class="font-bold text-slate-800 mb-2">1. Master Training</h4>
+                        <p class="text-sm">Template data program pelatihan statis (MDT, ARS, TKT, MNG, dsb).</p>
+                    </div>
+                    <div class="bg-indigo-50/50 p-6 rounded-2xl">
+                        <h4 class="font-bold text-slate-800 mb-2">2. Training (Batch)</h4>
+                        <p class="text-sm">Varian pelaksanaan training dari Master yang mencakup jadwal dan lokasi.</p>
+                    </div>
+                    <div class="bg-indigo-50/50 p-6 rounded-2xl">
+                        <h4 class="font-bold text-slate-800 mb-2">3. Training Participant</h4>
+                        <p class="text-sm">Data traker kehadiran, skor pre-test/post-test, dan sertifikasi.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="workflow" class="prose max-w-none mb-20">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                    <span class="w-8 h-8 bg-slate-900 text-white flex items-center justify-center rounded-lg text-sm">5</span>
+                    Alur Bisnis Proses (Workflow)
+                </h2>
+                <div class="p-8 border-2 border-dashed border-slate-200 rounded-[2rem]">
+                    <ol class="space-y-6">
+                        <li class="flex gap-4">
+                            <span class="font-black text-indigo-500">01.</span>
+                            <div>
+                                <h5 class="font-bold text-slate-800">Definisi Master</h5>
+                                <p class="text-sm text-slate-500">Mendaftarkan program pelatihan ke database pusat.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="font-black text-indigo-500">02.</span>
+                            <div>
+                                <h5 class="font-bold text-slate-800">Eksekusi Batch</h5>
+                                <p class="text-sm text-slate-500">Administrasi membuat sesi latihan aktif dari Master Training.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="font-black text-indigo-500">03.</span>
+                            <div>
+                                <h5 class="font-bold text-slate-800">Presensi QR</h5>
+                                <p class="text-sm text-slate-500">Trainee melakukan scan QR di lokasi pelatihan untuk kehadiran.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="font-black text-indigo-500">04.</span>
+                            <div>
+                                <h5 class="font-bold text-slate-800">Pelaporan</h5>
+                                <p class="text-sm text-slate-500">Sistem mengalkulasi skor dan menghasilkan Summary Report.</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="instalasi" class="prose max-w-none mb-20">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                    <span class="w-8 h-8 bg-slate-900 text-white flex items-center justify-center rounded-lg text-sm">6</span>
+                    Panduan Instalasi
+                </h2>
+                <pre><code># Install backend dependencies
+composer install
+
+# Environment setup
+cp .env.example .env
+php artisan key:generate
+
+# Database migration
+php artisan migrate --seed
+
+# Frontend dependencies
+npm install && npm run build</code></pre>
+            </section>
+
+            <section id="testing" class="prose max-w-none mb-20">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                    <span class="w-8 h-8 bg-slate-900 text-white flex items-center justify-center rounded-lg text-sm">7</span>
+                    Pengujian (Testing)
+                </h2>
+                <p>Sistem menggunakan <strong>PHPUnit / Pest</strong> untuk validasi fitur. Standar penulisan diwajibkan melewati pengecekan Linter:</p>
+                <div class="bg-indigo-600 text-white p-4 rounded-xl text-center font-bold text-sm">
+                    php artisan test
+                </div>
+            </section>
+
+            <section id="maintenance" class="prose max-w-none mb-20">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                    <span class="w-8 h-8 bg-slate-900 text-white flex items-center justify-center rounded-lg text-sm">8</span>
+                    Maintenance & Troubleshooting
+                </h2>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-2 h-2 bg-indigo-500 rounded-full mt-2.5"></div>
+                        <p class="flex-1 text-sm"><strong>Vite Manifest</strong>: Jalankan <code>npm run build</code> jika layar blank pada sistem production.</p>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-2 h-2 bg-indigo-500 rounded-full mt-2.5"></div>
+                        <p class="flex-1 text-sm"><strong>Clear Cache</strong>: Gunakan <code>php artisan optimize:clear</code> jika routing gagal dimuat.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="kontak" class="bg-indigo-600 rounded-[3rem] p-12 text-white overflow-hidden relative">
+                <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-white/10 rounded-full blur-[80px]"></div>
+                <h2 class="text-3xl font-black mb-6 relative z-10 uppercase tracking-tight">10. Kontak Darurat</h2>
+                <p class="mb-8 opacity-80 relative z-10 leading-relaxed font-medium">Informasi koordinasi apabila terjadi kendala kritis pada sistem selama masa operasional dan pemeliharaan.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                    <div>
+                        <p class="text-[10px] font-black uppercase text-white/50 tracking-widest mb-2">Main Contact</p>
+                        <p class="font-bold">Team HRMS IT</p>
+                        <p class="text-sm opacity-70">PT Dharma Polimetal Tbk.</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-black uppercase text-white/50 tracking-widest mb-2">Emergency Hub</p>
+                        <p class="font-bold">Internal Support Ticketing</p>
+                        <p class="text-sm opacity-70">helpdesk@dharmagroup.co.id</p>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="mt-32 pt-12 border-t border-slate-100 text-center">
+                <p class="text-sm text-slate-400 font-bold uppercase tracking-widest">Report Trainee System &copy; PT Dharma Polimetal Tbk. 2026</p>
+            </footer>
+        </main>
+    </div>
+
+</body>
+</html>
